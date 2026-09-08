@@ -91,7 +91,7 @@ export const Sidebar: React.FC = () => {
       <div className="h-16 flex items-center px-6 border-b border-edge">
         <NavLink to="/dashboard" className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl overflow-hidden bg-white shadow-sm border border-slate-100 flex items-center justify-center flex-shrink-0">
-            <img src="/logo.png" alt="PreMind AI Logo" className="w-full h-full object-cover" />
+            <img src="/logo.png" alt="PreMind AI Logo" className="w-full h-full object-contain p-0.5" />
           </div>
           <div className="flex flex-col">
             <span className="text-base font-bold tracking-tight text-ink flex items-center gap-1.5">
