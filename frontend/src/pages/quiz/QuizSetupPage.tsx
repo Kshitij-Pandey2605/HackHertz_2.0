@@ -46,9 +46,11 @@ export const QuizSetupPage: React.FC = () => {
       setIsLoading(true);
       try {
         const res = await api.quiz.getQuizSetup(id);
-        setMaterial(res.data.material);
-        if (res.data.material.difficulty) {
-          setDifficulty(res.data.material.difficulty);
+        if (res.data?.material) {
+          setMaterial(res.data.material);
+          if (res.data.material.difficulty) {
+            setDifficulty(res.data.material.difficulty);
+          }
         }
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : 'Failed to load quiz setup.');
