@@ -362,3 +362,145 @@ export interface ExtractedDocumentResponse {
     creationDate?: string | null;
   };
 }
+
+// ==========================================
+// Phase 2 — Differentiator Feature Types
+// ==========================================
+
+// --- Weak Topic Detection ---
+export type WeakTopicSeverity = 'CRITICAL' | 'MODERATE' | 'WATCH';
+
+export interface WeakTopic {
+  id: string;
+  topic: string;
+  subject: string;
+  chapter: string;
+  severity: WeakTopicSeverity;
+  correctAttempts: number;
+  totalAttempts: number;
+  accuracyPercent: number;
+  lastTestedAt: string;
+  relatedSection?: string;
+}
+
+export interface WeakTopicsData {
+  materialId: string;
+  materialTitle: string;
+  analyzedAt: string;
+  totalTopicsTested: number;
+  weakTopics: WeakTopic[];
+  recommendedAction: string;
+}
+
+// --- Topic Mastery Dashboard ---
+export interface TopicMasteryItem {
+  topicId: string;
+  topic: string;
+  masteryPercent: number;
+  questionsAttempted: number;
+  lastPracticed: string;
+}
+
+export interface SubjectMastery {
+  subjectId: string;
+  subject: string;
+  masteryPercent: number;
+  trend: number; // delta % from last week (positive = improved)
+  topics: TopicMasteryItem[];
+}
+
+export interface MasteryDashboardData {
+  materialId: string;
+  overallMastery: number;
+  lastUpdated: string;
+  subjects: SubjectMastery[];
+}
+
+// --- Personalized Revision Planner ---
+export interface RevisionTopic {
+  topicId: string;
+  topic: string;
+  subject: string;
+  priority: 'HIGH' | 'MEDIUM' | 'LOW';
+  estimatedMinutes: number;
+}
+
+export interface RevisionDay {
+  day: number;
+  date: string;
+  label: string; // e.g. "Day 1 — Monday"
+  topics: RevisionTopic[];
+  totalMinutes: number;
+  isCompleted: boolean;
+}
+
+export interface RevisionPlan {
+  materialId: string;
+  examDate: string;
+  daysUntilExam: number;
+  generatedAt: string;
+  days: RevisionDay[];
+}
+
+// --- Adaptive Quiz Engine ---
+export type AdaptiveDifficulty = 'EASY' | 'MEDIUM' | 'HARD';
+
+export interface AdaptiveQuestion {
+  id: string;
+  question: string;
+  options: string[];
+  correctAnswer: string;
+  explanation: string;
+  topic: string;
+  difficulty: AdaptiveDifficulty;
+}
+
+export interface AdaptiveQuizSession {
+  sessionId: string;
+  materialId: string;
+  currentDifficulty: AdaptiveDifficulty;
+  correctStreak: number;
+  totalAnswered: number;
+  totalCorrect: number;
+  questions: AdaptiveQuestion[];
+  isCalibrating: boolean;
+}
+
+export interface AdaptiveQuizResult {
+  sessionId: string;
+  finalDifficulty: AdaptiveDifficulty;
+  totalAnswered: number;
+  totalCorrect: number;
+  accuracyPercent: number;
+  weakTopicsDetected: string[];
+  masteryGained: number;
+}
+
+// --- AI Study Coach ---
+export interface AICoachSuggestion {
+  id: string;
+  category: 'FOCUS' | 'QUICK_WIN' | 'LONG_TERM';
+  title: string;
+  description: string;
+  topic?: string;
+  estimatedMinutes?: number;
+  priority: number;
+}
+
+export interface LearningProgressStat {
+  label: string;
+  value: number | string;
+  unit?: string;
+  changePercent?: number;
+  icon: string;
+}
+
+export interface AICoachData {
+  materialId: string;
+  generatedAt: string;
+  studentLevel: 'Beginner' | 'Intermediate' | 'Advanced';
+  overallScore: number;
+  suggestions: AICoachSuggestion[];
+  progressStats: LearningProgressStat[];
+  studyInsight: string;
+}

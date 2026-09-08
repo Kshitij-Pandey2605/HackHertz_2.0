@@ -8,6 +8,11 @@ import {
   Sparkles,
   LogOut,
   HelpCircle,
+  AlertTriangle,
+  Award,
+  Target,
+  Zap,
+  Brain,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -49,6 +54,34 @@ export const Sidebar: React.FC = () => {
       label: 'Quiz Assessment',
       icon: <Sparkles className="w-4 h-4" />,
       badge: 'Ready',
+    },
+  ];
+
+  const phase2Links = [
+    {
+      to: '/workspace/mat_dbms_01/weak-topics',
+      label: 'Weak Topics',
+      icon: <AlertTriangle className="w-4 h-4 text-rose-600" />,
+    },
+    {
+      to: '/workspace/mat_dbms_01/mastery',
+      label: 'Mastery Dashboard',
+      icon: <Award className="w-4 h-4 text-brand-600" />,
+    },
+    {
+      to: '/workspace/mat_dbms_01/revision-planner',
+      label: 'Revision Planner',
+      icon: <Target className="w-4 h-4 text-violet-600" />,
+    },
+    {
+      to: '/workspace/mat_dbms_01/adaptive-quiz',
+      label: 'Adaptive Quiz',
+      icon: <Zap className="w-4 h-4 text-amber-600" />,
+    },
+    {
+      to: '/workspace/mat_dbms_01/ai-coach',
+      label: 'AI Study Coach',
+      icon: <Brain className="w-4 h-4 text-emerald-600" />,
     },
   ];
 
@@ -97,6 +130,34 @@ export const Sidebar: React.FC = () => {
                       {link.badge}
                     </span>
                   )}
+                </NavLink>
+              ))}
+            </nav>
+          </div>
+
+          {/* Phase 2 Smart Tools */}
+          <div>
+            <p className="px-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-2 flex items-center gap-2">
+              Smart Tools
+              <span className="text-[9px] font-bold text-brand-700 bg-brand-50 border border-brand-200 px-1.5 py-0.5 rounded-full">NEW</span>
+            </p>
+            <nav className="space-y-1">
+              {phase2Links.map((link) => (
+                <NavLink
+                  key={link.to}
+                  to={link.to}
+                  className={({ isActive }) =>
+                    `flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+                      isActive
+                        ? 'bg-brand-50 text-brand-700 font-semibold'
+                        : 'text-ink-secondary hover:bg-gray-50 hover:text-ink'
+                    }`
+                  }
+                >
+                  <div className="flex items-center gap-3">
+                    {link.icon}
+                    <span>{link.label}</span>
+                  </div>
                 </NavLink>
               ))}
             </nav>
