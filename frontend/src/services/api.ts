@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {
   Material,
   ProcessingJob,
@@ -22,6 +23,11 @@ import {
   QuizResult,
   ExportContent,
   QuestionType,
+  BackendDocument,
+  BackendSummary,
+  BackendFlashcard,
+  BackendQuiz,
+  UploadResponse,
 } from '../types';
 import {
   mockMaterials,
@@ -39,6 +45,86 @@ import {
   mockQuizQuestions,
   mockExportData,
 } from '../data/mockData';
+
+// ==========================================
+// Axios Instance & Backend Endpoints
+// ==========================================
+export const apiClient = axios.create({
+  baseURL: 'http://localhost:5000/api',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  timeout: 15000,
+});
+
+export const uploadDocument = async (file: File): Promise<UploadResponse> => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const response = await apiClient.post<UploadResponse>('/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+
+export const getDocuments = async (): Promise<{
+  success: boolean;
+  count: number;
+  documents: BackendDocument[];
+}> => {
+  const response = await apiClient.get<{
+    success: boolean;
+    count: number;
+    documents: BackendDocument[];
+  }>('/documents');
+  return response.data;
+};
+
+export const getSummary = async (
+  documentId: string
+): Promise<{ success: boolean; documentId: string; summary: BackendSummary }> => {
+  const response = await apiClient.get<{
+    success: boolean;
+    documentId: string;
+    summary: BackendSummary;
+  }>(`/summary/${documentId}`);
+  return response.data;
+};
+
+export const getFlashcards = async (
+  documentId: string
+): Promise<{
+  success: boolean;
+  documentId: string;
+  totalFlashcards: number;
+  flashcards: BackendFlashcard[];
+}> => {
+  const response = await apiClient.get<{
+    success: boolean;
+    documentId: string;
+    totalFlashcards: number;
+    flashcards: BackendFlashcard[];
+  }>(`/flashcards/${documentId}`);
+  return response.data;
+};
+
+export const getQuiz = async (
+  documentId: string
+): Promise<{ success: boolean; documentId: string; quiz: BackendQuiz }> => {
+  const response = await apiClient.get<{
+    success: boolean;
+    documentId: string;
+    quiz: BackendQuiz;
+  }>(`/quiz/${documentId}`);
+  return response.data;
+};
+
+export const getHealth = async (): Promise<{ success: boolean; message: string }> => {
+  const response = await apiClient.get<{ success: boolean; message: string }>('/health');
+  return response.data;
+};
+
 
 // Local storage keys for state persistence across sessions
 const MATERIALS_STORAGE_KEY = 'premind_materials';
