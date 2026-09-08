@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { User, AuthState } from '../types';
 import { supabase, isSupabaseConfigured } from '../services/supabase';
 import { api } from '../services/api';
+import { mockMaterials } from '../data/mockData';
 
 export interface AuthContextType extends AuthState {
   login: (email: string, password?: string) => Promise<void>;
@@ -210,9 +211,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name: 'Alex Chen',
         email: 'alex.chen@university.edu',
         avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80',
+        isDemo: true,
       };
       setUser(demoUser);
       localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(demoUser));
+      localStorage.setItem('premind_materials', JSON.stringify(mockMaterials));
     } finally {
       setIsLoading(false);
     }
@@ -230,6 +233,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setUser(null);
       localStorage.removeItem(AUTH_STORAGE_KEY);
+      localStorage.removeItem('premind_materials');
+      localStorage.removeItem('premind_processing_jobs');
+      localStorage.removeItem('premind_current_doc_id');
       setIsLoading(false);
     }
   }, []);

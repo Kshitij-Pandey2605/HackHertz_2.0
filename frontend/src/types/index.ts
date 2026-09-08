@@ -53,6 +53,7 @@ export interface User {
   name: string;
   email: string;
   avatarUrl?: string;
+  isDemo?: boolean;
 }
 
 export interface AuthState {

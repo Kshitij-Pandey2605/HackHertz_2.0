@@ -62,7 +62,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               className="absolute right-3.5 text-ink-muted hover:text-ink focus:outline-none transition-colors"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
-              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              {showPassword ? <Eye className="w-4 h-4 text-brand-600" /> : <EyeOff className="w-4 h-4" />}
             </button>
           ) : (
             rightIcon && <div className="absolute right-3.5 text-ink-muted">{rightIcon}</div>

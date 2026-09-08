@@ -145,6 +145,18 @@ export const getHealth = async (): Promise<{ success: boolean; message: string }
 };
 
 
+// Helper to detect if current active session is a Demo user
+export const isDemoUser = (): boolean => {
+  try {
+    const raw = localStorage.getItem('premind_auth_user');
+    if (!raw) return false;
+    const user = JSON.parse(raw);
+    return Boolean(user.isDemo || user.id === 'usr_demo_chen' || user.email === 'alex.chen@university.edu');
+  } catch {
+    return false;
+  }
+};
+
 // Local storage keys for state persistence across sessions
 const MATERIALS_STORAGE_KEY = 'premind_materials';
 const JOBS_STORAGE_KEY = 'premind_processing_jobs';
@@ -156,11 +168,18 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const getStoredMaterials = (): Material[] => {
   try {
     const data = localStorage.getItem(MATERIALS_STORAGE_KEY);
-    if (data) return JSON.parse(data);
+    if (data) {
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed)) return parsed;
+    }
   } catch (e) {
     console.error('Failed to load materials from localStorage', e);
   }
-  return [...mockMaterials];
+  // Only supply mock study materials if current session is Demo User
+  if (isDemoUser()) {
+    return [...mockMaterials];
+  }
+  return [];
 };
 
 const saveMaterials = (materials: Material[]) => {
@@ -205,19 +224,10 @@ export const api = {
           message: response.data.message || 'Logged in successfully.',
         };
       } catch (err: any) {
-        // Fallback for offline/mock presentation
         if (err.response?.data?.message) {
           throw new Error(err.response.data.message);
         }
-        await delay(500);
-        return {
-          success: true,
-          data: {
-            ...mockUser,
-            email,
-          },
-          message: 'Logged in successfully.',
-        };
+        throw err;
       }
     },
 
@@ -237,16 +247,7 @@ export const api = {
         if (err.response?.data?.message) {
           throw new Error(err.response.data.message);
         }
-        await delay(500);
-        return {
-          success: true,
-          data: {
-            id: `user_${Date.now()}`,
-            name,
-            email,
-          },
-          message: 'Account created successfully.',
-        };
+        throw err;
       }
     },
 
@@ -278,15 +279,16 @@ export const api = {
   // Dashboard statistics
   dashboard: {
     getStats: async (): Promise<ApiResponse<DashboardStats>> => {
-      await delay(400);
-      const materials = getStoredMaterials();
+      await delay(300);
+      const materialsRes = await api.materials.getAll();
+      const materials = materialsRes.data;
       const readyMaterials = materials.filter((m) => m.status === 'ready');
       
       const stats: DashboardStats = {
         materialsCount: readyMaterials.length,
         summariesCount: readyMaterials.reduce((acc, m) => acc + (m.summaryCounts ? 3 : 0), 0),
-        flashcardsCount: readyMaterials.reduce((acc, m) => acc + m.flashcardCount, 0),
-        quizzesCount: readyMaterials.reduce((acc, m) => acc + m.quizCount, 0),
+        flashcardsCount: readyMaterials.reduce((acc, m) => acc + (m.flashcardCount || 0), 0),
+        quizzesCount: readyMaterials.reduce((acc, m) => acc + (m.quizCount || 0), 0),
       };
       
       return {
@@ -299,25 +301,86 @@ export const api = {
   // Study materials services
   materials: {
     getAll: async (): Promise<ApiResponse<Material[]>> => {
-      await delay(450);
-      const materials = getStoredMaterials();
+      await delay(300);
+
+      // 1. If active user is Demo session, provide mock demo materials
+      if (isDemoUser()) {
+        return {
+          success: true,
+          data: getStoredMaterials(),
+        };
+      }
+
+      // 2. For real users, fetch their actual uploaded documents from the backend API
+      try {
+        const res = await getDocuments();
+        if (res.success && Array.isArray(res.documents)) {
+          const backendMaterials: Material[] = res.documents.map((doc) => ({
+            id: doc.id,
+            title: doc.file_name.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' '),
+            subject: 'Study Material',
+            pages: 8,
+            uploadDate: doc.uploaded_at || new Date().toISOString(),
+            lastStudied: 'Recently',
+            difficulty: 'MEDIUM',
+            status: 'ready',
+            fileSize: 'PDF Document',
+            fileType: 'PDF',
+            originalFilename: doc.file_name,
+            summaryCounts: {
+              quickGlance: true,
+              deepSummary: true,
+              examCram: true,
+            },
+            chapterCount: 3,
+            formulaCount: 6,
+            glossaryCount: 12,
+            flashcardCount: 15,
+            quizCount: 5,
+          }));
+
+          const localStored = getStoredMaterials();
+          const mergedMap = new Map<string, Material>();
+          backendMaterials.forEach((m) => mergedMap.set(m.id, m));
+          localStored.forEach((m) => mergedMap.set(m.id, m));
+          const merged = Array.from(mergedMap.values());
+
+          return {
+            success: true,
+            data: merged,
+          };
+        }
+      } catch {
+        // Fallback to local storage if network or offline
+      }
+
+      const localMaterials = getStoredMaterials();
       return {
         success: true,
-        data: materials,
+        data: localMaterials,
       };
     },
 
     getById: async (id: string): Promise<ApiResponse<Material>> => {
-      await delay(350);
-      const materials = getStoredMaterials();
-      const material = materials.find((m) => m.id === id);
-      if (!material) {
-        throw new Error(`Material with ID "${id}" was not found.`);
+      await delay(250);
+      const allMaterials = await api.materials.getAll();
+      const material = allMaterials.data.find((m) => m.id === id);
+      if (material) {
+        return {
+          success: true,
+          data: material,
+        };
       }
-      return {
-        success: true,
-        data: material,
-      };
+
+      if (isDemoUser()) {
+        const demoMat = mockMaterials.find((m) => m.id === id) || mockMaterials[0];
+        return {
+          success: true,
+          data: demoMat,
+        };
+      }
+
+      throw new Error(`Material with ID "${id}" was not found.`);
     },
 
     uploadMaterial: async (
