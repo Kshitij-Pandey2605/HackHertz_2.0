@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const studyRoutes = require('./study.routes');
 const uploadRoutes = require('./upload.routes');
 const documentRoutes = require('./document.routes');
 const summaryRoutes = require('./summary.routes');
@@ -14,5 +15,6 @@ router.use('/summary', summaryRoutes);
 router.use('/flashcards', flashcardRoutes);
 router.use('/quiz', quizRoutes);
 router.use('/materials', materialRoutes);
+router.use('/legacy-upload', uploadRoutes);
 
 module.exports = router;

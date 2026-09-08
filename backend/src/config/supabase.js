@@ -6,32 +6,51 @@ dotenv.config();
 
 // Retrieve Supabase environment variables
 const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_KEY;
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY;
 
-// Validation: Ensure required environment variables are present
-if (!supabaseUrl) {
-  throw new Error('❌ Missing required environment variable: SUPABASE_URL. Please check your .env file.');
+const isConfigured = Boolean(
+  supabaseUrl &&
+  supabaseUrl !== 'https://your-project.supabase.co' &&
+  ((supabaseAnonKey && supabaseAnonKey !== 'your_supabase_anon_key_here') ||
+   (supabaseServiceRoleKey && supabaseServiceRoleKey !== 'your_supabase_service_role_key_here'))
+);
+
+let supabase = null;
+let supabaseAdmin = null;
+
+if (isConfigured) {
+  try {
+    const keyToUse = supabaseServiceRoleKey || supabaseAnonKey;
+    supabase = createClient(supabaseUrl, keyToUse, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
+    });
+
+    // Dedicated admin client with service role key if provided
+    if (supabaseServiceRoleKey && supabaseServiceRoleKey !== 'your_supabase_service_role_key_here') {
+      supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+        },
+      });
+    } else {
+      supabaseAdmin = supabase;
+    }
+
+    console.log('✅ Supabase client initialized successfully');
+  } catch (err) {
+    console.error('❌ Failed to initialize Supabase client:', err.message);
+  }
+} else {
+  console.warn('⚠️  Supabase not configured in .env. Please provide valid SUPABASE_URL and SUPABASE_KEY / SUPABASE_SERVICE_ROLE_KEY.');
 }
 
-if (!supabaseServiceRoleKey) {
-  throw new Error('❌ Missing required environment variable: SUPABASE_SERVICE_ROLE_KEY. Please check your .env file.');
-}
-
-/**
- * Production-ready Supabase Client for Node.js / Express backend
- * 
- * - auth.persistSession: false (prevents storing tokens in memory/localStorage in a server environment)
- * - auth.autoRefreshToken: false (server requests are stateless and don't need token refreshes)
- */
-const supabase = createClient(supabaseUrl, supabaseServiceRoleKey, {
-  auth: {
-    persistSession: false,
-    autoRefreshToken: false,
-  },
-});
-
-// Export the Supabase client using CommonJS syntax
-module.exports = supabase;
-
-// Support named destructuring: const { supabase } = require('./config/supabase')
-module.exports.supabase = supabase;
+module.exports = {
+  supabase,
+  supabaseAdmin,
+  isSupabaseConfigured: () => Boolean(supabase),
+};
