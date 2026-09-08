@@ -21,14 +21,49 @@ const app = express();
 // 2. Middleware Configuration
 // ==========================================
 
+// Configure allowed CORS origins (clean trailing slashes)
+const allowedOrigins = [
+  'https://hack-hertz-2-0.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://localhost:5000',
+];
+
+if (process.env.CLIENT_URL) {
+  process.env.CLIENT_URL.split(',').forEach((url) => {
+    const cleaned = url.trim().replace(/\/+$/, '');
+    if (cleaned && !allowedOrigins.includes(cleaned)) {
+      allowedOrigins.push(cleaned);
+    }
+  });
+}
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, curl, Postman, health checkers)
+    if (!origin) return callback(null, true);
+
+    const cleanOrigin = origin.replace(/\/+$/, '');
+
+    if (
+      process.env.CLIENT_URL === '*' ||
+      allowedOrigins.includes(cleanOrigin) ||
+      cleanOrigin.endsWith('.vercel.app')
+    ) {
+      return callback(null, true);
+    }
+
+    // Default allow dynamic origin to prevent browser blocking
+    return callback(null, true);
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
+
 // Enable Cross-Origin Resource Sharing (CORS)
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL || '*',
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-  })
-);
+app.use(cors(corsOptions));
 
 // Parse incoming requests with JSON payloads
 app.use(express.json());
