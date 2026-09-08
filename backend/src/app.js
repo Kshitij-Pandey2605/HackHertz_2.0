@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 
+// Import routes
+const summaryRoutes = require('./routes/summary.routes');
+
 // Initialize Express application
 const app = express();
 
@@ -40,12 +43,15 @@ app.get('/', (req, res) => {
   });
 });
 
-// Mount application API routes (if any)
+// Mount summary routes
+app.use('/api/summary', summaryRoutes);
+
+// Mount all application API routes
 try {
   const apiRoutes = require('./routes');
   app.use('/api', apiRoutes);
 } catch (error) {
-  // Routes index not found or optional
+  // Routes index fallback
 }
 
 // 404 Route Handler
