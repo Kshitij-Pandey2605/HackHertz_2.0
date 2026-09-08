@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const { supabase, isSupabaseConfigured } = require('./config/supabase');
 
 // Initialize Express application
 const app = express();
@@ -9,7 +10,13 @@ const app = express();
 // ==========================================
 
 // Enable Cross-Origin Resource Sharing
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || '*',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
 
 // Parse incoming JSON requests
 app.use(express.json());
@@ -17,18 +24,34 @@ app.use(express.json());
 // Parse URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files from uploads folder if available
+// Serve static files from uploads folder
 app.use('/uploads', express.static('uploads'));
 
 // ==========================================
 // Routes
 // ==========================================
 
-// Health check route
-app.get('/api/health', (req, res) => {
+// Health check route — checks server and Supabase status
+app.get('/api/health', async (req, res) => {
+  const configured = isSupabaseConfigured();
+  let supabaseStatus = configured ? 'connected' : 'unconfigured';
+
+  if (configured && supabase) {
+    try {
+      const { error } = await supabase.from('documents').select('id').limit(1);
+      if (error && error.code !== 'PGRST116') {
+        supabaseStatus = `connected (query check: ${error.message})`;
+      }
+    } catch (err) {
+      supabaseStatus = `error: ${err.message}`;
+    }
+  }
+
   res.status(200).json({
     success: true,
-    message: 'Server is running',
+    message: 'PreMindAI Backend API is running',
+    database: 'supabase',
+    supabase: supabaseStatus,
   });
 });
 
@@ -36,16 +59,16 @@ app.get('/api/health', (req, res) => {
 app.get('/', (req, res) => {
   res.status(200).json({
     success: true,
-    message: 'Welcome to PreMindAI Backend API',
+    message: 'Welcome to PreMindAI Backend API (Powered by Supabase & Gemini)',
   });
 });
 
-// Mount application API routes (if any)
+// Mount application API routes
 try {
   const apiRoutes = require('./routes');
   app.use('/api', apiRoutes);
 } catch (error) {
-  // Routes index not found or optional
+  console.error('Failed to load API routes:', error.message);
 }
 
 // 404 Route Handler
