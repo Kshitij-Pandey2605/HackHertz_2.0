@@ -1,8 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 
-// Import routes
+// Import route modules
 const summaryRoutes = require('./routes/summary.routes');
+const flashcardRoutes = require('./routes/flashcard.routes');
 
 // Initialize Express application
 const app = express();
@@ -43,8 +44,9 @@ app.get('/', (req, res) => {
   });
 });
 
-// Mount summary routes
+// Mount dedicated feature routes
 app.use('/api/summary', summaryRoutes);
+app.use('/api/flashcards', flashcardRoutes);
 
 // Mount all application API routes
 try {
