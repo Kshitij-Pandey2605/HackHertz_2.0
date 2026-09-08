@@ -1,14 +1,30 @@
 const express = require('express');
 const cors = require('cors');
+<<<<<<< HEAD
+
+// ==========================================
+// 1. Import Route Modules
+// ==========================================
+const uploadRoutes = require('./routes/upload.routes');
+const documentRoutes = require('./routes/document.routes');
+const summaryRoutes = require('./routes/summary.routes');
+const flashcardRoutes = require('./routes/flashcard.routes');
+const quizRoutes = require('./routes/quiz.routes');
+=======
 const { supabase, isSupabaseConfigured } = require('./config/supabase');
+>>>>>>> 797fcb9639b1f191de2421a6f8225afb8a3d4976
 
 // Initialize Express application
 const app = express();
 
 // ==========================================
-// Middleware Configuration
+// 2. Middleware Configuration
 // ==========================================
 
+<<<<<<< HEAD
+// Enable Cross-Origin Resource Sharing (CORS)
+app.use(cors());
+=======
 // Enable Cross-Origin Resource Sharing
 app.use(
   cors({
@@ -17,20 +33,25 @@ app.use(
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
+>>>>>>> 797fcb9639b1f191de2421a6f8225afb8a3d4976
 
-// Parse incoming JSON requests
+// Parse incoming requests with JSON payloads
 app.use(express.json());
 
-// Parse URL-encoded bodies
+// Parse incoming requests with URL-encoded payloads
 app.use(express.urlencoded({ extended: true }));
 
 // Serve static files from uploads folder
 app.use('/uploads', express.static('uploads'));
 
 // ==========================================
-// Routes
+// 3. Health Check & Root Routes
 // ==========================================
 
+<<<<<<< HEAD
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+=======
 // Health check route — checks server and Supabase status
 app.get('/api/health', async (req, res) => {
   const configured = isSupabaseConfigured();
@@ -47,6 +68,7 @@ app.get('/api/health', async (req, res) => {
     }
   }
 
+>>>>>>> 797fcb9639b1f191de2421a6f8225afb8a3d4976
   res.status(200).json({
     success: true,
     message: 'PreMindAI Backend API is running',
@@ -55,7 +77,7 @@ app.get('/api/health', async (req, res) => {
   });
 });
 
-// Root welcome route
+// Root welcome endpoint
 app.get('/', (req, res) => {
   res.status(200).json({
     success: true,
@@ -63,6 +85,20 @@ app.get('/', (req, res) => {
   });
 });
 
+<<<<<<< HEAD
+// ==========================================
+// 4. Register API Routes
+// ==========================================
+app.use('/api/upload', uploadRoutes);
+app.use('/api/documents', documentRoutes);
+app.use('/api/summary', summaryRoutes);
+app.use('/api/flashcards', flashcardRoutes);
+app.use('/api/quiz', quizRoutes);
+
+// ==========================================
+// 5. Global 404 Not Found Handler
+// ==========================================
+=======
 // Mount application API routes
 try {
   const apiRoutes = require('./routes');
@@ -72,21 +108,24 @@ try {
 }
 
 // 404 Route Handler
+>>>>>>> 797fcb9639b1f191de2421a6f8225afb8a3d4976
 app.use((req, res, next) => {
   res.status(404).json({
     success: false,
-    error: 'Route not found',
+    message: 'Route not found',
   });
 });
 
-// Global Error Handler
+// ==========================================
+// 6. Global Error Handling Middleware
+// ==========================================
 app.use((err, req, res, next) => {
   console.error('Unhandled Server Error:', err);
   res.status(err.status || 500).json({
     success: false,
-    error: err.message || 'Internal Server Error',
+    message: err.message || 'Internal Server Error',
   });
 });
 
-// Export Express app
+// Export configured Express app
 module.exports = app;
