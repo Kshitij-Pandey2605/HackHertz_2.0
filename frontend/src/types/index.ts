@@ -78,8 +78,138 @@ export interface QuickActionItem {
   badge?: string;
 }
 
+export interface QuickSummary {
+  coreIdea: string;
+  whatMattersMost: string[];
+  mustKnowDefinitions: { term: string; definition: string }[];
+  essentialRules: string[];
+  rememberThis: string;
+  readingTimeMinutes: number;
+}
+
+export interface DeepSummarySection {
+  id: string;
+  number: number;
+  title: string;
+  explanation: string;
+  example?: {
+    title: string;
+    codeOrText: string;
+  };
+  whyItMatters?: string;
+  requirements?: string[];
+  keyDifferences?: string;
+  callout?: {
+    type: 'DEFINITION' | 'CONCEPT' | 'EXAMPLE' | 'IMPORTANT' | 'EXAM NOTE';
+    text: string;
+  };
+}
+
+export interface DeepSummary {
+  overview: string;
+  sections: DeepSummarySection[];
+}
+
+export interface ExamCram {
+  mustRemember: string[];
+  criticalDefinitions: { term: string; definition: string }[];
+  ruleSheet: { title: string; rule: string }[];
+  comparisons: {
+    headers: string[];
+    rows: string[][];
+  };
+  commonTraps: { trap: string; explanation: string }[];
+  lastMinuteChecklist: { id: string; label: string; checked?: boolean }[];
+}
+
+export interface ChapterTopic {
+  id: string;
+  title: string;
+  points: string[];
+}
+
+export interface Chapter {
+  id: string;
+  number: number;
+  title: string;
+  topics: ChapterTopic[];
+}
+
+export interface KeyPointConcept {
+  id: string;
+  title: string;
+  priority: 'CORE' | 'IMPORTANT' | 'EXAM FOCUS';
+  explanation: string;
+  iconName?: string;
+}
+
+export interface KeyPointTakeaway {
+  id: string;
+  statement: string;
+}
+
+export interface KeyPointTopic {
+  id: string;
+  topic: string;
+  importance: string;
+  oneLiner: string;
+}
+
+export interface KeyPointsData {
+  concepts: KeyPointConcept[];
+  takeaways: KeyPointTakeaway[];
+  topics: KeyPointTopic[];
+}
+
+export interface Formula {
+  id: string;
+  name: string;
+  formula: string;
+  variables: { symbol: string; meaning: string }[];
+  explanation: string;
+  topic: string;
+  chapter: string;
+  category: 'Normalization Rules' | 'Formula' | 'Proof';
+}
+
+export interface GlossaryTerm {
+  id: string;
+  term: string;
+  definition: string;
+  example?: string;
+  topic: string;
+  chapter: string;
+}
+
+export interface Flashcard {
+  id: string;
+  question: string;
+  answer: string;
+  topic: string;
+  difficulty: DifficultyLevel;
+  explanation?: string;
+}
+
+export interface FlashcardFeedback {
+  flashcardId: string;
+  rating: 'AGAIN' | 'GOOD' | 'EASY';
+}
+
+export interface StudyWorkspace {
+  material: Material;
+  quickSummary: QuickSummary;
+  deepSummary: DeepSummary;
+  examCram: ExamCram;
+  chapters: Chapter[];
+  keyPoints: KeyPointsData;
+  formulas: Formula[];
+  glossary: GlossaryTerm[];
+  flashcards: Flashcard[];
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
   message?: string;
 }
+
