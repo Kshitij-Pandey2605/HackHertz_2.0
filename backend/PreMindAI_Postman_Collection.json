@@ -1,0 +1,266 @@
+{
+  "info": {
+    "_postman_id": "a9b8c7d6-e5f4-4321-abcd-1234567890ab",
+    "name": "PreMindAI Backend API",
+    "description": "Comprehensive Postman collection for PreMindAI (StudyForge) Node.js + Express + Supabase backend APIs.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "documentId",
+      "value": "123",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "health"]
+        },
+        "description": "Checks if the server is running and verifies Supabase connection."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response has success === true\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "});",
+              "",
+              "pm.test(\"Response time is less than 3000ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Upload PDF Document",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "",
+              "description": "Select a valid .pdf file to upload"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/upload",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "upload"]
+        },
+        "description": "Uploads a PDF file to Supabase Storage ('study-materials') and saves record in 'documents' table."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test(\"Response has success === true\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "    pm.expect(jsonData.documentId).to.be.a('string');",
+              "    pm.expect(jsonData.fileUrl).to.be.a('string');",
+              "});",
+              "",
+              "pm.test(\"Response time is less than 3000ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+              "});",
+              "",
+              "// Auto-save uploaded documentId to environment for subsequent requests",
+              "const jsonData = pm.response.json();",
+              "if (jsonData.documentId) {",
+              "    pm.collectionVariables.set(\"documentId\", jsonData.documentId);",
+              "    console.log(\"Saved documentId:\", jsonData.documentId);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Get All Documents",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/documents",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "documents"]
+        },
+        "description": "Retrieves all document records from Supabase table 'documents' ordered by uploaded_at desc."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response has success === true\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "    pm.expect(jsonData.documents).to.be.an('array');",
+              "    pm.expect(jsonData.count).to.be.a('number');",
+              "});",
+              "",
+              "pm.test(\"Response time is less than 3000ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Get Document Summary",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/summary/{{documentId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "summary", "{{documentId}}"]
+        },
+        "description": "Returns multi-level summary data (quick summary, detailed summary, exam cram notes) for a document."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response has success === true and valid summary structure\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "    pm.expect(jsonData.summary).to.be.an('object');",
+              "    pm.expect(jsonData.summary.quickSummary).to.be.a('string');",
+              "    pm.expect(jsonData.summary.detailedSummary).to.be.a('string');",
+              "    pm.expect(jsonData.summary.examNotes).to.be.an('array');",
+              "});",
+              "",
+              "pm.test(\"Response time is less than 3000ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Get Document Flashcards",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/flashcards/{{documentId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "flashcards", "{{documentId}}"]
+        },
+        "description": "Returns interactive flashcard question-and-answer pairs for a document."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response has success === true and flashcard list\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "    pm.expect(jsonData.flashcards).to.be.an('array');",
+              "    pm.expect(jsonData.totalFlashcards).to.be.above(0);",
+              "    pm.expect(jsonData.flashcards[0]).to.have.property('question');",
+              "    pm.expect(jsonData.flashcards[0]).to.have.property('answer');",
+              "});",
+              "",
+              "pm.test(\"Response time is less than 3000ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Get Document Quiz",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/quiz/{{documentId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "quiz", "{{documentId}}"]
+        },
+        "description": "Returns difficulty-categorized quiz questions (easy, medium, hard) for a document."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response has success === true and quiz levels\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData.success).to.eql(true);",
+              "    pm.expect(jsonData.quiz).to.be.an('object');",
+              "    pm.expect(jsonData.quiz.easy).to.be.an('array');",
+              "    pm.expect(jsonData.quiz.medium).to.be.an('array');",
+              "    pm.expect(jsonData.quiz.hard).to.be.an('array');",
+              "});",
+              "",
+              "pm.test(\"Response time is less than 3000ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(3000);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ]
+}
