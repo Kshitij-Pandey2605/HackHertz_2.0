@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useParams, useOutletContext } from 'react-router-dom';
+import { useParams, useOutletContext, useNavigate } from 'react-router-dom';
 import { api } from '../../services/api';
 import { Flashcard, Material } from '../../types';
 import { WorkspaceSkeleton } from '../../components/ui/WorkspaceSkeleton';
@@ -7,7 +7,6 @@ import { ErrorState } from '../../components/ui/ErrorState';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { ProgressBar } from '../../components/ui/ProgressBar';
 import { Badge } from '../../components/ui/Badge';
-import { Modal } from '../../components/ui/Modal';
 import { useToast } from '../../contexts/ToastContext';
 import {
   Layers,
@@ -15,13 +14,13 @@ import {
   ChevronRight,
   RotateCw,
   Sparkles,
-  HelpCircle,
   Clock,
   Filter,
 } from 'lucide-react';
 
 export const FlashcardsView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const context = useOutletContext<{ material?: Material }>();
   const materialDifficulty = context?.material?.difficulty || 'MEDIUM';
   const { showToast } = useToast();
@@ -35,7 +34,6 @@ export const FlashcardsView: React.FC = () => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [selectedTopic, setSelectedTopic] = useState('ALL');
   const [reviewSuggestion, setReviewSuggestion] = useState<string | null>(null);
-  const [showQuizModal, setShowQuizModal] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -303,7 +301,7 @@ export const FlashcardsView: React.FC = () => {
         </div>
       )}
 
-      {/* Bottom CTA to Phase 3 Quiz Assessment */}
+      {/* Bottom CTA to Quiz Assessment */}
       <div className="bg-white border border-edge rounded-2xl p-6 shadow-card flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
           <h3 className="text-sm font-bold text-ink">Ready to test your knowledge?</h3>
@@ -313,41 +311,13 @@ export const FlashcardsView: React.FC = () => {
         </div>
         <button
           type="button"
-          onClick={() => setShowQuizModal(true)}
+          onClick={() => navigate(`/workspace/${id}/quiz/setup`)}
           className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-brand-600 text-white rounded-xl text-xs font-bold hover:from-purple-700 hover:to-brand-700 transition-all shadow-sm whitespace-nowrap"
         >
           <Sparkles className="w-4 h-4" />
           <span>Test Yourself →</span>
         </button>
       </div>
-
-      {/* Modal for Phase 3 Quiz Preview */}
-      <Modal
-        isOpen={showQuizModal}
-        onClose={() => setShowQuizModal(false)}
-        title="Self-Assessment Quiz — Phase 3 Preview"
-        footer={
-          <button
-            type="button"
-            onClick={() => setShowQuizModal(false)}
-            className="w-full sm:w-auto px-4 py-2 bg-brand-600 text-white text-xs font-semibold rounded-xl hover:bg-brand-700 transition-colors"
-          >
-            Return to Flashcards
-          </button>
-        }
-      >
-        <div className="space-y-3 py-2">
-          <div className="p-3 bg-purple-50 rounded-xl border border-purple-200 flex items-start gap-3">
-            <HelpCircle className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="text-xs font-bold text-purple-900">Quiz Engine Coming in Phase 3</p>
-              <p className="text-xs text-purple-800 mt-1">
-                Phase 2 focuses on <strong>Understand & Remember</strong> (Quick Glance, Deep Summary, Exam Cram, Formulas, Glossary, and Flashcards). Adaptive Quizzes and Exam Assessment will launch in Phase 3.
-              </p>
-            </div>
-          </div>
-        </div>
-      </Modal>
     </div>
   );
 };

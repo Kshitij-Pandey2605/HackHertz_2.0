@@ -2,19 +2,18 @@ const express = require('express');
 const router = express.Router();
 const studyRoutes = require('./study.routes');
 const uploadRoutes = require('./upload.routes');
+const documentRoutes = require('./document.routes');
+const summaryRoutes = require('./summary.routes');
+const flashcardRoutes = require('./flashcard.routes');
+const quizRoutes = require('./quiz.routes');
 const materialRoutes = require('./material.routes');
 
-// Study Material AI routes — primary pipeline:
-//   POST   /api/upload          (PDF upload + full AI pipeline)
-//   GET    /api/documents       (List all documents)
-//   GET    /api/summary/:id     (Quick, Detailed, Exam notes)
-//   GET    /api/flashcards/:id  (Q&A Flashcards)
-//   GET    /api/quiz/:id        (Easy, Medium, Hard MCQs)
-//   GET    /api/definitions/:id (Terms & Glossary)
-//   GET    /api/formulas/:id    (Formulas & Equations)
-router.use('/', studyRoutes);
-
-// Existing / Backward-compatible routes
+// Mount API routes
+router.use('/upload', uploadRoutes);
+router.use('/documents', documentRoutes);
+router.use('/summary', summaryRoutes);
+router.use('/flashcards', flashcardRoutes);
+router.use('/quiz', quizRoutes);
 router.use('/materials', materialRoutes);
 router.use('/legacy-upload', uploadRoutes);
 

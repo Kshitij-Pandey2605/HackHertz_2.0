@@ -207,9 +207,86 @@ export interface StudyWorkspace {
   flashcards: Flashcard[];
 }
 
+export type QuestionType = 'MCQ' | 'TRUE_FALSE' | 'FILL_BLANK' | 'SHORT_ANSWER';
+
+export interface QuizQuestion {
+  id: string;
+  type: QuestionType;
+  question: string;
+  options?: string[];
+  correctAnswer: string;
+  explanation: string;
+  topic: string;
+  chapter: string;
+  difficulty: DifficultyLevel;
+  targetSection?: string;
+  acceptableAnswers?: string[];
+  placeholder?: string;
+}
+
+export interface QuizSettings {
+  difficulty: DifficultyLevel;
+  questionCount: number;
+  questionTypes: QuestionType[];
+}
+
+export interface QuizSession {
+  id: string;
+  materialId: string;
+  materialTitle: string;
+  difficulty: DifficultyLevel;
+  questionCount: number;
+  questionTypes: QuestionType[];
+  questions: QuizQuestion[];
+  startedAt: string;
+}
+
+export interface GradedQuestion {
+  questionId: string;
+  question: string;
+  type: QuestionType;
+  userAnswer: string;
+  correctAnswer: string;
+  isCorrect: boolean;
+  explanation: string;
+  topic: string;
+  chapter: string;
+  targetSection?: string;
+}
+
+export interface QuizResult {
+  id: string;
+  quizId: string;
+  materialId: string;
+  materialTitle: string;
+  difficulty: DifficultyLevel;
+  totalQuestions: number;
+  correctCount: number;
+  incorrectCount: number;
+  unansweredCount: number;
+  score: number;
+  percentage: number;
+  summaryMessage: string;
+  gradedQuestions: GradedQuestion[];
+  completedAt: string;
+}
+
+export interface ExportContent {
+  materialTitle: string;
+  subject: string;
+  date: string;
+  quickGlance: string;
+  keyConcepts: string[];
+  deepSummary: string;
+  formulas: { name: string; formula: string; explanation: string }[];
+  glossary: { term: string; definition: string }[];
+  examCram: string[];
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
   message?: string;
 }
+
 

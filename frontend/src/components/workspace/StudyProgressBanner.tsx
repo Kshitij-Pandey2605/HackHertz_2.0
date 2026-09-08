@@ -10,6 +10,7 @@ export const StudyProgressBanner: React.FC = () => {
     { label: 'Deep Summary', to: `/workspace/${id}/deep-summary`, stepKey: 'deep-summary' },
     { label: 'Exam Cram', to: `/workspace/${id}/exam-cram`, stepKey: 'exam-cram' },
     { label: 'Flashcards', to: `/workspace/${id}/flashcards`, stepKey: 'flashcards' },
+    { label: 'Quiz', to: `/workspace/${id}/quiz/setup`, stepKey: 'quiz' },
   ];
 
   return (
