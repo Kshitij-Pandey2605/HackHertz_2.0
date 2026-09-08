@@ -392,7 +392,43 @@ export interface WeakTopicsData {
   recommendedAction: string;
 }
 
-// --- Topic Mastery Dashboard ---
+// --- Topic Mastery Dashboard & Learning Analytics Engine ---
+export type MasteryLevel = 'Expert' | 'Strong' | 'Moderate' | 'Weak' | 'Critical';
+
+export interface RawTopicInput {
+  topic: string;
+  questionsAttempted: number;
+  correctAnswers: number;
+  revisionCount: number;
+  studyTime: string;
+  studyTimeHours?: number;
+  previousMastery?: number;
+  subject?: string;
+}
+
+export interface TopicAnalytics {
+  topic: string;
+  mastery: number;
+  level: MasteryLevel;
+  questionsAttempted: number;
+  correctAnswers: number;
+  accuracy: number;
+  studyTime: string;
+  revisionCount: number;
+  examReadinessContribution: number;
+  subject?: string;
+}
+
+export interface AnalyticsDashboardOutput {
+  overallMastery: number;
+  strongestTopic: string;
+  weakestTopic: string;
+  mostImprovedTopic: string;
+  topicsNeedingRevision: string[];
+  topics: TopicAnalytics[];
+  recommendations: string[];
+}
+
 export interface TopicMasteryItem {
   topicId: string;
   topic: string;
