@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const authRoutes = require('./auth.routes');
 const studyRoutes = require('./study.routes');
 const uploadRoutes = require('./upload.routes');
 const documentRoutes = require('./document.routes');
@@ -9,6 +10,7 @@ const quizRoutes = require('./quiz.routes');
 const materialRoutes = require('./material.routes');
 
 // Mount API routes
+router.use('/auth', authRoutes);
 router.use('/upload', uploadRoutes);
 router.use('/documents', documentRoutes);
 router.use('/summary', summaryRoutes);

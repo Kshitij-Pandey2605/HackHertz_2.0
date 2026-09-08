@@ -11,6 +11,7 @@ const documentRoutes = require('./routes/document.routes');
 const summaryRoutes = require('./routes/summary.routes');
 const flashcardRoutes = require('./routes/flashcard.routes');
 const quizRoutes = require('./routes/quiz.routes');
+const authRoutes = require('./routes/auth.routes');
 
 // Initialize Express application
 const app = express();
@@ -76,6 +77,7 @@ app.get('/', (req, res) => {
 // ==========================================
 // 4. Register API Routes
 // ==========================================
+app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/summary', summaryRoutes);
