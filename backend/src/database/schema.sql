@@ -3,7 +3,25 @@
 -- 1. Enable UUID Extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- 2. Study Materials Table
+-- 2. Documents Table (PDF Uploads)
+CREATE TABLE IF NOT EXISTS public.documents (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    file_name TEXT NOT NULL,
+    file_url TEXT NOT NULL,
+    uploaded_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Enable RLS for documents
+ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
+
+-- Allow public / service reads and inserts (adjust policy according to auth needs)
+CREATE POLICY "Allow public insert to documents" ON public.documents
+    FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Allow public select from documents" ON public.documents
+    FOR SELECT USING (true);
+
+-- 3. Study Materials Table
 CREATE TABLE IF NOT EXISTS public.materials (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -17,7 +35,7 @@ CREATE TABLE IF NOT EXISTS public.materials (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 3. Summaries Table (Multi-level summaries)
+-- 4. Summaries Table (Multi-level summaries)
 CREATE TABLE IF NOT EXISTS public.summaries (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     material_id UUID REFERENCES public.materials(id) ON DELETE CASCADE,
@@ -29,16 +47,16 @@ CREATE TABLE IF NOT EXISTS public.summaries (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 4. Key Points Table
+-- 5. Key Points Table
 CREATE TABLE IF NOT EXISTS public.key_points (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     material_id UUID REFERENCES public.materials(id) ON DELETE CASCADE,
-    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    user_id REFERENCES auth.users(id) ON DELETE CASCADE,
     points JSONB NOT NULL DEFAULT '[]'::jsonb,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 5. Formulas Table
+-- 6. Formulas Table
 CREATE TABLE IF NOT EXISTS public.formulas (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     material_id UUID REFERENCES public.materials(id) ON DELETE CASCADE,
@@ -51,7 +69,7 @@ CREATE TABLE IF NOT EXISTS public.formulas (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 6. Glossary Table
+-- 7. Glossary Table
 CREATE TABLE IF NOT EXISTS public.glossaries (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     material_id UUID REFERENCES public.materials(id) ON DELETE CASCADE,
@@ -62,7 +80,7 @@ CREATE TABLE IF NOT EXISTS public.glossaries (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 7. Flashcards Table
+-- 8. Flashcards Table
 CREATE TABLE IF NOT EXISTS public.flashcards (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     material_id UUID REFERENCES public.materials(id) ON DELETE CASCADE,
@@ -73,7 +91,7 @@ CREATE TABLE IF NOT EXISTS public.flashcards (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 8. Quizzes Table
+-- 9. Quizzes Table
 CREATE TABLE IF NOT EXISTS public.quizzes (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     material_id UUID REFERENCES public.materials(id) ON DELETE CASCADE,
@@ -83,7 +101,7 @@ CREATE TABLE IF NOT EXISTS public.quizzes (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 9. Row Level Security (RLS) Policies
+-- 10. Row Level Security (RLS) Policies
 ALTER TABLE public.materials ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.summaries ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.key_points ENABLE ROW LEVEL SECURITY;
@@ -92,7 +110,6 @@ ALTER TABLE public.glossaries ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.flashcards ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.quizzes ENABLE ROW LEVEL SECURITY;
 
--- Allow users to manage only their own materials
 CREATE POLICY "Users can access their own materials" ON public.materials
     FOR ALL USING (auth.uid() = user_id);
 
