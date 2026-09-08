@@ -1,41 +1,69 @@
 const express = require('express');
 const cors = require('cors');
-const apiRoutes = require('./routes');
 
+// Initialize Express application
 const app = express();
 
-// Middleware
+// ==========================================
+// Middleware Configuration
+// ==========================================
+
+// Enable Cross-Origin Resource Sharing
 app.use(cors());
+
+// Parse incoming JSON requests
 app.use(express.json());
+
+// Parse URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static uploaded files
+// Serve static files from uploads folder if available
 app.use('/uploads', express.static('uploads'));
 
-// Health check endpoint
+// ==========================================
+// Routes
+// ==========================================
+
+// Health check route
 app.get('/api/health', (req, res) => {
   res.status(200).json({
-    status: 'success',
-    message: 'PreMindAI API is operational',
-    timestamp: new Date().toISOString()
+    success: true,
+    message: 'Server is running',
   });
 });
 
-// Mount API routes
-app.use('/api', apiRoutes);
-
-// Root endpoint
+// Root welcome route
 app.get('/', (req, res) => {
-  res.send('Welcome to PreMindAI API');
+  res.status(200).json({
+    success: true,
+    message: 'Welcome to PreMindAI Backend API',
+  });
 });
 
-// Error handling middleware
+// Mount application API routes (if any)
+try {
+  const apiRoutes = require('./routes');
+  app.use('/api', apiRoutes);
+} catch (error) {
+  // Routes index not found or optional
+}
+
+// 404 Route Handler
+app.use((req, res, next) => {
+  res.status(404).json({
+    success: false,
+    error: 'Route not found',
+  });
+});
+
+// Global Error Handler
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('Unhandled Server Error:', err);
   res.status(err.status || 500).json({
     success: false,
-    error: err.message || 'Internal Server Error'
+    error: err.message || 'Internal Server Error',
   });
 });
 
+// Export Express app
 module.exports = app;
