@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../../services/api';
 import { Chapter } from '../../types';
 import { WorkspaceSkeleton } from '../../components/ui/WorkspaceSkeleton';
 import { ErrorState } from '../../components/ui/ErrorState';
-import { ListTree, ChevronDown, ChevronRight, BookOpen, CheckCircle } from 'lucide-react';
+import { Button } from '../../components/ui/Button';
+import { ListTree, ChevronDown, ChevronRight, BookOpen, CheckCircle, Sparkles, ArrowRight } from 'lucide-react';
 
 export const ChaptersView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -161,6 +163,39 @@ export const ChaptersView: React.FC = () => {
             </div>
           );
         })}
+      </div>
+
+      {/* Bottom CTA: Proceed to Stage 2 Remember */}
+      <div className="bg-white border border-edge rounded-2xl p-6 shadow-card flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-1.5 text-xs font-bold text-brand-600 mb-1">
+            <Sparkles className="w-3.5 h-3.5 text-brand-600" />
+            <span>Next: Stage 2 &bull; Remember</span>
+          </div>
+          <h3 className="text-sm font-bold text-ink">Finished exploring chapter breakdowns?</h3>
+          <p className="text-xs text-ink-muted mt-0.5">
+            Lock in what you learned by reviewing core Key Points or active recall Flashcards.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <Button
+            variant="secondary"
+            size="md"
+            onClick={() => navigate(`/workspace/${id}/flashcards`)}
+            className="flex-1 sm:flex-none whitespace-nowrap"
+          >
+            Flashcards
+          </Button>
+          <Button
+            variant="primary"
+            size="md"
+            onClick={() => navigate(`/workspace/${id}/key-points`)}
+            rightIcon={<ArrowRight className="w-4 h-4" />}
+            className="flex-1 sm:flex-none whitespace-nowrap shadow-elevated"
+          >
+            Review Key Points
+          </Button>
+        </div>
       </div>
     </div>
   );

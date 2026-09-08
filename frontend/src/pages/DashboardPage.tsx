@@ -68,11 +68,11 @@ export const DashboardPage: React.FC = () => {
       {/* 1. WELCOME HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-ink flex items-center gap-2">
-            Welcome back {user?.name ? `${user.name.split(' ')[0]} ` : ''}👋
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-ink flex items-center gap-2">
+            Welcome back{user?.name ? `, ${user.name.split(' ')[0]}` : ''} 👋
           </h1>
           <p className="text-sm text-ink-muted mt-1">
-            Ready to turn your study material into exam-ready knowledge?
+            What would you like to study today? Pick up where you left off or start fresh.
           </p>
         </div>
         <Button
@@ -86,50 +86,179 @@ export const DashboardPage: React.FC = () => {
         </Button>
       </div>
 
-      {/* 2. PROMINENT CONTINUE STUDYING HERO BANNER */}
+      {/* 2. PROMINENT "CONTINUE STUDYING" HERO CARD */}
       {continueMaterial && (
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-900 via-brand-800 to-violet-950 text-white p-6 sm:p-7 shadow-elevated">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-600 via-brand-700 to-violet-800 text-white p-6 sm:p-7 shadow-elevated">
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md text-brand-200 text-xs font-semibold mb-3 border border-white/10">
-                <Clock className="w-3 h-3" />
-                <span>Continue Studying &bull; Last opened {continueMaterial.lastStudied}</span>
-              </div>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-2 leading-snug">
-                {continueMaterial.title}
-              </h2>
-              <div className="flex flex-wrap items-center gap-4 text-xs text-brand-200">
-                <span>{continueMaterial.subject}</span>
-                <span>&bull;</span>
-                <span>{continueMaterial.pages} pages</span>
-                <span>&bull;</span>
-                <span className="bg-brand-700/80 px-2 py-0.5 rounded text-white font-medium">
-                  {continueMaterial.difficulty} Level
+            <div className="max-w-2xl space-y-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-semibold">
+                  <Sparkles className="w-3.5 h-3.5 text-brand-200" />
+                  <span>Next Step: Flashcards</span>
                 </span>
+                <span className="text-xs text-brand-100 flex items-center gap-1">
+                  <Clock className="w-3 h-3" /> Last studied {continueMaterial.lastStudied}
+                </span>
+              </div>
+
+              <div>
+                <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug">
+                  {continueMaterial.title}
+                </h2>
+                <p className="text-xs sm:text-sm text-brand-100 mt-1">
+                  {continueMaterial.subject} &bull; {continueMaterial.pages} pages &bull; {continueMaterial.difficulty} Level
+                </p>
+              </div>
+
+              {/* Progress bar */}
+              <div className="space-y-1.5 pt-1 max-w-md">
+                <div className="flex justify-between text-xs text-brand-100 font-medium">
+                  <span>Study Progress: Understand &rarr; Remember</span>
+                  <span>60%</span>
+                </div>
+                <div className="w-full h-2 bg-white/20 rounded-full overflow-hidden">
+                  <div className="h-full bg-white rounded-full transition-all duration-500" style={{ width: '60%' }} />
+                </div>
               </div>
             </div>
 
             <Button
               variant="secondary"
               size="lg"
-              onClick={() => navigate(`/workspace/${continueMaterial.id}`)}
-              rightIcon={<ArrowRight className="w-4 h-4" />}
-              className="bg-white text-brand-900 hover:bg-brand-50 border-none font-bold flex-shrink-0 self-start md:self-auto shadow-subtle"
+              onClick={() => navigate(`/workspace/${continueMaterial.id}/flashcards`)}
+              rightIcon={<ArrowRight className="w-4 h-4 text-brand-700" />}
+              className="bg-white text-brand-700 hover:bg-brand-50 border-none font-bold text-sm flex-shrink-0 self-start md:self-auto shadow-md"
             >
-              Resume Workspace
+              Continue Studying
             </Button>
           </div>
         </div>
       )}
 
-      {/* 3. STUDY OVERVIEW (Simple statistics - No complex gamification) */}
-      <div>
+      {/* 3. TIME-BASED STUDY SHORTCUTS ("How much time do you have?") */}
+      {continueMaterial && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold text-ink flex items-center gap-2">
+              <span>⏱ How much time do you have?</span>
+            </h2>
+            <span className="text-xs text-ink-muted">Quick revision shortcuts</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* 5 min: Exam Cram */}
+            <div
+              onClick={() => navigate(`/workspace/${continueMaterial.id}/exam-cram`)}
+              className="bg-white border border-edge hover:border-brand-400 p-5 rounded-2xl shadow-card hover:shadow-card-hover transition-all cursor-pointer group flex flex-col justify-between"
+            >
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                    ⚡ 5 mins
+                  </span>
+                  <ArrowRight className="w-4 h-4 text-ink-subtle group-hover:text-brand-600 transition-colors" />
+                </div>
+                <h3 className="text-base font-bold text-ink group-hover:text-brand-600 transition-colors">
+                  Exam Cram
+                </h3>
+                <p className="text-xs text-ink-muted leading-relaxed">
+                  High-speed key takeaways, memory hooks, and must-know definitions.
+                </p>
+              </div>
+              <p className="text-[11px] font-semibold text-brand-600 pt-3 flex items-center gap-1">
+                Fast Revision &rarr;
+              </p>
+            </div>
+
+            {/* 10 min: Flashcards */}
+            <div
+              onClick={() => navigate(`/workspace/${continueMaterial.id}/flashcards`)}
+              className="bg-white border border-edge hover:border-brand-400 p-5 rounded-2xl shadow-card hover:shadow-card-hover transition-all cursor-pointer group flex flex-col justify-between"
+            >
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-purple-700 bg-purple-50 border border-purple-200 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                    🧠 10 mins
+                  </span>
+                  <ArrowRight className="w-4 h-4 text-ink-subtle group-hover:text-brand-600 transition-colors" />
+                </div>
+                <h3 className="text-base font-bold text-ink group-hover:text-brand-600 transition-colors">
+                  Flashcards
+                </h3>
+                <p className="text-xs text-ink-muted leading-relaxed">
+                  Active recall drills to lock core rules and definitions into memory.
+                </p>
+              </div>
+              <p className="text-[11px] font-semibold text-brand-600 pt-3 flex items-center gap-1">
+                Practice Recall &rarr;
+              </p>
+            </div>
+
+            {/* 30 min: Deep Study */}
+            <div
+              onClick={() => navigate(`/workspace/${continueMaterial.id}/deep-summary`)}
+              className="bg-white border border-edge hover:border-brand-400 p-5 rounded-2xl shadow-card hover:shadow-card-hover transition-all cursor-pointer group flex flex-col justify-between"
+            >
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                    📚 30 mins
+                  </span>
+                  <ArrowRight className="w-4 h-4 text-ink-subtle group-hover:text-brand-600 transition-colors" />
+                </div>
+                <h3 className="text-base font-bold text-ink group-hover:text-brand-600 transition-colors">
+                  Deep Study
+                </h3>
+                <p className="text-xs text-ink-muted leading-relaxed">
+                  Comprehensive chapter-by-chapter breakdowns with examples.
+                </p>
+              </div>
+              <p className="text-[11px] font-semibold text-brand-600 pt-3 flex items-center gap-1">
+                Understand Deeply &rarr;
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 4. RECENT STUDY MATERIALS */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-base font-bold text-ink">Recent Study Materials</h2>
+            <p className="text-xs text-ink-muted mt-0.5">
+              Access your parsed syllabi, summaries, formulas, and quizzes
+            </p>
+          </div>
+          <span className="text-xs text-ink-muted">
+            {materials.length} total document{materials.length === 1 ? '' : 's'}
+          </span>
+        </div>
+
+        {materials.length === 0 ? (
+          <EmptyState
+            title="No study materials yet"
+            description="Upload your first textbook chapter, lecture slides, or lecture notes to generate instant summaries, formulas, and quizzes."
+            actionLabel="Upload Material"
+            onAction={() => navigate('/upload')}
+          />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {materials.map((mat) => (
+              <MaterialCard key={mat.id} material={mat} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 5. STUDY OVERVIEW METRICS (Supporting Information) */}
+      <div className="pt-2 border-t border-edge">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-xs font-semibold text-ink-muted uppercase tracking-wider">
-            Study Overview
+            Your Study Arsenal
           </h3>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <StatCard
             label="Study Materials"
             value={stats?.materialsCount ?? 0}
@@ -152,49 +281,9 @@ export const DashboardPage: React.FC = () => {
             label="Quiz Questions"
             value={stats?.quizzesCount ?? 0}
             icon={<HelpCircle className="w-4 h-4" />}
-            hint="Diagnostic examination questions"
+            hint="Diagnostic self-test questions"
           />
         </div>
-      </div>
-
-      {/* 4. QUICK ACTIONS */}
-      <div>
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-xs font-semibold text-ink-muted uppercase tracking-wider">
-            Quick Actions
-          </h3>
-        </div>
-        <QuickActions latestMaterialId={continueMaterial?.id} />
-      </div>
-
-      {/* 5. RECENT MATERIALS */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h3 className="text-base font-bold text-ink">Recent Study Materials</h3>
-            <p className="text-xs text-ink-muted mt-0.5">
-              Access your parsed syllabi, formulas, and flashcard modules
-            </p>
-          </div>
-          <span className="text-xs text-ink-muted">
-            {materials.length} total document{materials.length === 1 ? '' : 's'}
-          </span>
-        </div>
-
-        {materials.length === 0 ? (
-          <EmptyState
-            title="No study materials yet"
-            description="Upload your first textbook chapter, lecture slides, or lecture notes to generate instant summaries, formulas, and quizzes."
-            actionLabel="Upload Material"
-            onAction={() => navigate('/upload')}
-          />
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {materials.map((mat) => (
-              <MaterialCard key={mat.id} material={mat} />
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );

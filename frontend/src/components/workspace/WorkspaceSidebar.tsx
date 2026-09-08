@@ -27,10 +27,10 @@ export const WorkspaceSidebar: React.FC = () => {
     navigate('/login');
   };
 
-  const workspaceNav = [
+  const understandNav = [
     {
       to: `/workspace/${id}`,
-      label: 'Overview',
+      label: 'Study Overview',
       icon: <LayoutDashboard className="w-4 h-4" />,
       end: true,
     },
@@ -44,12 +44,6 @@ export const WorkspaceSidebar: React.FC = () => {
       to: `/workspace/${id}/deep-summary`,
       label: 'Deep Summary',
       icon: <BookOpen className="w-4 h-4" />,
-    },
-    {
-      to: `/workspace/${id}/exam-cram`,
-      label: 'Exam Cram',
-      icon: <Zap className="w-4 h-4" />,
-      badge: 'Fast',
     },
     {
       to: `/workspace/${id}/chapters`,
@@ -82,6 +76,30 @@ export const WorkspaceSidebar: React.FC = () => {
     },
   ];
 
+  const practiceNav = [
+    {
+      to: `/workspace/${id}/quiz/setup`,
+      label: 'Quiz Assessment',
+      icon: <HelpCircle className="w-4 h-4" />,
+      badge: 'Test',
+    },
+  ];
+
+  const reviseNav = [
+    {
+      to: `/workspace/${id}/exam-cram`,
+      label: 'Exam Cram',
+      icon: <Zap className="w-4 h-4" />,
+      badge: 'Fast',
+    },
+    {
+      to: `/workspace/${id}/export`,
+      label: 'Export Cheat Sheet',
+      icon: <Download className="w-4 h-4" />,
+      badge: 'PDF',
+    },
+  ];
+
   return (
     <aside className="hidden lg:flex flex-col w-64 border-r border-edge bg-white h-screen sticky top-0 select-none flex-shrink-0">
         {/* Workspace Brand Header */}
@@ -108,19 +126,20 @@ export const WorkspaceSidebar: React.FC = () => {
         {/* Workspace Side Navigation */}
         <div className="flex-1 py-4 px-3 flex flex-col justify-between overflow-y-auto space-y-6">
           <div className="space-y-5">
-            {/* UNDERSTAND Section */}
+            {/* 1. UNDERSTAND */}
             <div>
-              <p className="px-3 text-[11px] font-bold text-ink-muted uppercase tracking-wider mb-2">
-                Workspace &bull; Understand
+              <p className="px-3 text-[10px] font-bold text-ink-muted uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
+                1. Understand
               </p>
-              <nav className="space-y-1">
-                {workspaceNav.map((link) => (
+              <nav className="space-y-0.5">
+                {understandNav.map((link) => (
                   <NavLink
                     key={link.to}
                     to={link.to}
                     end={link.end}
                     className={({ isActive }) =>
-                      `flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+                      `flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
                         isActive
                           ? 'bg-brand-50 text-brand-700 font-semibold border border-brand-200/60'
                           : 'text-ink-secondary hover:bg-gray-50 hover:text-ink'
@@ -141,18 +160,52 @@ export const WorkspaceSidebar: React.FC = () => {
               </nav>
             </div>
 
-            {/* REMEMBER Section */}
+            {/* 2. REMEMBER */}
             <div>
-              <p className="px-3 text-[11px] font-bold text-ink-muted uppercase tracking-wider mb-2">
-                Remember
+              <p className="px-3 text-[10px] font-bold text-ink-muted uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+                2. Remember
               </p>
-              <nav className="space-y-1">
+              <nav className="space-y-0.5">
                 {rememberNav.map((link) => (
                   <NavLink
                     key={link.to}
                     to={link.to}
                     className={({ isActive }) =>
-                      `flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+                      `flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
+                        isActive
+                          ? 'bg-brand-50 text-brand-700 font-semibold border border-brand-200/60'
+                          : 'text-ink-secondary hover:bg-gray-50 hover:text-ink'
+                      }`
+                    }
+                  >
+                    <div className="flex items-center gap-2.5">
+                      {link.icon}
+                      <span>{link.label}</span>
+                    </div>
+                    {link.badge && (
+                      <span className="text-[10px] bg-purple-100 text-purple-700 font-semibold px-1.5 py-0.5 rounded-full">
+                        {link.badge}
+                      </span>
+                    )}
+                  </NavLink>
+                ))}
+              </nav>
+            </div>
+
+            {/* 3. PRACTICE */}
+            <div>
+              <p className="px-3 text-[10px] font-bold text-ink-muted uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                3. Practice
+              </p>
+              <nav className="space-y-0.5">
+                {practiceNav.map((link) => (
+                  <NavLink
+                    key={link.to}
+                    to={link.to}
+                    className={({ isActive }) =>
+                      `flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
                         isActive
                           ? 'bg-brand-50 text-brand-700 font-semibold border border-brand-200/60'
                           : 'text-ink-secondary hover:bg-gray-50 hover:text-ink'
@@ -173,49 +226,36 @@ export const WorkspaceSidebar: React.FC = () => {
               </nav>
             </div>
 
-            {/* PRACTICE & EXPORT (Phase 3 Complete) */}
+            {/* 4. REVISE */}
             <div>
-              <p className="px-3 text-[11px] font-bold text-ink-muted uppercase tracking-wider mb-2">
-                Practice & Export
+              <p className="px-3 text-[10px] font-bold text-ink-muted uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                4. Revise
               </p>
-              <nav className="space-y-1">
-                <NavLink
-                  to={`/workspace/${id}/quiz/setup`}
-                  className={({ isActive }) =>
-                    `flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
-                      isActive
-                        ? 'bg-brand-50 text-brand-700 font-semibold border border-brand-200/60'
-                        : 'text-ink-secondary hover:bg-gray-50 hover:text-ink'
-                    }`
-                  }
-                >
-                  <div className="flex items-center gap-2.5">
-                    <HelpCircle className="w-4 h-4 text-purple-600" />
-                    <span>Quiz Assessment</span>
-                  </div>
-                  <span className="text-[10px] bg-purple-100 text-purple-800 font-semibold px-1.5 py-0.5 rounded-full">
-                    Quiz
-                  </span>
-                </NavLink>
-
-                <NavLink
-                  to={`/workspace/${id}/export`}
-                  className={({ isActive }) =>
-                    `flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
-                      isActive
-                        ? 'bg-brand-50 text-brand-700 font-semibold border border-brand-200/60'
-                        : 'text-ink-secondary hover:bg-gray-50 hover:text-ink'
-                    }`
-                  }
-                >
-                  <div className="flex items-center gap-2.5">
-                    <Download className="w-4 h-4 text-emerald-600" />
-                    <span>Export Materials</span>
-                  </div>
-                  <span className="text-[10px] bg-emerald-100 text-emerald-800 font-semibold px-1.5 py-0.5 rounded-full">
-                    PDF / MD
-                  </span>
-                </NavLink>
+              <nav className="space-y-0.5">
+                {reviseNav.map((link) => (
+                  <NavLink
+                    key={link.to}
+                    to={link.to}
+                    className={({ isActive }) =>
+                      `flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
+                        isActive
+                          ? 'bg-brand-50 text-brand-700 font-semibold border border-brand-200/60'
+                          : 'text-ink-secondary hover:bg-gray-50 hover:text-ink'
+                      }`
+                    }
+                  >
+                    <div className="flex items-center gap-2.5">
+                      {link.icon}
+                      <span>{link.label}</span>
+                    </div>
+                    {link.badge && (
+                      <span className="text-[10px] bg-amber-100 text-amber-800 font-semibold px-1.5 py-0.5 rounded-full">
+                        {link.badge}
+                      </span>
+                    )}
+                  </NavLink>
+                ))}
               </nav>
             </div>
           </div>

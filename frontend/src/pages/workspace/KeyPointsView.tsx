@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../../services/api';
 import { KeyPointsData } from '../../types';
 import { WorkspaceSkeleton } from '../../components/ui/WorkspaceSkeleton';
 import { ErrorState } from '../../components/ui/ErrorState';
-import { Key, Sparkles, Star, Cpu, Layers, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Button } from '../../components/ui/Button';
+import { Key, Sparkles, Star, Cpu, Layers, ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
 
 export const KeyPointsView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
   const [data, setData] = useState<KeyPointsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -144,6 +146,39 @@ export const KeyPointsView: React.FC = () => {
               <p className="text-[11px] text-ink-muted leading-relaxed">{topic.oneLiner}</p>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Bottom CTA to Formulas & Flashcards */}
+      <div className="bg-white border border-edge rounded-2xl p-6 shadow-card flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-1.5 text-xs font-bold text-purple-700 mb-1">
+            <Sparkles className="w-3.5 h-3.5 text-purple-600" />
+            <span>Next in Stage 2: Remember</span>
+          </div>
+          <h3 className="text-sm font-bold text-ink">Turn key points into long-term memory</h3>
+          <p className="text-xs text-ink-muted mt-0.5">
+            Review formal mathematical rules or jump directly into interactive flashcards.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <Button
+            variant="secondary"
+            size="md"
+            onClick={() => navigate(`/workspace/${id}/formulas`)}
+            className="flex-1 sm:flex-none whitespace-nowrap"
+          >
+            Formulas & Rules
+          </Button>
+          <Button
+            variant="primary"
+            size="md"
+            onClick={() => navigate(`/workspace/${id}/flashcards`)}
+            rightIcon={<ArrowRight className="w-4 h-4" />}
+            className="flex-1 sm:flex-none whitespace-nowrap shadow-elevated"
+          >
+            Review Flashcards
+          </Button>
         </div>
       </div>
     </div>
