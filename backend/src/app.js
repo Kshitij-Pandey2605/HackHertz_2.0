@@ -4,6 +4,7 @@ const cors = require('cors');
 // Import route modules
 const summaryRoutes = require('./routes/summary.routes');
 const flashcardRoutes = require('./routes/flashcard.routes');
+const quizRoutes = require('./routes/quiz.routes');
 
 // Initialize Express application
 const app = express();
@@ -47,6 +48,7 @@ app.get('/', (req, res) => {
 // Mount dedicated feature routes
 app.use('/api/summary', summaryRoutes);
 app.use('/api/flashcards', flashcardRoutes);
+app.use('/api/quiz', quizRoutes);
 
 // Mount all application API routes
 try {
