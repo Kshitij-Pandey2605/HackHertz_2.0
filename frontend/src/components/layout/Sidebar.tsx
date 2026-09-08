@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   UploadCloud,
+  FileText,
   BookOpen,
   Sparkles,
   LogOut,
@@ -26,6 +27,12 @@ export const Sidebar: React.FC = () => {
       icon: <LayoutDashboard className="w-4 h-4" />,
     },
     {
+      to: '/documents',
+      label: 'My Documents',
+      icon: <FileText className="w-4 h-4" />,
+      badge: 'Live API',
+    },
+    {
       to: '/upload',
       label: 'Upload Material',
       icon: <UploadCloud className="w-4 h-4" />,
@@ -44,8 +51,6 @@ export const Sidebar: React.FC = () => {
       badge: 'Ready',
     },
   ];
-
-  const futureLinks: { label: string; icon: React.ReactNode; tag: string }[] = [];
 
   return (
     <aside className="hidden lg:flex flex-col w-64 border-r border-edge bg-white h-screen sticky top-0 select-none">
@@ -96,29 +101,6 @@ export const Sidebar: React.FC = () => {
               ))}
             </nav>
           </div>
-
-          <div>
-            <p className="px-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-2">
-              Coming Soon
-            </p>
-            <div className="space-y-1">
-              {futureLinks.map((link) => (
-                <div
-                  key={link.label}
-                  className="flex items-center justify-between px-3 py-2 rounded-xl text-sm text-ink-subtle opacity-75 cursor-not-allowed group"
-                  title="Will be fully active in next Phase"
-                >
-                  <div className="flex items-center gap-3">
-                    {link.icon}
-                    <span>{link.label}</span>
-                  </div>
-                  <span className="text-[9px] bg-gray-100 text-gray-500 font-medium px-1.5 py-0.5 rounded">
-                    {link.tag}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* Support note */}
@@ -158,3 +140,5 @@ export const Sidebar: React.FC = () => {
     </aside>
   );
 };
+
+export default Sidebar;

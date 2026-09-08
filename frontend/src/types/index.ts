@@ -289,4 +289,45 @@ export interface ApiResponse<T> {
   message?: string;
 }
 
+// ==========================================
+// Direct Backend API Response Types
+// ==========================================
 
+export interface BackendDocument {
+  id: string;
+  file_name: string;
+  file_url: string;
+  uploaded_at: string;
+}
+
+export interface BackendSummary {
+  quickSummary: string;
+  detailedSummary: string;
+  examNotes: string[];
+}
+
+export interface BackendFlashcard {
+  id: number | string;
+  question: string;
+  answer: string;
+}
+
+export interface BackendQuizQuestion {
+  id: number | string;
+  question: string;
+  options: string[];
+  answer: string;
+}
+
+export interface BackendQuiz {
+  easy: BackendQuizQuestion[];
+  medium: BackendQuizQuestion[];
+  hard: BackendQuizQuestion[];
+}
+
+export interface UploadResponse {
+  success: boolean;
+  documentId: string;
+  fileName: string;
+  fileUrl: string;
+}
