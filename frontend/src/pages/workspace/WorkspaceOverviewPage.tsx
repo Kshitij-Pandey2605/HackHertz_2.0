@@ -81,6 +81,20 @@ export const WorkspaceOverviewPage: React.FC = () => {
       badge: `${material.flashcardCount || 25} Cards`,
       to: `/workspace/${id}/flashcards`,
     },
+    {
+      title: 'Quiz Assessment',
+      subtitle: 'Adaptive self-assessment with instant scoring',
+      icon: <Sparkles className="w-5 h-5 text-purple-600" />,
+      badge: 'Test Knowledge',
+      to: `/workspace/${id}/quiz/setup`,
+    },
+    {
+      title: 'Export Study Kit',
+      subtitle: 'Print-ready PDF, markdown download & clipboard',
+      icon: <ArrowRight className="w-5 h-5 text-emerald-600" />,
+      badge: 'PDF / Markdown',
+      to: `/workspace/${id}/export`,
+    },
   ];
 
   return (

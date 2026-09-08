@@ -29,7 +29,7 @@ export const LandingPage: React.FC = () => {
       <Navbar />
 
       {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden pt-12 sm:pt-20 pb-16 sm:pb-24 border-b border-edge">
+      <section className="relative isolate overflow-hidden pt-12 sm:pt-20 pb-16 sm:pb-24 border-b border-edge">
         {/* Subtle radial ambient background light */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-gradient-to-b from-brand-100/60 via-brand-50/20 to-transparent blur-3xl -z-10 pointer-events-none" />
 
@@ -40,9 +40,9 @@ export const LandingPage: React.FC = () => {
             <span>Smart Study Material Summarizer &bull; EdTech & Smart Learning</span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-ink max-w-4xl mx-auto leading-[1.1] mb-6">
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-ink max-w-4xl mx-auto leading-tight sm:leading-[1.15] mb-6">
             Turn any textbook into{' '}
-            <span className="bg-gradient-to-r from-brand-600 via-violet-600 to-brand-700 bg-clip-text text-transparent">
+            <span className="inline-block bg-gradient-to-r from-brand-600 via-violet-600 to-brand-700 bg-clip-text text-transparent pb-1">
               exam-ready knowledge.
             </span>
           </h1>

@@ -37,15 +37,15 @@ export const Sidebar: React.FC = () => {
       icon: <BookOpen className="w-4 h-4" />,
       badge: 'Ready',
     },
-  ];
-
-  const futureLinks = [
     {
-      label: 'Exam Quizzes',
+      to: '/workspace/mat_dbms_01/quiz/setup',
+      label: 'Quiz Assessment',
       icon: <Sparkles className="w-4 h-4" />,
-      tag: 'Phase 3',
+      badge: 'Ready',
     },
   ];
+
+  const futureLinks: { label: string; icon: React.ReactNode; tag: string }[] = [];
 
   return (
     <aside className="hidden lg:flex flex-col w-64 border-r border-edge bg-white h-screen sticky top-0 select-none">
