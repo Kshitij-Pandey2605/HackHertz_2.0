@@ -91,7 +91,7 @@ export const ForgotPasswordPage: React.FC = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="alex.chen@university.edu"
+              placeholder="student@university.edu"
               leftIcon={<Mail className="w-4 h-4" />}
               autoComplete="email"
               required
