@@ -23,7 +23,17 @@ export const QuickActions: React.FC<QuickActionsProps> = ({ latestMaterialId }) 
     phase: '',
   });
 
-  const actions = [
+  interface ActionItem {
+    id: string;
+    title: string;
+    description: string;
+    icon: React.ReactNode;
+    action: () => void;
+    highlight: boolean;
+    badge?: string;
+  }
+
+  const actions: ActionItem[] = [
     {
       id: 'upload',
       title: 'Upload Material',
@@ -48,36 +58,22 @@ export const QuickActions: React.FC<QuickActionsProps> = ({ latestMaterialId }) 
     },
     {
       id: 'flashcards',
-      title: 'Create Flashcards',
-      description: 'Generate high-yield active recall flashcard sets',
+      title: 'Study Flashcards',
+      description: 'Test your active recall with interactive flashcard decks',
       icon: <Layers className="w-5 h-5 text-purple-600" />,
       action: () => {
-        setModalInfo({
-          isOpen: true,
-          title: 'Interactive Flashcards',
-          description:
-            'Dedicated interactive spaced-repetition flashcard sessions are arriving in Phase 2! In the meantime, you can upload materials to have cards generated and ready.',
-          phase: 'Phase 2 Feature',
-        });
+        navigate(`/workspace/${latestMaterialId || 'mat_dbms_01'}/flashcards`);
       },
-      badge: 'Phase 2',
       highlight: false,
     },
     {
       id: 'quiz',
       title: 'Take Quiz',
-      description: 'Test your understanding with difficulty-adaptive questions',
+      description: 'Self-assessment quizzes with instant diagnostics & scoring',
       icon: <HelpCircle className="w-5 h-5 text-amber-600" />,
       action: () => {
-        setModalInfo({
-          isOpen: true,
-          title: 'Adaptive Exam Quiz',
-          description:
-            'The complete interactive assessment engine with instant scoring and question breakdowns arrives in Phase 3. Upload your material now so question banks are generated in advance!',
-          phase: 'Phase 3 Feature',
-        });
+        navigate(`/workspace/${latestMaterialId || 'mat_dbms_01'}/quiz/setup`);
       },
-      badge: 'Phase 3',
       highlight: false,
     },
   ];
