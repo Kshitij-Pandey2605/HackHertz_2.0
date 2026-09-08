@@ -70,6 +70,11 @@ class DbService {
   }
 
   async getDocumentById(documentId) {
+    if (global._localDocuments) {
+      const local = global._localDocuments.find((d) => d.id === documentId);
+      if (local) return local;
+    }
+
     this._checkConfig();
     const { data, error } = await supabase
       .from('documents')
@@ -297,6 +302,96 @@ class DbService {
     }
 
     return data?.formulas || null;
+  }
+
+  // ==========================================
+  // Extracted Content Operations
+  // ==========================================
+
+  async saveExtractedContent(documentId, extractedData) {
+    this._checkConfig();
+
+    // In-memory cache fallback initialization
+    if (!this._extractedCache) {
+      this._extractedCache = new Map();
+    }
+    this._extractedCache.set(documentId, extractedData);
+
+    try {
+      // 1. Attempt to update 'documents' table with metadata if columns exist
+      await supabase
+        .from('documents')
+        .update({
+          title: extractedData.title,
+          total_pages: extractedData.totalPages,
+          word_count: extractedData.wordCount,
+          reading_time: extractedData.readingTime,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', documentId)
+        .catch(() => {});
+
+      // 2. Attempt to save to 'extracted_texts' or 'document_extractions' table
+      const { data, error } = await supabase
+        .from('extracted_texts')
+        .insert([
+          {
+            document_id: documentId,
+            title: extractedData.title,
+            total_pages: extractedData.totalPages,
+            word_count: extractedData.wordCount,
+            reading_time: extractedData.readingTime,
+            sections: extractedData.sections || [],
+            pages: extractedData.pages || [],
+            metadata: extractedData.metadata || {},
+          },
+        ])
+        .select()
+        .single();
+
+      if (!error && data) {
+        return data;
+      }
+    } catch (err) {
+      // Graceful fallback to cached extraction
+    }
+
+    return extractedData;
+  }
+
+  async getExtractedContent(documentId) {
+    this._checkConfig();
+
+    if (this._extractedCache && this._extractedCache.has(documentId)) {
+      return this._extractedCache.get(documentId);
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('extracted_texts')
+        .select('*')
+        .eq('document_id', documentId)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (!error && data) {
+        return {
+          documentId: data.document_id,
+          title: data.title,
+          totalPages: data.total_pages,
+          wordCount: data.word_count,
+          readingTime: data.reading_time,
+          sections: data.sections || [],
+          pages: data.pages || [],
+          metadata: data.metadata || {},
+        };
+      }
+    } catch (err) {
+      // Fallback
+    }
+
+    return null;
   }
 }
 
