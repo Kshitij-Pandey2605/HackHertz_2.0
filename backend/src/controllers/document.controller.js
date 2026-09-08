@@ -1,31 +1,45 @@
 const { supabase } = require('../config/supabase');
 
 /**
- * @desc    Get all documents from Supabase ordered by uploaded_at desc
+ * @desc    Get all documents from Supabase and local registry
  * @route   GET /api/documents
  * @access  Public
  */
 const getDocuments = async (req, res) => {
   try {
-    // Query all records from 'documents' table ordered by uploaded_at descending
-    const { data, error } = await supabase
-      .from('documents')
-      .select('*')
-      .order('uploaded_at', { ascending: false });
+    let supabaseDocs = [];
 
-    if (error) {
-      console.error('Supabase Error fetching documents:', error);
-      return res.status(500).json({
-        success: false,
-        error: `Failed to retrieve documents: ${error.message}`,
-      });
+    if (supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('documents')
+          .select('*')
+          .order('uploaded_at', { ascending: false });
+
+        if (!error && Array.isArray(data)) {
+          supabaseDocs = data;
+        }
+      } catch (err) {
+        console.warn('Note: Could not query Supabase documents table:', err.message);
+      }
     }
 
-    // Return response with count and documents array
+    const localDocs = global._localDocuments || [];
+    const mergedMap = new Map();
+
+    supabaseDocs.forEach((d) => mergedMap.set(d.id, d));
+    localDocs.forEach((d) => {
+      if (!mergedMap.has(d.id)) {
+        mergedMap.set(d.id, d);
+      }
+    });
+
+    const documents = Array.from(mergedMap.values());
+
     return res.status(200).json({
       success: true,
-      count: data ? data.length : 0,
-      documents: data || [],
+      count: documents.length,
+      documents,
     });
   } catch (error) {
     console.error('Document Controller Error:', error);
@@ -45,22 +59,38 @@ const getDocumentById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const { data, error } = await supabase
-      .from('documents')
-      .select('*')
-      .eq('id', id)
-      .single();
+    if (supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('documents')
+          .select('*')
+          .eq('id', id)
+          .single();
 
-    if (error || !data) {
-      return res.status(404).json({
-        success: false,
-        error: 'Document not found.',
+        if (!error && data) {
+          return res.status(200).json({
+            success: true,
+            document: data,
+          });
+        }
+      } catch {
+        // Fallback to local
+      }
+    }
+
+    const localDocs = global._localDocuments || [];
+    const found = localDocs.find((d) => d.id === id);
+
+    if (found) {
+      return res.status(200).json({
+        success: true,
+        document: found,
       });
     }
 
-    return res.status(200).json({
-      success: true,
-      document: data,
+    return res.status(404).json({
+      success: false,
+      error: 'Document not found.',
     });
   } catch (error) {
     return res.status(500).json({
