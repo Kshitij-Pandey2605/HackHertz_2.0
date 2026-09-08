@@ -105,8 +105,8 @@ export const WorkspaceSidebar: React.FC = () => {
         {/* Workspace Brand Header */}
         <div className="h-16 flex items-center justify-between px-5 border-b border-edge">
           <NavLink to="/dashboard" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-600 to-violet-700 flex items-center justify-center text-white shadow-sm">
-              <Sparkles className="w-4 h-4" />
+            <div className="w-8 h-8 rounded-xl overflow-hidden bg-white shadow-sm border border-slate-100 flex items-center justify-center flex-shrink-0">
+              <img src="/logo.png" alt="PreMind AI Logo" className="w-full h-full object-cover" />
             </div>
             <span className="text-base font-bold tracking-tight text-ink">
               PreMind <span className="text-[10px] text-brand-600 font-semibold bg-brand-50 px-1 py-0.5 rounded border border-brand-100">AI</span>
