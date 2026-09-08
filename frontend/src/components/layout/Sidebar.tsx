@@ -8,6 +8,7 @@ import {
   Sparkles,
   LogOut,
   HelpCircle,
+  BarChart3,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -25,6 +26,12 @@ export const Sidebar: React.FC = () => {
       to: '/dashboard',
       label: 'Dashboard',
       icon: <LayoutDashboard className="w-4 h-4" />,
+    },
+    {
+      to: '/analytics',
+      label: 'Learning Analytics',
+      icon: <BarChart3 className="w-4 h-4" />,
+      badge: 'Insights',
     },
     {
       to: '/documents',

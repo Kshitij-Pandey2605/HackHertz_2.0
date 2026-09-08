@@ -362,3 +362,110 @@ export interface ExtractedDocumentResponse {
     creationDate?: string | null;
   };
 }
+
+// ==========================================
+// Phase 4: AI Study Copilot & Analytics Types
+// ==========================================
+
+export type CopilotActionType =
+  | 'make_flashcard'
+  | 'quiz_me'
+  | 'explain_simpler'
+  | 'show_topic'
+  | 'navigate';
+
+export interface CopilotAction {
+  label: string;
+  actionType: CopilotActionType;
+  targetUrl?: string;
+  data?: Record<string, unknown>;
+}
+
+export interface CopilotMessage {
+  id: string;
+  sender: 'student' | 'copilot';
+  content: string;
+  timestamp: string;
+  contextModule?: string;
+  actions?: CopilotAction[];
+}
+
+export interface CopilotContext {
+  materialId?: string;
+  materialTitle?: string;
+  moduleName?: string;
+  currentTopic?: string;
+  recentQuestion?: string;
+}
+
+export interface CopilotChatRequest {
+  message: string;
+  context: CopilotContext;
+  conversationHistory?: { sender: 'student' | 'copilot'; content: string }[];
+}
+
+export type AnalyticsPeriodType = '7d' | '30d' | 'all';
+
+export interface DailyActivityItem {
+  day: string; // 'Mon', 'Tue', etc.
+  minutes: number;
+  sessions: number;
+  date: string;
+}
+
+export interface QuizPerformanceStats {
+  averageScore: number;
+  quizzesCompleted: number;
+  totalQuestions: number;
+  correctAnswers: number;
+  accuracyRate: number;
+  byDifficulty: {
+    easy: number;
+    medium: number;
+    hard: number;
+  };
+}
+
+export interface StudyBreakdownItem {
+  module: string;
+  count: number;
+  timeSpentMinutes: number;
+  percentage: number;
+  color: string;
+}
+
+export interface RecentActivityItem {
+  id: string;
+  type: 'flashcards' | 'quiz' | 'deep_summary' | 'exam_cram' | 'upload';
+  title: string;
+  subject: string;
+  timestamp: string;
+  score?: string;
+  cardsReviewed?: number;
+  materialId?: string;
+  targetUrl?: string;
+  periodGroup: 'Today' | 'Yesterday' | 'This Week' | 'Earlier';
+}
+
+export interface SubjectActivityItem {
+  subject: string;
+  materialsCount: number;
+  hoursSpent: number;
+  progressPercent: number;
+  color: string;
+}
+
+export interface AnalyticsSummary {
+  period: AnalyticsPeriodType;
+  studySessions: number;
+  studyTimeFormatted: string;
+  studyTimeMinutes: number;
+  flashcardsReviewed: number;
+  quizzesCompleted: number;
+  dailyActivity: DailyActivityItem[];
+  quizPerformance: QuizPerformanceStats;
+  studyBreakdown: StudyBreakdownItem[];
+  recentActivity: RecentActivityItem[];
+  subjectActivity: SubjectActivityItem[];
+}
+

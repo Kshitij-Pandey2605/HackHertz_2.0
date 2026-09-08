@@ -20,6 +20,7 @@ import { DocumentsPage } from './pages/DocumentsPage';
 import { UploadPage } from './pages/UploadPage';
 import { SummaryPage } from './pages/SummaryPage';
 import { ProcessingPage } from './pages/ProcessingPage';
+import { AnalyticsPage } from './pages/AnalyticsPage';
 
 // Workspace Views
 import { WorkspaceOverviewPage } from './pages/workspace/WorkspaceOverviewPage';
@@ -64,6 +65,7 @@ export const App: React.FC = () => {
                 }
               >
                 <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/analytics" element={<AnalyticsPage />} />
                 <Route path="/documents" element={<DocumentsPage />} />
                 <Route path="/upload" element={<UploadPage />} />
                 <Route path="/processing/:id" element={<ProcessingPage />} />

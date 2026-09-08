@@ -4,6 +4,7 @@ import { Sidebar } from './Sidebar';
 import { MobileNav } from './MobileNav';
 import { Sparkles } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { StudyCopilot } from '../copilot/StudyCopilot';
 
 export const AppLayout: React.FC = () => {
   const { user } = useAuth();
@@ -36,6 +37,9 @@ export const AppLayout: React.FC = () => {
           <Outlet />
         </div>
       </main>
+
+      {/* Contextual AI Study Copilot */}
+      <StudyCopilot />
 
       {/* Mobile Bottom Navigation */}
       <MobileNav />

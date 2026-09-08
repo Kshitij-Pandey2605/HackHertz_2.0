@@ -10,6 +10,9 @@ import {
   Flashcard,
   QuizQuestion,
   ExportContent,
+  AnalyticsSummary,
+  CopilotMessage,
+  CopilotContext,
 } from '../types';
 
 export const mockUser: User = {
@@ -1117,5 +1120,324 @@ export const mockExportData: ExportContent = {
     "Prime attributes on RHS save 3NF, but BCNF does NOT care about prime RHS.",
   ],
 };
+
+// ==========================================
+// Phase 4: Mock Learning Analytics Data
+// ==========================================
+
+export const mockAnalyticsData7d: AnalyticsSummary = {
+  period: '7d',
+  studySessions: 12,
+  studyTimeFormatted: '4h 35m',
+  studyTimeMinutes: 275,
+  flashcardsReviewed: 86,
+  quizzesCompleted: 7,
+  dailyActivity: [
+    { day: 'Mon', minutes: 45, sessions: 2, date: '2026-03-03' },
+    { day: 'Tue', minutes: 70, sessions: 3, date: '2026-03-04' },
+    { day: 'Wed', minutes: 30, sessions: 1, date: '2026-03-05' },
+    { day: 'Thu', minutes: 80, sessions: 3, date: '2026-03-06' },
+    { day: 'Fri', minutes: 55, sessions: 2, date: '2026-03-07' },
+    { day: 'Sat', minutes: 90, sessions: 4, date: '2026-03-08' },
+    { day: 'Sun', minutes: 40, sessions: 1, date: '2026-03-09' },
+  ],
+  quizPerformance: {
+    averageScore: 78,
+    quizzesCompleted: 7,
+    totalQuestions: 60,
+    correctAnswers: 47,
+    accuracyRate: 78.3,
+    byDifficulty: {
+      easy: 92,
+      medium: 76,
+      hard: 60,
+    },
+  },
+  studyBreakdown: [
+    { module: 'Quick Glance', count: 12, timeSpentMinutes: 25, percentage: 10, color: '#3B82F6' },
+    { module: 'Deep Summary', count: 8, timeSpentMinutes: 80, percentage: 29, color: '#6366F1' },
+    { module: 'Exam Cram', count: 6, timeSpentMinutes: 30, percentage: 11, color: '#F59E0B' },
+    { module: 'Flashcards', count: 86, timeSpentMinutes: 75, percentage: 27, color: '#8B5CF6' },
+    { module: 'Quizzes', count: 7, timeSpentMinutes: 65, percentage: 23, color: '#10B981' },
+  ],
+  recentActivity: [
+    {
+      id: 'act-1',
+      type: 'flashcards',
+      title: 'Completed 20 Flashcards Review',
+      subject: 'Database Management Systems — Normalization',
+      timestamp: '15 minutes ago',
+      cardsReviewed: 20,
+      materialId: 'mat_dbms_01',
+      targetUrl: '/workspace/mat_dbms_01/flashcards',
+      periodGroup: 'Today',
+    },
+    {
+      id: 'act-2',
+      type: 'quiz',
+      title: 'Practice Quiz Assessment (Medium)',
+      subject: 'Database Management Systems — Normalization',
+      timestamp: '2 hours ago',
+      score: '8/10 (80%)',
+      materialId: 'mat_dbms_01',
+      targetUrl: '/workspace/mat_dbms_01/quiz/results',
+      periodGroup: 'Today',
+    },
+    {
+      id: 'act-3',
+      type: 'deep_summary',
+      title: 'Studied Chapter 2: Normal Forms & Dependency Preservation',
+      subject: 'Database Management Systems — Normalization',
+      timestamp: 'Yesterday at 4:30 PM',
+      materialId: 'mat_dbms_01',
+      targetUrl: '/workspace/mat_dbms_01/deep-summary',
+      periodGroup: 'Yesterday',
+    },
+    {
+      id: 'act-4',
+      type: 'exam_cram',
+      title: 'Reviewed 5-Minute Exam Cram & Pitfall Traps',
+      subject: 'Database Management Systems — Normalization',
+      timestamp: 'Yesterday at 11:15 AM',
+      materialId: 'mat_dbms_01',
+      targetUrl: '/workspace/mat_dbms_01/exam-cram',
+      periodGroup: 'Yesterday',
+    },
+    {
+      id: 'act-5',
+      type: 'upload',
+      title: 'Uploaded Lecture Notes: DBMS Unit 3 Normalization',
+      subject: 'Database Management Systems',
+      timestamp: '3 days ago',
+      materialId: 'mat_dbms_01',
+      targetUrl: '/workspace/mat_dbms_01',
+      periodGroup: 'This Week',
+    },
+  ],
+  subjectActivity: [
+    {
+      subject: 'Database Management Systems',
+      materialsCount: 2,
+      hoursSpent: 3.4,
+      progressPercent: 82,
+      color: '#4F46E5',
+    },
+    {
+      subject: 'Operating Systems',
+      materialsCount: 1,
+      hoursSpent: 0.8,
+      progressPercent: 35,
+      color: '#06B6D4',
+    },
+    {
+      subject: 'Computer Networks',
+      materialsCount: 1,
+      hoursSpent: 0.4,
+      progressPercent: 20,
+      color: '#10B981',
+    },
+  ],
+};
+
+export const mockAnalyticsData30d: AnalyticsSummary = {
+  ...mockAnalyticsData7d,
+  period: '30d',
+  studySessions: 38,
+  studyTimeFormatted: '16h 20m',
+  studyTimeMinutes: 980,
+  flashcardsReviewed: 245,
+  quizzesCompleted: 19,
+  dailyActivity: [
+    { day: 'Week 1', minutes: 210, sessions: 8, date: 'Feb 10 - Feb 16' },
+    { day: 'Week 2', minutes: 260, sessions: 11, date: 'Feb 17 - Feb 23' },
+    { day: 'Week 3', minutes: 235, sessions: 9, date: 'Feb 24 - Mar 02' },
+    { day: 'Week 4', minutes: 275, sessions: 10, date: 'Mar 03 - Mar 09' },
+  ],
+  quizPerformance: {
+    averageScore: 81,
+    quizzesCompleted: 19,
+    totalQuestions: 175,
+    correctAnswers: 142,
+    accuracyRate: 81.1,
+    byDifficulty: {
+      easy: 94,
+      medium: 80,
+      hard: 65,
+    },
+  },
+};
+
+export const mockAnalyticsDataAll: AnalyticsSummary = {
+  ...mockAnalyticsData30d,
+  period: 'all',
+  studySessions: 64,
+  studyTimeFormatted: '28h 45m',
+  studyTimeMinutes: 1725,
+  flashcardsReviewed: 430,
+  quizzesCompleted: 31,
+  quizPerformance: {
+    averageScore: 82,
+    quizzesCompleted: 31,
+    totalQuestions: 290,
+    correctAnswers: 238,
+    accuracyRate: 82.1,
+    byDifficulty: {
+      easy: 95,
+      medium: 82,
+      hard: 68,
+    },
+  },
+};
+
+// ==========================================
+// Phase 4: Contextual Copilot Knowledge Bank
+// ==========================================
+
+export const getContextualPrompts = (context: CopilotContext): string[] => {
+  const mod = context.moduleName?.toLowerCase() || '';
+
+  if (mod.includes('formula')) {
+    return [
+      'Explain 2NF partial dependency in simple terms',
+      'What does X → Y mean in relational math?',
+      'Why is 3NF easier to achieve than BCNF?',
+      'Give me a practical example of a lossless join',
+    ];
+  }
+
+  if (mod.includes('quiz/results') || mod.includes('result')) {
+    return [
+      'Explain why my answer on 3NF was wrong',
+      'Teach me candidate keys from scratch',
+      'Give me a similar practice question',
+      'What are the most common exam traps?',
+    ];
+  }
+
+  if (mod.includes('flashcard')) {
+    return [
+      'Give me a mnemonic to remember candidate keys',
+      'Explain the difference between 3NF and BCNF',
+      'Give a real-world student database example',
+      'Quiz me on the next card concept',
+    ];
+  }
+
+  if (mod.includes('deep-summary') || mod.includes('chapter')) {
+    return [
+      'Explain this chapter in simple terms',
+      'What is the core takeaway for my exam?',
+      'Give a real-world example of functional dependencies',
+      'Create a flashcard from this section',
+    ];
+  }
+
+  if (mod.includes('exam-cram')) {
+    return [
+      'What should I memorize in the next 5 minutes?',
+      'What are the trickiest normal form questions?',
+      'Summarize prime vs non-prime attributes',
+      'Test me with a quick rapid-fire question',
+    ];
+  }
+
+  // Default / Overview / Quick Glance prompts
+  return [
+    'Explain Normalization in simple terms',
+    'What is the difference between 1NF, 2NF, and 3NF?',
+    'Give me a real-world database example',
+    'Quiz me on candidate keys',
+  ];
+};
+
+export const getCopilotResponse = (
+  userMessage: string,
+  context: CopilotContext
+): { content: string; actions: CopilotMessage['actions'] } => {
+  const query = userMessage.toLowerCase();
+  const mod = context.moduleName?.toLowerCase() || '';
+  const matId = context.materialId || 'mat_dbms_01';
+
+  // 1. 2NF / Partial Dependency Query
+  if (query.includes('2nf') || query.includes('partial dependency') || query.includes('second normal')) {
+    return {
+      content: `### 💡 Simple Explanation\nThink of **2NF** as ensuring that every piece of information depends on the **WHOLE primary key**, not just a slice of it.\n\n### 📌 Example\nImagine a table with composite key **(StudentID, CourseID)**:\n- \`StudentID, CourseID → Grade\` (Valid: Grade depends on both student and course)\n- \`StudentID → StudentName\` (❌ **Partial Dependency!** StudentName depends only on StudentID, not the course)\n\nTo reach 2NF, move \`StudentName\` into a separate **Student** table.\n\n### 🧠 Exam Remember\n> **2NF = 1NF + No partial dependency** on any candidate key. If your candidate key is a single attribute, the relation is **automatically in 2NF**!`,
+      actions: [
+        { label: '🎯 Quiz Me on 2NF', actionType: 'quiz_me', targetUrl: `/workspace/${matId}/quiz/setup` },
+        { label: '🗂 Make Flashcard', actionType: 'make_flashcard' },
+        { label: '🔍 Explain Simpler', actionType: 'explain_simpler' },
+      ],
+    };
+  }
+
+  // 2. 3NF vs BCNF Query
+  if (query.includes('3nf') || query.includes('bcnf') || query.includes('transitive') || query.includes('compare')) {
+    return {
+      content: `### 💡 Simple Explanation\n- **3NF**: Removes **transitive dependencies** (A → B → C). A non-key attribute cannot determine another non-key attribute.\n- **BCNF**: A stricter version of 3NF where **every determinant MUST be a superkey** (No exceptions!).\n\n### 📌 The Critical Difference\nIn **X → Y**:\n- In **3NF**, this is allowed if **Y is a prime attribute** (part of a candidate key).\n- In **BCNF**, this is **forbidden** unless **X is a superkey**.\n\n### 🧠 Exam Remember\n> **3NF always guarantees dependency preservation**, while **BCNF does not always preserve dependencies** when decomposing!`,
+      actions: [
+        { label: '🎯 Quiz Me on Normal Forms', actionType: 'quiz_me', targetUrl: `/workspace/${matId}/quiz/setup` },
+        { label: '🗂 Make Flashcard', actionType: 'make_flashcard' },
+        { label: '📖 Read Deep Summary', actionType: 'navigate', targetUrl: `/workspace/${matId}/deep-summary` },
+      ],
+    };
+  }
+
+  // 3. Candidate Key / Prime Attribute Query
+  if (query.includes('candidate key') || query.includes('prime attribute') || query.includes('superkey') || query.includes('key')) {
+    return {
+      content: `### 💡 Simple Explanation\n- **Superkey**: Any set of attributes that uniquely identifies a row.\n- **Candidate Key**: A **minimal** superkey. If you drop even one column from it, it loses its uniqueness.\n- **Prime Attribute**: Any attribute that belongs to **at least one** candidate key.\n\n### 📌 Example\nIn \`Student(ID, Email, Phone, Name, Dept)\`:\n- Candidate Keys: \`{ID}\` and \`{Email}\`.\n- Prime Attributes: \`ID\`, \`Email\`.\n- Non-Prime Attributes: \`Phone\`, \`Name\`, \`Dept\`.\n\n### 🧠 Exam Remember\n> All candidate keys are superkeys, but not all superkeys are candidate keys!`,
+      actions: [
+        { label: '🗂 Make Flashcard', actionType: 'make_flashcard' },
+        { label: '🎯 Practice Questions', actionType: 'quiz_me', targetUrl: `/workspace/${matId}/quiz/setup` },
+        { label: '🔍 Explain Simpler', actionType: 'explain_simpler' },
+      ],
+    };
+  }
+
+  // 4. Functional Dependency (FD) Query
+  if (query.includes('functional dependency') || query.includes('fd') || query.includes('arrow') || query.includes('determinant')) {
+    return {
+      content: `### 💡 Simple Explanation\nA **Functional Dependency (X → Y)** means: *"If two rows have the same value for X, they MUST have the same value for Y."*\n\n- **X** is called the **Determinant**.\n- **Y** is the **Dependent**.\n\n### 📌 Real-World Example\n- \`StudentID → StudentName\` (A student ID has exactly one name)\n- \`ZipCode → City\` (A zip code belongs to one specific city)\n- But \`City → ZipCode\` is **NOT** an FD, because a city can have dozens of zip codes!\n\n### 🧠 Exam Remember\n> Trivial FD: When Y is a subset of X (e.g., \`{A, B} → A\`). Always true by definition!`,
+      actions: [
+        { label: '🗂 Make Flashcard', actionType: 'make_flashcard' },
+        { label: '🎯 Quiz Me', actionType: 'quiz_me', targetUrl: `/workspace/${matId}/quiz/setup` },
+      ],
+    };
+  }
+
+  // 5. Why was my answer wrong / Quiz mistakes query
+  if (query.includes('wrong') || query.includes('mistake') || query.includes('why') || mod.includes('result')) {
+    return {
+      content: `### 💡 Diagnostic Breakdown\nMost students lose marks on Normalization because of two subtle technical traps:\n\n1. **Assuming 3NF and BCNF are identical**: They forget that 3NF has an escape clause for prime attributes on the right-hand side (\`X → Y\` is fine in 3NF if Y is prime).\n2. **Confusing partial vs transitive dependency**:\n   - **Partial**: Non-prime depends on part of a composite key (Violates 2NF).\n   - **Transitive**: Non-prime depends on another non-prime (Violates 3NF).\n\n### 🧠 How to get full marks\nAlways find **all Candidate Keys first**, list **all Prime Attributes**, and then check dependencies from 1NF through BCNF in order!`,
+      actions: [
+        { label: '🎯 Retry Practice Quiz', actionType: 'quiz_me', targetUrl: `/workspace/${matId}/quiz/setup` },
+        { label: '⚡ Review 5-Min Cram', actionType: 'navigate', targetUrl: `/workspace/${matId}/exam-cram` },
+        { label: '🗂 Flashcard Drill', actionType: 'navigate', targetUrl: `/workspace/${matId}/flashcards` },
+      ],
+    };
+  }
+
+  // 6. Explain simpler / Analogy
+  if (query.includes('simple') || query.includes('analogy') || query.includes('child') || query.includes('eli5')) {
+    return {
+      content: `### 💡 The Kitchen Cabinet Analogy\nImagine organizing spices in your kitchen:\n\n- **1NF**: Don't put salt, pepper, and oregano in the same jar. Each jar holds **one single spice** (atomic values).\n- **2NF**: Don't label a jar "Mom & Dad's Coffee" if only Mom drinks it. Every label must apply to the **entire owner pair** (no partial dependencies).\n- **3NF**: Don't store the recipe for apple pie on the sugar jar just because sugar is used in apple pie. Keep recipes in a separate recipe book! (no transitive dependencies).\n\n### 🧠 Remember\n> Normalization is just tidying up your data so changing one thing doesn't make a mess everywhere else!`,
+      actions: [
+        { label: '🗂 Make Flashcard', actionType: 'make_flashcard' },
+        { label: '🎯 Test My Understanding', actionType: 'quiz_me', targetUrl: `/workspace/${matId}/quiz/setup` },
+      ],
+    };
+  }
+
+  // Default contextual study fallback
+  return {
+    content: `### 💡 Key Concept Overview\nBased on your study material **${context.materialTitle || 'Database Management Systems'}**:\n\nThe topic focuses on designing relational databases without redundancy, update anomalies, or data loss.\n\n- **Core Goal**: Decompose relations to satisfy normal form conditions (1NF → 2NF → 3NF → BCNF).\n- **Golden Rule**: Preserve functional dependencies whenever possible and always ensure lossless joins.\n\n### 📌 Suggested Next Steps\nTry testing yourself on candidate keys, or asking for an example of a specific normal form!`,
+    actions: [
+      { label: '🎯 Quiz Me', actionType: 'quiz_me', targetUrl: `/workspace/${matId}/quiz/setup` },
+      { label: '🗂 Make Flashcard', actionType: 'make_flashcard' },
+      { label: '⚡ Exam Cram Sheet', actionType: 'navigate', targetUrl: `/workspace/${matId}/exam-cram` },
+    ],
+  };
+};
+
 
 
