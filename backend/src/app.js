@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const apiRoutes = require('./routes');
 
 const app = express();
 
@@ -20,18 +21,20 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Mount API routes
+app.use('/api', apiRoutes);
+
 // Root endpoint
 app.get('/', (req, res) => {
   res.send('Welcome to PreMindAI API');
 });
 
-// Error handling middleware (placeholder)
+// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).json({
-    error: {
-      message: err.message || 'Internal Server Error'
-    }
+    success: false,
+    error: err.message || 'Internal Server Error'
   });
 });
 
