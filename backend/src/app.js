@@ -1,7 +1,11 @@
 const express = require('express');
 const cors = require('cors');
 
-// Import route modules
+// ==========================================
+// 1. Import Route Modules
+// ==========================================
+const uploadRoutes = require('./routes/upload.routes');
+const documentRoutes = require('./routes/document.routes');
 const summaryRoutes = require('./routes/summary.routes');
 const flashcardRoutes = require('./routes/flashcard.routes');
 const quizRoutes = require('./routes/quiz.routes');
@@ -10,26 +14,26 @@ const quizRoutes = require('./routes/quiz.routes');
 const app = express();
 
 // ==========================================
-// Middleware Configuration
+// 2. Middleware Configuration
 // ==========================================
 
-// Enable Cross-Origin Resource Sharing
+// Enable Cross-Origin Resource Sharing (CORS)
 app.use(cors());
 
-// Parse incoming JSON requests
+// Parse incoming requests with JSON payloads
 app.use(express.json());
 
-// Parse URL-encoded bodies
+// Parse incoming requests with URL-encoded payloads
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files from uploads folder if available
+// Serve static files from uploads folder
 app.use('/uploads', express.static('uploads'));
 
 // ==========================================
-// Routes
+// 3. Health Check & Root Routes
 // ==========================================
 
-// Health check route
+// Health check endpoint
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     success: true,
@@ -37,7 +41,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Root welcome route
+// Root welcome endpoint
 app.get('/', (req, res) => {
   res.status(200).json({
     success: true,
@@ -45,35 +49,35 @@ app.get('/', (req, res) => {
   });
 });
 
-// Mount dedicated feature routes
+// ==========================================
+// 4. Register API Routes
+// ==========================================
+app.use('/api/upload', uploadRoutes);
+app.use('/api/documents', documentRoutes);
 app.use('/api/summary', summaryRoutes);
 app.use('/api/flashcards', flashcardRoutes);
 app.use('/api/quiz', quizRoutes);
 
-// Mount all application API routes
-try {
-  const apiRoutes = require('./routes');
-  app.use('/api', apiRoutes);
-} catch (error) {
-  // Routes index fallback
-}
-
-// 404 Route Handler
+// ==========================================
+// 5. Global 404 Not Found Handler
+// ==========================================
 app.use((req, res, next) => {
   res.status(404).json({
     success: false,
-    error: 'Route not found',
+    message: 'Route not found',
   });
 });
 
-// Global Error Handler
+// ==========================================
+// 6. Global Error Handling Middleware
+// ==========================================
 app.use((err, req, res, next) => {
   console.error('Unhandled Server Error:', err);
   res.status(err.status || 500).json({
     success: false,
-    error: err.message || 'Internal Server Error',
+    message: err.message || 'Internal Server Error',
   });
 });
 
-// Export Express app
+// Export configured Express app
 module.exports = app;
