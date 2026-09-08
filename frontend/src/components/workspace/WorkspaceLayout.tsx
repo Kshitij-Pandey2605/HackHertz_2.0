@@ -60,8 +60,8 @@ export const WorkspaceLayout: React.FC = () => {
   // Derive next CTA label & URL based on current sub-path
   const path = location.pathname;
   let activeTitle = 'Overview';
-  let nextUrl = `/workspace/${id}/quick-glance`;
-  let nextLabel = 'Quick Glance →';
+  let nextUrl: string | undefined = `/workspace/${id}/quick-glance`;
+  let nextLabel: string | undefined = 'Quick Glance →';
 
   if (path.includes('quick-glance')) {
     activeTitle = 'Quick Glance';
@@ -93,8 +93,24 @@ export const WorkspaceLayout: React.FC = () => {
     nextLabel = 'Practice Flashcards →';
   } else if (path.includes('flashcards')) {
     activeTitle = 'Flashcards';
+    nextUrl = `/workspace/${id}/quiz/setup`;
+    nextLabel = 'Take Quiz →';
+  } else if (path.includes('quiz/setup')) {
+    activeTitle = 'Quiz Setup';
+    nextUrl = undefined;
+    nextLabel = undefined;
+  } else if (path.includes('quiz/results')) {
+    activeTitle = 'Quiz Results';
+    nextUrl = `/workspace/${id}/export`;
+    nextLabel = 'Export Study Kit →';
+  } else if (path.includes('quiz')) {
+    activeTitle = 'Quiz Assessment';
+    nextUrl = undefined;
+    nextLabel = undefined;
+  } else if (path.includes('export')) {
+    activeTitle = 'Export Materials';
     nextUrl = `/workspace/${id}/quick-glance`;
-    nextLabel = 'Review Quick Glance →';
+    nextLabel = 'Back to Overview →';
   }
 
   const mobileNavItems = [
