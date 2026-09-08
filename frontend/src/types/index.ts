@@ -332,3 +332,32 @@ export interface UploadResponse {
   fileName: string;
   fileUrl: string;
 }
+
+export interface ExtractedSection {
+  title: string;
+  content: string;
+}
+
+export interface ExtractedPage {
+  pageNumber: number;
+  wordCount: number;
+  text: string;
+}
+
+export interface ExtractedDocumentResponse {
+  success: boolean;
+  documentId: string;
+  title: string;
+  totalPages: number;
+  wordCount: number;
+  readingTime: string;
+  sections: ExtractedSection[];
+  pages?: ExtractedPage[];
+  metadata?: {
+    characterCount?: number;
+    readingTimeMinutes?: number;
+    author?: string | null;
+    producer?: string | null;
+    creationDate?: string | null;
+  };
+}

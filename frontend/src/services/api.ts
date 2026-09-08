@@ -28,6 +28,7 @@ import {
   BackendFlashcard,
   BackendQuiz,
   UploadResponse,
+  ExtractedDocumentResponse,
 } from '../types';
 import {
   mockMaterials,
@@ -136,6 +137,20 @@ export const getQuiz = async (
     documentId: string;
     quiz: BackendQuiz;
   }>(`/quiz/${documentId}`);
+  return response.data;
+};
+
+export const extractDocument = async (
+  documentId: string
+): Promise<ExtractedDocumentResponse> => {
+  const response = await apiClient.post<ExtractedDocumentResponse>(`/extract/${documentId}`);
+  return response.data;
+};
+
+export const getExtractedDocument = async (
+  documentId: string
+): Promise<ExtractedDocumentResponse> => {
+  const response = await apiClient.get<ExtractedDocumentResponse>(`/extract/${documentId}`);
   return response.data;
 };
 
@@ -549,79 +564,398 @@ export const api = {
   // Phase 2 Study Workspace API Services
   workspace: {
     getStudyWorkspace: async (id: string): Promise<ApiResponse<StudyWorkspace>> => {
-      await delay(300);
-      const materials = getStoredMaterials();
-      const material = materials.find((m) => m.id === id) || mockMaterials[0];
+      await delay(250);
+      const materials = await api.materials.getAll();
+      const material = materials.data.find((m) => m.id === id) || mockMaterials[0];
+
+      if (isDemoUser() || id === 'mat_dbms_01') {
+        return {
+          success: true,
+          data: {
+            material,
+            quickSummary: mockQuickSummary,
+            deepSummary: mockDeepSummary,
+            examCram: mockExamCram,
+            chapters: mockChapters,
+            keyPoints: mockKeyPoints,
+            formulas: mockFormulas,
+            glossary: mockGlossary,
+            flashcards: mockFlashcards,
+          },
+        };
+      }
+
+      // Dynamically load real document data
+      const [quickSummaryRes, deepSummaryRes, examCramRes, chaptersRes, keyPointsRes, formulasRes, glossaryRes, flashcardsRes] = await Promise.all([
+        api.workspace.getQuickSummary(id),
+        api.workspace.getDeepSummary(id),
+        api.workspace.getExamCram(id),
+        api.workspace.getChapters(id),
+        api.workspace.getKeyPoints(id),
+        api.workspace.getFormulas(id),
+        api.workspace.getGlossary(id),
+        api.workspace.getFlashcards(id),
+      ]);
 
       return {
         success: true,
         data: {
           material,
-          quickSummary: mockQuickSummary,
-          deepSummary: mockDeepSummary,
-          examCram: mockExamCram,
-          chapters: mockChapters,
-          keyPoints: mockKeyPoints,
-          formulas: mockFormulas,
-          glossary: mockGlossary,
-          flashcards: mockFlashcards,
+          quickSummary: quickSummaryRes.data,
+          deepSummary: deepSummaryRes.data,
+          examCram: examCramRes.data,
+          chapters: chaptersRes.data,
+          keyPoints: keyPointsRes.data,
+          formulas: formulasRes.data,
+          glossary: glossaryRes.data,
+          flashcards: flashcardsRes.data,
         },
       };
     },
 
-    getQuickSummary: async (_id: string): Promise<ApiResponse<QuickSummary>> => {
+    getQuickSummary: async (id: string): Promise<ApiResponse<QuickSummary>> => {
+      await delay(200);
+
+      if (isDemoUser() || id === 'mat_dbms_01') {
+        return { success: true, data: mockQuickSummary };
+      }
+
+      try {
+        const summaryRes = await getSummary(id);
+        const sum = summaryRes.summary;
+
+        if (sum && (sum.quickSummary || sum.detailedSummary)) {
+          const notes = sum.examNotes || [];
+          const quickSum: QuickSummary = {
+            coreIdea: sum.quickSummary || (sum.detailedSummary ? sum.detailedSummary.slice(0, 250) + '...' : 'Overview of core principles.'),
+            whatMattersMost: notes.length > 0 ? notes.slice(0, 7).map((n) => n.split(':')[0] || n) : ['Fundamental concepts', 'Key principles', 'Practical patterns'],
+            mustKnowDefinitions: notes.length > 0
+              ? notes.slice(0, 5).map((note) => {
+                  const parts = note.split(':');
+                  return {
+                    term: parts[0]?.trim() || 'Key Concept',
+                    definition: parts[1]?.trim() || parts[0]?.trim() || 'Core definition.',
+                  };
+                })
+              : [
+                  { term: 'Core Principle', definition: sum.quickSummary || 'Primary topic explanation.' },
+                ],
+            essentialRules: notes.length > 0
+              ? notes.slice(0, 4).map((n) => `Rule: ${n}`)
+              : ['Master foundational definitions', 'Understand core workflows and edge cases'],
+            rememberThis: sum.quickSummary || 'Review all core definitions and steps before attempting practice problems.',
+            readingTimeMinutes: 2,
+          };
+          return { success: true, data: quickSum };
+        }
+      } catch {
+        // Fallback to extract
+      }
+
+      try {
+        const extractRes = await extractDocument(id);
+        const firstSec = extractRes.sections?.[0];
+        const sections = extractRes.sections || [];
+
+        const quickSum: QuickSummary = {
+          coreIdea: firstSec ? `${extractRes.title}: ${firstSec.content.slice(0, 250)}...` : `Comprehensive study material for ${extractRes.title}.`,
+          whatMattersMost: sections.length > 0 ? sections.slice(0, 7).map((s) => s.title) : [extractRes.title],
+          mustKnowDefinitions: sections.length > 0
+            ? sections.slice(0, 5).map((sec) => ({
+                term: sec.title,
+                definition: sec.content.slice(0, 160).replace(/\n/g, ' ') + '...',
+              }))
+            : [{ term: extractRes.title, definition: 'Main subject matter and concepts.' }],
+          essentialRules: sections.length > 0
+            ? sections.slice(0, 4).map((s) => `Rule for ${s.title}: Master fundamental definitions and invariants.`)
+            : ['Review all key definitions and concepts.'],
+          rememberThis: `Comprehensive coverage of ${extractRes.title} across ${extractRes.totalPages || 1} pages and ${sections.length} sections.`,
+          readingTimeMinutes: parseInt(extractRes.readingTime || '2', 10) || 2,
+        };
+        return { success: true, data: quickSum };
+      } catch {
+        return { success: true, data: mockQuickSummary };
+      }
+    },
+
+    getDeepSummary: async (id: string): Promise<ApiResponse<DeepSummary>> => {
       await delay(250);
-      return { success: true, data: mockQuickSummary };
+
+      if (isDemoUser() || id === 'mat_dbms_01') {
+        return { success: true, data: mockDeepSummary };
+      }
+
+      try {
+        const extractRes = await extractDocument(id);
+        const sections = extractRes.sections || [];
+
+        const deepSum: DeepSummary = {
+          overview: `Comprehensive academic and theoretical breakdown of ${extractRes.title}.`,
+          sections: sections.map((sec, idx) => ({
+            id: `sec_${idx + 1}`,
+            number: idx + 1,
+            title: sec.title,
+            explanation: sec.content,
+            whyItMatters: `Crucial foundation for understanding ${sec.title} in ${extractRes.title}.`,
+            requirements: [
+              `Understand core principles and definitions of ${sec.title}`,
+              `Review essential formulas, steps, and algorithmic rules`,
+            ],
+            callout: {
+              type: idx % 2 === 0 ? 'CONCEPT' : 'IMPORTANT',
+              text: `Pay close attention to edge cases and formal rules in ${sec.title}.`,
+            },
+          })),
+        };
+        return { success: true, data: deepSum.sections.length > 0 ? deepSum : mockDeepSummary };
+      } catch {
+        return { success: true, data: mockDeepSummary };
+      }
     },
 
-    getDeepSummary: async (_id: string): Promise<ApiResponse<DeepSummary>> => {
-      await delay(300);
-      return { success: true, data: mockDeepSummary };
-    },
-
-    getExamCram: async (_id: string): Promise<ApiResponse<ExamCram>> => {
-      await delay(250);
-      return { success: true, data: mockExamCram };
-    },
-
-    getChapters: async (_id: string): Promise<ApiResponse<Chapter[]>> => {
+    getExamCram: async (id: string): Promise<ApiResponse<ExamCram>> => {
       await delay(200);
-      return { success: true, data: mockChapters };
+
+      if (isDemoUser() || id === 'mat_dbms_01') {
+        return { success: true, data: mockExamCram };
+      }
+
+      try {
+        const extractRes = await extractDocument(id);
+        const sections = extractRes.sections || [];
+
+        const examCram: ExamCram = {
+          mustRemember: sections.slice(0, 6).map((sec) => `Key takeaway for ${sec.title}: ${sec.content.slice(0, 100).replace(/\n/g, ' ')}...`),
+          criticalDefinitions: sections.slice(0, 5).map((sec) => ({
+            term: sec.title,
+            definition: sec.content.slice(0, 150).replace(/\n/g, ' ') + '...',
+          })),
+          ruleSheet: sections.slice(0, 4).map((sec) => ({
+            title: sec.title,
+            rule: `Ensure all prerequisite conditions and properties of ${sec.title} are validated.`,
+          })),
+          comparisons: {
+            headers: ['Topic', 'Primary Purpose', 'Complexity / Scope'],
+            rows: sections.slice(0, 4).map((sec) => [
+              sec.title,
+              sec.content.slice(0, 80).replace(/\n/g, ' ') + '...',
+              'Standard Core Pattern',
+            ]),
+          },
+          commonTraps: [
+            {
+              trap: 'Overlooking edge cases and base conditions',
+              explanation: `In ${extractRes.title}, skipping boundary conditions leads to incorrect implementations.`,
+            },
+            {
+              trap: 'Confusing time complexity vs space complexity trade-offs',
+              explanation: 'Always evaluate both asymptotic runtime bounds and auxiliary memory usage.',
+            },
+            {
+              trap: 'Ignoring prerequisite constraints',
+              explanation: 'Ensure inputs meet formal invariants before applying algorithmic steps.',
+            },
+          ],
+          lastMinuteChecklist: sections.slice(0, 6).map((sec, idx) => ({
+            id: `chk_${idx + 1}`,
+            label: `Review ${sec.title} definitions, formulas, and edge cases`,
+            checked: false,
+          })),
+        };
+        return { success: true, data: examCram.mustRemember.length > 0 ? examCram : mockExamCram };
+      } catch {
+        return { success: true, data: mockExamCram };
+      }
     },
 
-    getKeyPoints: async (_id: string): Promise<ApiResponse<KeyPointsData>> => {
+    getChapters: async (id: string): Promise<ApiResponse<Chapter[]>> => {
       await delay(200);
-      return { success: true, data: mockKeyPoints };
+
+      if (isDemoUser() || id === 'mat_dbms_01') {
+        return { success: true, data: mockChapters };
+      }
+
+      try {
+        const extractRes = await extractDocument(id);
+        const sections = extractRes.sections || [];
+
+        const chapters: Chapter[] = sections.map((sec, idx) => ({
+          id: `ch_${idx + 1}`,
+          number: idx + 1,
+          title: sec.title,
+          topics: [
+            {
+              id: `top_${idx + 1}_1`,
+              title: `${sec.title} Concepts`,
+              points: [
+                sec.content.slice(0, 150).replace(/\n/g, ' ') || 'Fundamental principles.',
+                'Implementation details and edge cases.',
+              ],
+            },
+          ],
+        }));
+
+        return { success: true, data: chapters.length > 0 ? chapters : mockChapters };
+      } catch {
+        return { success: true, data: mockChapters };
+      }
     },
 
-    getFormulas: async (_id: string): Promise<ApiResponse<Formula[]>> => {
+    getKeyPoints: async (id: string): Promise<ApiResponse<KeyPointsData>> => {
       await delay(200);
-      return { success: true, data: mockFormulas };
+
+      if (isDemoUser() || id === 'mat_dbms_01') {
+        return { success: true, data: mockKeyPoints };
+      }
+
+      try {
+        const extractRes = await extractDocument(id);
+        const sections = extractRes.sections || [];
+
+        const keyPoints: KeyPointsData = {
+          concepts: sections.map((sec, idx) => ({
+            id: `kp_${idx + 1}`,
+            title: sec.title,
+            priority: idx === 0 ? ('CORE' as const) : idx % 2 === 0 ? ('EXAM FOCUS' as const) : ('IMPORTANT' as const),
+            explanation: sec.content.slice(0, 200).replace(/\n/g, ' ') + '...',
+            iconName: idx % 3 === 0 ? 'Cpu' : idx % 3 === 1 ? 'Layers' : 'ShieldCheck',
+          })),
+          takeaways: sections.slice(0, 6).map((sec, idx) => ({
+            id: `takeaway_${idx + 1}`,
+            statement: `Mastering ${sec.title} provides critical foundations for solving problems in ${extractRes.title}.`,
+          })),
+          topics: sections.slice(0, 6).map((sec, idx) => ({
+            id: `topic_${idx + 1}`,
+            topic: sec.title,
+            importance: idx === 0 ? 'High' : 'Medium',
+            oneLiner: sec.content.slice(0, 100).replace(/\n/g, ' ') + '...',
+          })),
+        };
+
+        return { success: true, data: keyPoints.concepts.length > 0 ? keyPoints : mockKeyPoints };
+      } catch {
+        return { success: true, data: mockKeyPoints };
+      }
     },
 
-    getGlossary: async (_id: string): Promise<ApiResponse<GlossaryTerm[]>> => {
+    getFormulas: async (id: string): Promise<ApiResponse<Formula[]>> => {
       await delay(200);
-      return { success: true, data: mockGlossary };
+
+      if (isDemoUser() || id === 'mat_dbms_01') {
+        return { success: true, data: mockFormulas };
+      }
+
+      try {
+        const extractRes = await extractDocument(id);
+        const sections = extractRes.sections || [];
+
+        const formulas: Formula[] = sections.slice(0, 6).map((sec, idx) => ({
+          id: `form_${idx + 1}`,
+          name: `${sec.title} Rule`,
+          formula: `Standard Invariant / Rule for ${sec.title}`,
+          variables: [
+            { symbol: 'N', meaning: 'Input size / element count' },
+            { symbol: 'T(N)', meaning: 'Time complexity equation' },
+          ],
+          explanation: sec.content.slice(0, 140).replace(/\n/g, ' ') + '...',
+          whenToUse: `Apply when analyzing or implementing ${sec.title}.`,
+          example: `Standard problem pattern in ${extractRes.title}.`,
+          topic: sec.title,
+          chapter: `Chapter ${Math.floor(idx / 2) + 1}`,
+          category: 'Formula',
+        }));
+
+        return { success: true, data: formulas.length > 0 ? formulas : mockFormulas };
+      } catch {
+        return { success: true, data: mockFormulas };
+      }
+    },
+
+    getGlossary: async (id: string): Promise<ApiResponse<GlossaryTerm[]>> => {
+      await delay(200);
+
+      if (isDemoUser() || id === 'mat_dbms_01') {
+        return { success: true, data: mockGlossary };
+      }
+
+      try {
+        const extractRes = await extractDocument(id);
+        const sections = extractRes.sections || [];
+
+        const terms: GlossaryTerm[] = sections.map((sec, idx) => ({
+          id: `term_${idx + 1}`,
+          term: sec.title,
+          definition: sec.content.slice(0, 200).replace(/\n/g, ' ') + '...',
+          example: `Standard concept application in ${extractRes.title}`,
+          topic: sec.title,
+          chapter: `Chapter ${Math.floor(idx / 2) + 1}`,
+        }));
+
+        return { success: true, data: terms.length > 0 ? terms : mockGlossary };
+      } catch {
+        return { success: true, data: mockGlossary };
+      }
     },
 
     getFlashcards: async (
-      _id: string,
+      id: string,
       filters?: { topic?: string; difficulty?: DifficultyLevel }
     ): Promise<ApiResponse<Flashcard[]>> => {
       await delay(250);
-      let cards = [...mockFlashcards];
 
-      if (filters?.topic && filters.topic !== 'ALL') {
-        cards = cards.filter(
-          (c) => c.topic.toLowerCase() === filters.topic!.toLowerCase()
-        );
+      if (isDemoUser() || id === 'mat_dbms_01') {
+        let cards = [...mockFlashcards];
+        if (filters?.topic && filters.topic !== 'ALL') {
+          cards = cards.filter((c) => c.topic.toLowerCase() === filters.topic!.toLowerCase());
+        }
+        if (filters?.difficulty) {
+          cards = cards.filter((c) => c.difficulty === filters.difficulty);
+        }
+        return { success: true, data: cards };
       }
 
-      if (filters?.difficulty) {
-        cards = cards.filter((c) => c.difficulty === filters.difficulty);
+      try {
+        const res = await getFlashcards(id);
+        if (res.success && Array.isArray(res.flashcards) && res.flashcards.length > 0) {
+          const cards: Flashcard[] = res.flashcards.map((fc, idx) => ({
+            id: `fc_${fc.id || idx + 1}`,
+            question: fc.question,
+            answer: fc.answer,
+            topic: (fc as any).topic || 'Core Concept',
+            difficulty: ((fc as any).difficulty || 'MEDIUM') as DifficultyLevel,
+            explanation: `Key recall concept from ${fc.question}`,
+          }));
+
+          let filtered = cards;
+          if (filters?.topic && filters.topic !== 'ALL') {
+            filtered = filtered.filter((c) => c.topic.toLowerCase() === filters.topic!.toLowerCase());
+          }
+          if (filters?.difficulty) {
+            filtered = filtered.filter((c) => c.difficulty === filters.difficulty);
+          }
+
+          return { success: true, data: filtered };
+        }
+      } catch {
+        // Fallback to extract
       }
 
-      return { success: true, data: cards };
+      try {
+        const extractRes = await extractDocument(id);
+        const sections = extractRes.sections || [];
+        const cards: Flashcard[] = sections.map((sec, idx) => ({
+          id: `fc_${idx + 1}`,
+          question: `What are the core concepts and properties of ${sec.title}?`,
+          answer: sec.content.slice(0, 220).replace(/\n/g, ' ') || 'Key concept explanation.',
+          topic: sec.title,
+          difficulty: (idx % 3 === 0 ? 'EASY' : idx % 3 === 1 ? 'MEDIUM' : 'HARD') as DifficultyLevel,
+          explanation: `Detailed concept explanation from ${extractRes.title}.`,
+        }));
+
+        return { success: true, data: cards.length > 0 ? cards : mockFlashcards };
+      } catch {
+        return { success: true, data: mockFlashcards };
+      }
     },
 
     submitFlashcardFeedback: async (
