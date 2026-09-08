@@ -28,78 +28,70 @@ export const WorkspaceHeader: React.FC<WorkspaceHeaderProps> = ({
   const navigate = useNavigate();
 
   return (
-    <div className="bg-white border-b border-edge -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 sm:-mt-8 px-4 sm:px-6 lg:px-8 py-5 mb-6 shadow-subtle sticky top-0 lg:top-0 z-20">
-      <div className="max-w-6xl mx-auto space-y-3">
-        {/* Top Breadcrumb & Quick back button */}
-        <div className="flex items-center justify-between gap-2 text-xs text-ink-muted">
-          <div className="flex items-center gap-1.5 overflow-hidden">
+    <header className="bg-white border-b border-edge px-4 sm:px-6 lg:px-8 h-16 flex items-center mb-6 shadow-subtle sticky top-0 z-20">
+      <div className="max-w-5xl w-full mx-auto flex items-center justify-between gap-3">
+        {/* Left: Breadcrumb, Document Title & Badges */}
+        <div className="min-w-0 space-y-1">
+          <div className="flex items-center gap-1.5 text-xs text-ink-muted overflow-hidden">
             <Link
               to="/dashboard"
-              className="hover:text-brand-600 font-medium transition-colors flex items-center gap-1"
+              className="hover:text-brand-600 font-medium transition-colors flex items-center gap-1 flex-shrink-0"
             >
               Dashboard
             </Link>
             <ChevronRight className="w-3.5 h-3.5 text-ink-subtle flex-shrink-0" />
-            <span className="font-semibold text-ink truncate max-w-[200px] sm:max-w-md">
+            <span className="font-medium text-ink truncate max-w-[140px] sm:max-w-[200px]">
               {material.title}
             </span>
             {activeModuleTitle && (
               <>
                 <ChevronRight className="w-3.5 h-3.5 text-ink-subtle flex-shrink-0" />
-                <span className="font-medium text-brand-600">{activeModuleTitle}</span>
+                <span className="font-semibold text-brand-600 truncate">{activeModuleTitle}</span>
               </>
             )}
           </div>
 
+          <div className="flex items-center gap-2 flex-wrap">
+            <h1 className="text-sm sm:text-base font-bold text-ink truncate max-w-sm sm:max-w-md">
+              {material.title}
+            </h1>
+            <span className="text-[10px] font-bold text-ink-muted uppercase tracking-wider bg-gray-100 px-1.5 py-0.5 rounded border border-edge">
+              {material.fileType}
+            </span>
+            <Badge variant="brand" size="sm">
+              {material.difficulty}
+            </Badge>
+            <span className="text-[11px] text-ink-muted hidden md:inline">
+              &bull; {material.pages} pages &bull; {material.subject}
+            </span>
+          </div>
+        </div>
+
+        {/* Right: Actions */}
+        <div className="flex items-center gap-2 flex-shrink-0 self-end sm:self-center">
           <button
             type="button"
             onClick={() => navigate('/dashboard')}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-ink-muted hover:text-ink transition-colors flex-shrink-0"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-ink-muted hover:text-ink transition-colors px-2.5 py-1.5 rounded-lg hover:bg-gray-100"
+            title="Back to Dashboard"
           >
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to Dashboard
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Dashboard</span>
           </button>
-        </div>
 
-        {/* Title, Subtitle, Metadata & CTAs */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-1">
-          <div className="space-y-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[11px] font-bold text-ink-muted uppercase tracking-wider bg-gray-100 px-2 py-0.5 rounded border border-edge">
-                {material.fileType}
-              </span>
-              <Badge variant="brand" size="sm">
-                {material.difficulty} Level
-              </Badge>
-              <span className="text-xs text-emerald-600 font-medium flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5" /> Processed recently
-              </span>
-            </div>
-
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-ink">
-              {material.title}
-            </h1>
-            <p className="text-xs sm:text-sm text-ink-muted">
-              {material.pages} pages &bull; {material.subject} &bull; Uploaded{' '}
-              {new Date(material.uploadDate).toLocaleDateString()}
-            </p>
-          </div>
-
-          {/* Action CTAs */}
-          <div className="flex items-center gap-2.5 flex-shrink-0">
-            {nextModuleUrl && (
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => navigate(nextModuleUrl)}
-                className="gap-2 shadow-sm"
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>{nextModuleLabel}</span>
-              </Button>
-            )}
-          </div>
+          {nextModuleUrl && (
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => navigate(nextModuleUrl)}
+              className="gap-1.5 shadow-sm text-xs py-1.5 px-3"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>{nextModuleLabel}</span>
+            </Button>
+          )}
         </div>
       </div>
-    </div>
+    </header>
   );
 };
