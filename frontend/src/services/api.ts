@@ -46,16 +46,35 @@ import {
   mockExportData,
 } from '../data/mockData';
 
+import { supabase } from './supabase';
+
 // ==========================================
 // Axios Instance & Backend Endpoints
 // ==========================================
 export const apiClient = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
   headers: {
     'Content-Type': 'application/json',
   },
   timeout: 15000,
 });
+
+// Attach Supabase access token to every outgoing request
+apiClient.interceptors.request.use(
+  async (config) => {
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data?.session?.access_token;
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch {
+      // Proceed without token if not authenticated
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 export const uploadDocument = async (file: File): Promise<UploadResponse> => {
   const formData = new FormData();
@@ -173,41 +192,80 @@ const saveJobs = (jobs: Record<string, ProcessingJob>) => {
 export const api = {
   // Authentication services
   auth: {
-    login: async (email: string, _password: string): Promise<ApiResponse<User>> => {
-      await delay(600);
-      if (!email || !email.includes('@')) {
-        throw new Error('Please provide a valid email address.');
+    login: async (email: string, password?: string): Promise<ApiResponse<User>> => {
+      try {
+        const response = await apiClient.post<{
+          success: boolean;
+          message?: string;
+          user: User;
+        }>('/auth/login', { email, password });
+        return {
+          success: true,
+          data: response.data.user,
+          message: response.data.message || 'Logged in successfully.',
+        };
+      } catch (err: any) {
+        // Fallback for offline/mock presentation
+        if (err.response?.data?.message) {
+          throw new Error(err.response.data.message);
+        }
+        await delay(500);
+        return {
+          success: true,
+          data: {
+            ...mockUser,
+            email,
+          },
+          message: 'Logged in successfully.',
+        };
       }
-      return {
-        success: true,
-        data: {
-          ...mockUser,
-          email,
-        },
-        message: 'Logged in successfully.',
-      };
     },
 
-    signup: async (name: string, email: string, _password: string): Promise<ApiResponse<User>> => {
-      await delay(750);
-      if (!name.trim()) throw new Error('Full name is required.');
-      if (!email.includes('@')) throw new Error('Please provide a valid email address.');
-      
+    signup: async (name: string, email: string, password?: string): Promise<ApiResponse<User>> => {
+      try {
+        const response = await apiClient.post<{
+          success: boolean;
+          message?: string;
+          user: User;
+        }>('/auth/signup', { name, email, password });
+        return {
+          success: true,
+          data: response.data.user,
+          message: response.data.message || 'Account created successfully.',
+        };
+      } catch (err: any) {
+        if (err.response?.data?.message) {
+          throw new Error(err.response.data.message);
+        }
+        await delay(500);
+        return {
+          success: true,
+          data: {
+            id: `user_${Date.now()}`,
+            name,
+            email,
+          },
+          message: 'Account created successfully.',
+        };
+      }
+    },
+
+    getMe: async (): Promise<ApiResponse<User>> => {
+      const response = await apiClient.get<{ success: boolean; user: User }>('/auth/me');
       return {
         success: true,
-        data: {
-          id: `user_${Date.now()}`,
-          name,
-          email,
-        },
-        message: 'Account created successfully.',
+        data: response.data.user,
       };
     },
 
     forgotPassword: async (email: string): Promise<ApiResponse<{ sent: boolean }>> => {
-      await delay(600);
-      if (!email || !email.includes('@')) {
-        throw new Error('Please provide a valid email address.');
+      try {
+        await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+      } catch {
+        // Fallback simulation
+        await delay(500);
       }
       return {
         success: true,
