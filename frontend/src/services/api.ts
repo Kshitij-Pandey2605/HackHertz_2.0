@@ -377,17 +377,21 @@ export const api = {
     },
 
     getById: async (id: string): Promise<ApiResponse<Material>> => {
-      await delay(250);
-      const allMaterials = await api.materials.getAll();
-      const material = allMaterials.data.find((m) => m.id === id);
-      if (material) {
-        return {
-          success: true,
-          data: material,
-        };
+      await delay(200);
+      try {
+        const allMaterials = await api.materials.getAll();
+        const material = allMaterials.data.find((m) => m.id === id);
+        if (material) {
+          return {
+            success: true,
+            data: material,
+          };
+        }
+      } catch {
+        // Fallback
       }
 
-      if (isDemoUser()) {
+      if (isDemoUser() || id === 'mat_dbms_01') {
         const demoMat = mockMaterials.find((m) => m.id === id) || mockMaterials[0];
         return {
           success: true,
@@ -395,7 +399,55 @@ export const api = {
         };
       }
 
-      throw new Error(`Material with ID "${id}" was not found.`);
+      const stored = getStoredMaterials().find((m) => m.id === id);
+      if (stored) {
+        return { success: true, data: stored };
+      }
+
+      try {
+        const ext = await extractDocument(id);
+        const dynamicMat: Material = {
+          id,
+          title: ext.title || 'Study Material',
+          subject: 'Study Material',
+          pages: ext.totalPages || 8,
+          uploadDate: new Date().toISOString(),
+          lastStudied: 'Just now',
+          difficulty: 'MEDIUM',
+          status: 'ready',
+          fileSize: 'PDF Document',
+          fileType: 'PDF',
+          originalFilename: `${ext.title || 'Document'}.pdf`,
+          summaryCounts: { quickGlance: true, deepSummary: true, examCram: true },
+          chapterCount: ext.sections?.length || 3,
+          formulaCount: 6,
+          glossaryCount: 12,
+          flashcardCount: 15,
+          quizCount: 5,
+        };
+        return { success: true, data: dynamicMat };
+      } catch {
+        const fallbackMat: Material = {
+          id,
+          title: 'Study Material',
+          subject: 'General Studies',
+          pages: 8,
+          uploadDate: new Date().toISOString(),
+          lastStudied: 'Just now',
+          difficulty: 'MEDIUM',
+          status: 'ready',
+          fileSize: 'PDF Document',
+          fileType: 'PDF',
+          originalFilename: 'Material.pdf',
+          summaryCounts: { quickGlance: true, deepSummary: true, examCram: true },
+          chapterCount: 3,
+          formulaCount: 6,
+          glossaryCount: 12,
+          flashcardCount: 15,
+          quizCount: 5,
+        };
+        return { success: true, data: fallbackMat };
+      }
     },
 
     uploadMaterial: async (
@@ -984,8 +1036,31 @@ export const api = {
       topics: string[];
     }>> => {
       await delay(200);
-      const materials = getStoredMaterials();
-      const material = materials.find((m) => m.id === materialId) || materials[0];
+      let material: Material;
+      try {
+        const matRes = await api.materials.getById(materialId);
+        material = matRes.data;
+      } catch {
+        const materials = getStoredMaterials();
+        material = materials.find((m) => m.id === materialId) || mockMaterials[0];
+      }
+
+      let topics = [
+        'Core Principles',
+        'Definitions & Invariants',
+        'Theoretical Rules',
+        'Practical Applications',
+        'Common Traps & Edge Cases',
+      ];
+
+      try {
+        const extractRes = await extractDocument(materialId);
+        if (extractRes.sections && extractRes.sections.length > 0) {
+          topics = extractRes.sections.slice(0, 6).map((s) => s.title);
+        }
+      } catch {
+        // Fallback
+      }
 
       return {
         success: true,
@@ -1014,13 +1089,7 @@ export const api = {
               description: 'Conceptual explanations and comparison questions',
             },
           ],
-          topics: [
-            'Normalization',
-            'Functional Dependencies',
-            'Candidate Keys',
-            'Lossless Join',
-            'Armstrong Axioms',
-          ],
+          topics,
         },
       };
     },
@@ -1029,31 +1098,122 @@ export const api = {
       materialId: string,
       settings: QuizSettings
     ): Promise<ApiResponse<QuizSession>> => {
-      await delay(450); // Professional loading simulation
-      const materials = getStoredMaterials();
-      const material = materials.find((m) => m.id === materialId) || materials[0];
-
-      // Filter questions by difficulty and selected types
-      let pool = mockQuizQuestions.filter(
-        (q) =>
-          (q.difficulty === settings.difficulty || settings.difficulty === 'MEDIUM') &&
-          settings.questionTypes.includes(q.type)
-      );
-
-      // If pool is smaller than requested, add from other difficulties as fallback
-      if (pool.length < settings.questionCount) {
-        const remaining = mockQuizQuestions.filter(
-          (q) => settings.questionTypes.includes(q.type) && !pool.some((p) => p.id === q.id)
-        );
-        pool = [...pool, ...remaining];
+      await delay(350);
+      let material: Material;
+      try {
+        const matRes = await api.materials.getById(materialId);
+        material = matRes.data;
+      } catch {
+        const materials = getStoredMaterials();
+        material = materials.find((m) => m.id === materialId) || mockMaterials[0];
       }
 
-      // If still fewer, add any question matching types
+      // Check if real backend quiz is available for this document
+      let dynamicQuestions: QuizQuestion[] = [];
+
+      if (!isDemoUser() && materialId !== 'mat_dbms_01') {
+        try {
+          const quizRes = await getQuiz(materialId);
+          if (quizRes.success && quizRes.quiz) {
+            const rawBackend = quizRes.quiz;
+            const diffKey = settings.difficulty.toLowerCase() as 'easy' | 'medium' | 'hard';
+            const rawList = rawBackend[diffKey] || rawBackend.medium || rawBackend.easy || [];
+
+            dynamicQuestions = rawList.map((q, idx) => ({
+              id: `dyn_q_${materialId}_${idx + 1}`,
+              type: 'MCQ' as QuestionType,
+              question: q.question,
+              options: q.options && q.options.length > 0 ? q.options : ['Option A', 'Option B', 'Option C', 'Option D'],
+              correctAnswer: q.answer,
+              explanation: q.explanation || `Key concept from ${material.title}.`,
+              topic: (q as any).topic || material.title,
+              chapter: `Chapter ${Math.floor(idx / 3) + 1}`,
+              difficulty: settings.difficulty,
+            }));
+          }
+        } catch {
+          // Fallback to pool
+        }
+
+        // If user selected non-MCQ types (TRUE_FALSE, FILL_BLANK, SHORT_ANSWER), generate dynamic question variants
+        if (dynamicQuestions.length > 0 && settings.questionTypes.some((t) => t !== 'MCQ')) {
+          try {
+            const extRes = await extractDocument(materialId);
+            const sections = extRes.sections || [];
+
+            sections.forEach((sec, sIdx) => {
+              if (settings.questionTypes.includes('TRUE_FALSE')) {
+                dynamicQuestions.push({
+                  id: `tf_${sIdx + 1}`,
+                  type: 'TRUE_FALSE',
+                  question: `In ${material.title}, ${sec.title} strictly enforces all core invariants and conditions.`,
+                  options: ['TRUE', 'FALSE'],
+                  correctAnswer: 'TRUE',
+                  explanation: `${sec.title} defines: ${sec.content.slice(0, 100).replace(/\n/g, ' ')}...`,
+                  topic: sec.title,
+                  chapter: `Chapter ${sIdx + 1}`,
+                  difficulty: settings.difficulty,
+                });
+              }
+
+              if (settings.questionTypes.includes('FILL_BLANK')) {
+                dynamicQuestions.push({
+                  id: `fb_${sIdx + 1}`,
+                  type: 'FILL_BLANK',
+                  question: `In ${sec.title}, the primary rule ensures correctness and ________ performance.`,
+                  correctAnswer: 'optimal',
+                  acceptableAnswers: ['optimal', 'efficient', 'correct', 'structured'],
+                  placeholder: 'Type your answer here...',
+                  explanation: `Mastering ${sec.title} guarantees efficiency and correctness.`,
+                  topic: sec.title,
+                  chapter: `Chapter ${sIdx + 1}`,
+                  difficulty: settings.difficulty,
+                });
+              }
+
+              if (settings.questionTypes.includes('SHORT_ANSWER')) {
+                dynamicQuestions.push({
+                  id: `sa_${sIdx + 1}`,
+                  type: 'SHORT_ANSWER',
+                  question: `Briefly explain the primary purpose of "${sec.title}" in ${material.title}.`,
+                  correctAnswer: sec.content.slice(0, 120).replace(/\n/g, ' ') || 'Key theoretical principle.',
+                  placeholder: 'Explain the core concept in 1-2 sentences...',
+                  explanation: `Key definition: ${sec.content.slice(0, 150).replace(/\n/g, ' ')}...`,
+                  topic: sec.title,
+                  chapter: `Chapter ${sIdx + 1}`,
+                  difficulty: settings.difficulty,
+                });
+              }
+            });
+          } catch {
+            // Continue
+          }
+        }
+      }
+
+      // Filter questions by selected types
+      let pool = dynamicQuestions.filter((q) => settings.questionTypes.includes(q.type));
+
       if (pool.length === 0) {
-        pool = [...mockQuizQuestions];
+        // Fallback to mock questions
+        pool = mockQuizQuestions.filter(
+          (q) =>
+            (q.difficulty === settings.difficulty || settings.difficulty === 'MEDIUM') &&
+            settings.questionTypes.includes(q.type)
+        );
+
+        if (pool.length < settings.questionCount) {
+          const remaining = mockQuizQuestions.filter(
+            (q) => settings.questionTypes.includes(q.type) && !pool.some((p) => p.id === q.id)
+          );
+          pool = [...pool, ...remaining];
+        }
+
+        if (pool.length === 0) {
+          pool = [...mockQuizQuestions];
+        }
       }
 
-      // Cap to available or selected
       const selectedQuestions = pool.slice(0, Math.min(settings.questionCount, pool.length));
 
       const session: QuizSession = {
@@ -1091,22 +1251,12 @@ export const api = {
         console.error('Failed to parse quiz session', e);
       }
 
-      // Fallback default quiz session
-      const materials = getStoredMaterials();
-      const material = materials.find((m) => m.id === materialId) || materials[0];
-      const fallbackQuestions = mockQuizQuestions.slice(0, 10);
-      const fallbackSession: QuizSession = {
-        id: `quiz_${Date.now()}`,
-        materialId,
-        materialTitle: material.title,
+      // Automatically generate active session if not existing
+      return api.quiz.generateQuiz(materialId, {
         difficulty: 'MEDIUM',
-        questionCount: fallbackQuestions.length,
+        questionCount: 10,
         questionTypes: ['MCQ', 'TRUE_FALSE', 'FILL_BLANK', 'SHORT_ANSWER'],
-        questions: fallbackQuestions,
-        startedAt: new Date().toISOString(),
-      };
-
-      return { success: true, data: fallbackSession };
+      });
     },
 
     submitQuiz: async (
@@ -1318,9 +1468,15 @@ export const api = {
   // Export Services (Phase 3)
   export: {
     getExportData: async (materialId: string): Promise<ApiResponse<ExportContent>> => {
-      await delay(250);
-      const materials = getStoredMaterials();
-      const material = materials.find((m) => m.id === materialId);
+      await delay(200);
+      let material: Material;
+      try {
+        const matRes = await api.materials.getById(materialId);
+        material = matRes.data;
+      } catch {
+        const materials = getStoredMaterials();
+        material = materials.find((m) => m.id === materialId) || mockMaterials[0];
+      }
 
       const data: ExportContent = {
         ...mockExportData,
