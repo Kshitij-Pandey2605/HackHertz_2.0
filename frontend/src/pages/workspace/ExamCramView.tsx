@@ -14,6 +14,9 @@ import {
   ShieldCheck,
   BookMarked,
   Table as TableIcon,
+  Printer,
+  FileDown,
+  Sparkles,
 } from 'lucide-react';
 
 export const ExamCramView: React.FC = () => {
@@ -48,6 +51,10 @@ export const ExamCramView: React.FC = () => {
     );
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   if (isLoading) return <WorkspaceSkeleton type="summary" />;
 
   if (error || !data) {
@@ -64,21 +71,38 @@ export const ExamCramView: React.FC = () => {
     <div className="space-y-8 animate-fadeIn max-w-4xl mx-auto pb-10">
       {/* Header Banner */}
       <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white rounded-2xl p-6 shadow-elevated space-y-2">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-xl bg-white/20 backdrop-blur-md text-white">
               <Zap className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Exam Cram Sheet</h1>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider bg-white/25 text-white px-2 py-0.5 rounded">
+                  Stage 4 &bull; Revise
+                </span>
+                <span className="text-[10px] font-semibold text-amber-100">&bull; 5-Min Last-Minute Cram</span>
+              </div>
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white mt-0.5">Exam Cram Sheet</h1>
               <p className="text-xs sm:text-sm text-amber-100">
-                Everything worth remembering in the 5 minutes before your exam.
+                Everything worth remembering right before entering the exam room.
               </p>
             </div>
           </div>
-          <span className="hidden sm:inline-block px-3 py-1 bg-white text-amber-800 text-xs font-bold rounded-full shadow-subtle">
-            High-Yield Revision
-          </span>
+          
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <button
+              type="button"
+              onClick={handlePrint}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-semibold backdrop-blur-sm transition-colors"
+            >
+              <Printer className="w-3.5 h-3.5" />
+              <span>Print Sheet</span>
+            </button>
+            <span className="hidden sm:inline-block px-3 py-1 bg-white text-amber-800 text-xs font-bold rounded-full shadow-subtle">
+              High-Yield Revision
+            </span>
+          </div>
         </div>
       </div>
 
@@ -197,23 +221,37 @@ export const ExamCramView: React.FC = () => {
         </div>
       </div>
 
-      {/* Bottom CTA to Flashcards */}
+      {/* Bottom CTA to Export / Print & Quiz */}
       <div className="bg-white border border-edge rounded-2xl p-6 shadow-card flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
-          <h3 className="text-sm font-bold text-ink">Ready for Active Recall?</h3>
+          <div className="flex items-center gap-1.5 text-xs font-bold text-amber-700 mb-1">
+            <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+            <span>Ready for the Exam Room</span>
+          </div>
+          <h3 className="text-sm font-bold text-ink">Take these notes with you offline</h3>
           <p className="text-xs text-ink-muted mt-0.5">
-            Test your memory retention using 20+ interactive spaced-repetition flashcards.
+            Export a full printable PDF cheat sheet or run a fast practice test to confirm mastery.
           </p>
         </div>
-        <Button
-          variant="primary"
-          size="md"
-          onClick={() => navigate(`/workspace/${id}/flashcards`)}
-          className="gap-2 shadow-sm whitespace-nowrap"
-        >
-          <span>Review Flashcards</span>
-          <ArrowRight className="w-4 h-4" />
-        </Button>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <Button
+            variant="secondary"
+            size="md"
+            onClick={() => navigate(`/workspace/${id}/quiz/setup`)}
+            className="flex-1 sm:flex-none whitespace-nowrap"
+          >
+            Practice Quiz
+          </Button>
+          <Button
+            variant="primary"
+            size="md"
+            onClick={() => navigate(`/workspace/${id}/export`)}
+            rightIcon={<ArrowRight className="w-4 h-4" />}
+            className="flex-1 sm:flex-none whitespace-nowrap shadow-elevated"
+          >
+            Export Cheat Sheet
+          </Button>
+        </div>
       </div>
     </div>
   );

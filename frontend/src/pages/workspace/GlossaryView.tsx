@@ -1,14 +1,16 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../../services/api';
 import { GlossaryTerm } from '../../types';
 import { WorkspaceSkeleton } from '../../components/ui/WorkspaceSkeleton';
 import { ErrorState } from '../../components/ui/ErrorState';
 import { EmptyState } from '../../components/ui/EmptyState';
-import { BookMarked, Search, ChevronDown, ChevronRight, Tag } from 'lucide-react';
+import { Button } from '../../components/ui/Button';
+import { BookMarked, Search, ChevronDown, ChevronRight, Tag, Sparkles, ArrowRight } from 'lucide-react';
 
 export const GlossaryView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
   const [terms, setTerms] = useState<GlossaryTerm[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -214,6 +216,39 @@ export const GlossaryView: React.FC = () => {
           ))}
         </div>
       )}
+
+      {/* Bottom CTA to Flashcards / Quiz */}
+      <div className="bg-white border border-edge rounded-2xl p-6 shadow-card flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-1.5 text-xs font-bold text-purple-700 mb-1">
+            <Sparkles className="w-3.5 h-3.5 text-purple-600" />
+            <span>Active Recall Practice</span>
+          </div>
+          <h3 className="text-sm font-bold text-ink">Test your vocabulary retention</h3>
+          <p className="text-xs text-ink-muted mt-0.5">
+            Turn these definitions into interactive flashcard drills or self-assessment questions.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <Button
+            variant="secondary"
+            size="md"
+            onClick={() => navigate(`/workspace/${id}/quiz/setup`)}
+            className="flex-1 sm:flex-none whitespace-nowrap"
+          >
+            Practice Quiz
+          </Button>
+          <Button
+            variant="primary"
+            size="md"
+            onClick={() => navigate(`/workspace/${id}/flashcards`)}
+            rightIcon={<ArrowRight className="w-4 h-4" />}
+            className="flex-1 sm:flex-none whitespace-nowrap shadow-elevated"
+          >
+            Review Flashcards
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

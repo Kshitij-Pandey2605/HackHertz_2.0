@@ -201,18 +201,18 @@ export const DeepSummaryView: React.FC = () => {
           {/* Bottom Navigation CTA */}
           <div className="bg-white border border-edge rounded-2xl p-6 shadow-card flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-              <h3 className="text-sm font-bold text-ink">Done with Deep Summary?</h3>
+              <h3 className="text-sm font-bold text-ink">Understood the concepts?</h3>
               <p className="text-xs text-ink-muted mt-0.5">
-                Switch to Exam Cram mode for high-speed revision before tests.
+                Now lock them into your memory with active recall flashcard drills.
               </p>
             </div>
             <Button
               variant="primary"
               size="md"
-              onClick={() => navigate(`/workspace/${id}/exam-cram`)}
+              onClick={() => navigate(`/workspace/${id}/flashcards`)}
               className="gap-2 shadow-sm whitespace-nowrap"
             >
-              <span>Review Exam Cram</span>
+              <span>Practice Flashcards</span>
               <ArrowRight className="w-4 h-4" />
             </Button>
           </div>

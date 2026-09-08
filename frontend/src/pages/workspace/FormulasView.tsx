@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../../services/api';
 import { Formula } from '../../types';
 import { WorkspaceSkeleton } from '../../components/ui/WorkspaceSkeleton';
 import { ErrorState } from '../../components/ui/ErrorState';
+import { Button } from '../../components/ui/Button';
 import { useToast } from '../../contexts/ToastContext';
-import { Sigma, Copy, Check, Info, Sparkles } from 'lucide-react';
+import { Sigma, Copy, Check, Info, Sparkles, ArrowRight, Layers } from 'lucide-react';
 
 export const FormulasView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { showToast } = useToast();
 
   const [formulas, setFormulas] = useState<Formula[]>([]);
@@ -152,6 +154,39 @@ export const FormulasView: React.FC = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Bottom CTA to Flashcards / Quiz */}
+      <div className="bg-white border border-edge rounded-2xl p-6 shadow-card flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 mb-1">
+            <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Ready for Active Recall</span>
+          </div>
+          <h3 className="text-sm font-bold text-ink">Memorize these formulas with Flashcards</h3>
+          <p className="text-xs text-ink-muted mt-0.5">
+            Test yourself on closure properties, decomposition conditions, and dependency preserving rules.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <Button
+            variant="secondary"
+            size="md"
+            onClick={() => navigate(`/workspace/${id}/quiz/setup`)}
+            className="flex-1 sm:flex-none whitespace-nowrap"
+          >
+            Practice Quiz
+          </Button>
+          <Button
+            variant="primary"
+            size="md"
+            onClick={() => navigate(`/workspace/${id}/flashcards`)}
+            rightIcon={<ArrowRight className="w-4 h-4" />}
+            className="flex-1 sm:flex-none whitespace-nowrap shadow-elevated"
+          >
+            Review Flashcards
+          </Button>
+        </div>
       </div>
     </div>
   );
