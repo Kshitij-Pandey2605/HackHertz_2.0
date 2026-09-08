@@ -14,7 +14,7 @@ There is no single tool that takes a raw document and walks a student all the wa
 
 ## 💡 Solution
 
-**StudyForge AI** is an AI-powered study material transformation platform. Students upload their raw learning material (PDF, PPT, DOCX, or notes) and the platform automatically generates a complete, structured study workspace:
+**Premind AI** is an AI-powered study material transformation platform. Students upload their raw learning material (PDF, PPT, DOCX, or notes) and the platform automatically generates a complete, structured study workspace:
 
 - Multi-level summaries (quick, detailed, exam-cram, chapter-wise)
 - Extracted key points and important concepts
