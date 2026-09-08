@@ -17,24 +17,14 @@ import {
   ArrowLeft,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { Modal } from '../ui/Modal';
-
 export const WorkspaceSidebar: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  const [showPhase3Modal, setShowPhase3Modal] = useState(false);
-  const [phase3Feature, setPhase3Feature] = useState('');
-
   const handleLogout = () => {
     logout();
     navigate('/login');
-  };
-
-  const handlePhase3Click = (featureName: string) => {
-    setPhase3Feature(featureName);
-    setShowPhase3Modal(true);
   };
 
   const workspaceNav = [
@@ -93,8 +83,7 @@ export const WorkspaceSidebar: React.FC = () => {
   ];
 
   return (
-    <>
-      <aside className="hidden lg:flex flex-col w-64 border-r border-edge bg-white h-screen sticky top-0 select-none flex-shrink-0">
+    <aside className="hidden lg:flex flex-col w-64 border-r border-edge bg-white h-screen sticky top-0 select-none flex-shrink-0">
         {/* Workspace Brand Header */}
         <div className="h-16 flex items-center justify-between px-5 border-b border-edge">
           <NavLink to="/dashboard" className="flex items-center gap-2">
@@ -184,40 +173,50 @@ export const WorkspaceSidebar: React.FC = () => {
               </nav>
             </div>
 
-            {/* PRACTICE & EXPORT (Phase 3 Contextual Navigation) */}
+            {/* PRACTICE & EXPORT (Phase 3 Complete) */}
             <div>
               <p className="px-3 text-[11px] font-bold text-ink-muted uppercase tracking-wider mb-2">
                 Practice & Export
               </p>
-              <div className="space-y-1">
-                <button
-                  type="button"
-                  onClick={() => handlePhase3Click('Self-Assessment Quiz')}
-                  className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm text-ink-secondary hover:bg-gray-50 text-left transition-colors group"
+              <nav className="space-y-1">
+                <NavLink
+                  to={`/workspace/${id}/quiz/setup`}
+                  className={({ isActive }) =>
+                    `flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+                      isActive
+                        ? 'bg-brand-50 text-brand-700 font-semibold border border-brand-200/60'
+                        : 'text-ink-secondary hover:bg-gray-50 hover:text-ink'
+                    }`
+                  }
                 >
                   <div className="flex items-center gap-2.5">
                     <HelpCircle className="w-4 h-4 text-purple-600" />
                     <span>Quiz Assessment</span>
                   </div>
-                  <span className="text-[9px] bg-purple-50 text-purple-700 font-semibold px-1.5 py-0.5 rounded border border-purple-200">
-                    Phase 3
+                  <span className="text-[10px] bg-purple-100 text-purple-800 font-semibold px-1.5 py-0.5 rounded-full">
+                    Quiz
                   </span>
-                </button>
+                </NavLink>
 
-                <button
-                  type="button"
-                  onClick={() => handlePhase3Click('Study Material Export')}
-                  className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm text-ink-secondary hover:bg-gray-50 text-left transition-colors group"
+                <NavLink
+                  to={`/workspace/${id}/export`}
+                  className={({ isActive }) =>
+                    `flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+                      isActive
+                        ? 'bg-brand-50 text-brand-700 font-semibold border border-brand-200/60'
+                        : 'text-ink-secondary hover:bg-gray-50 hover:text-ink'
+                    }`
+                  }
                 >
                   <div className="flex items-center gap-2.5">
-                    <Download className="w-4 h-4 text-amber-600" />
+                    <Download className="w-4 h-4 text-emerald-600" />
                     <span>Export Materials</span>
                   </div>
-                  <span className="text-[9px] bg-amber-50 text-amber-700 font-semibold px-1.5 py-0.5 rounded border border-amber-200">
-                    Phase 3
+                  <span className="text-[10px] bg-emerald-100 text-emerald-800 font-semibold px-1.5 py-0.5 rounded-full">
+                    PDF / MD
                   </span>
-                </button>
-              </div>
+                </NavLink>
+              </nav>
             </div>
           </div>
 
@@ -244,38 +243,6 @@ export const WorkspaceSidebar: React.FC = () => {
             </div>
           </div>
         </div>
-      </aside>
-
-      {/* Phase 3 Informational Modal */}
-      <Modal
-        isOpen={showPhase3Modal}
-        onClose={() => setShowPhase3Modal(false)}
-        title={`${phase3Feature} — Coming in Phase 3`}
-        footer={
-          <button
-            type="button"
-            onClick={() => setShowPhase3Modal(false)}
-            className="w-full sm:w-auto px-4 py-2 bg-brand-600 text-white text-xs font-semibold rounded-xl hover:bg-brand-700 transition-colors"
-          >
-            Got it, continue Phase 2
-          </button>
-        }
-      >
-        <div className="space-y-3 py-2">
-          <div className="p-3 bg-purple-50 rounded-xl border border-purple-200 flex items-start gap-3">
-            <Sparkles className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="text-xs font-bold text-purple-900">Phase 3 Navigation Preview</p>
-              <p className="text-xs text-purple-800 mt-1">
-                You are currently exploring <strong>Phase 2 (Understand & Remember)</strong>. Interactive Quiz assessments and export features will be unlocked in Phase 3.
-              </p>
-            </div>
-          </div>
-          <p className="text-xs text-ink-muted leading-relaxed">
-            Please use the <strong>Quick Glance, Deep Summary, Exam Cram, Formulas, Glossary, and Flashcards</strong> modules to master this study material!
-          </p>
-        </div>
-      </Modal>
-    </>
+    </aside>
   );
 };

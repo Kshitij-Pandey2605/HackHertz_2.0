@@ -29,6 +29,12 @@ import { FormulasView } from './pages/workspace/FormulasView';
 import { GlossaryView } from './pages/workspace/GlossaryView';
 import { FlashcardsView } from './pages/workspace/FlashcardsView';
 
+// Assessment & Export Views (Phase 3)
+import { QuizSetupPage } from './pages/quiz/QuizSetupPage';
+import { QuizPage } from './pages/quiz/QuizPage';
+import { QuizResultsPage } from './pages/quiz/QuizResultsPage';
+import { ExportPage } from './pages/export/ExportPage';
+
 export const App: React.FC = () => {
   return (
     <BrowserRouter>
@@ -58,7 +64,7 @@ export const App: React.FC = () => {
               <Route path="/processing/:id" element={<ProcessingPage />} />
             </Route>
 
-            {/* Dedicated Workspace Study Shell (Phase 2) */}
+            {/* Dedicated Workspace Study Shell (Phase 2 & Phase 3) */}
             <Route
               element={
                 <ProtectedRoute>
@@ -75,6 +81,17 @@ export const App: React.FC = () => {
               <Route path="/workspace/:id/formulas" element={<FormulasView />} />
               <Route path="/workspace/:id/glossary" element={<GlossaryView />} />
               <Route path="/workspace/:id/flashcards" element={<FlashcardsView />} />
+              {/* Phase 3 Assessment & Export */}
+              <Route path="/workspace/:id/quiz/setup" element={<QuizSetupPage />} />
+              <Route path="/workspace/:id/quiz" element={<QuizPage />} />
+              <Route path="/workspace/:id/quiz/results" element={<QuizResultsPage />} />
+              <Route path="/workspace/:id/export" element={<ExportPage />} />
+
+              {/* Support /study/:id aliases */}
+              <Route path="/study/:id/quiz/setup" element={<QuizSetupPage />} />
+              <Route path="/study/:id/quiz" element={<QuizPage />} />
+              <Route path="/study/:id/quiz/results" element={<QuizResultsPage />} />
+              <Route path="/study/:id/export" element={<ExportPage />} />
             </Route>
 
             {/* Catch-all fallback */}
