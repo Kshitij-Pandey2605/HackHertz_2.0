@@ -31,14 +31,15 @@ export const Sidebar: React.FC = () => {
       icon: <UploadCloud className="w-4 h-4" />,
       badge: 'New',
     },
+    {
+      to: '/workspace/mat_dbms_01/flashcards',
+      label: 'Study Flashcards',
+      icon: <BookOpen className="w-4 h-4" />,
+      badge: 'Ready',
+    },
   ];
 
   const futureLinks = [
-    {
-      label: 'Study Flashcards',
-      icon: <BookOpen className="w-4 h-4" />,
-      tag: 'Phase 2',
-    },
     {
       label: 'Exam Quizzes',
       icon: <Sparkles className="w-4 h-4" />,

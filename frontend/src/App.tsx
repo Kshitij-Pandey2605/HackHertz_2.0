@@ -7,6 +7,7 @@ import { ProtectedRoute } from './components/routing/ProtectedRoute';
 // Layouts
 import { AppLayout } from './components/layout/AppLayout';
 import { PublicLayout } from './components/layout/PublicLayout';
+import { WorkspaceLayout } from './components/workspace/WorkspaceLayout';
 
 // Pages
 import { LandingPage } from './pages/LandingPage';
@@ -16,7 +17,17 @@ import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { UploadPage } from './pages/UploadPage';
 import { ProcessingPage } from './pages/ProcessingPage';
-import { WorkspacePlaceholderPage } from './pages/WorkspacePlaceholderPage';
+
+// Workspace Views (Phase 2)
+import { WorkspaceOverviewPage } from './pages/workspace/WorkspaceOverviewPage';
+import { QuickGlanceView } from './pages/workspace/QuickGlanceView';
+import { DeepSummaryView } from './pages/workspace/DeepSummaryView';
+import { ExamCramView } from './pages/workspace/ExamCramView';
+import { ChaptersView } from './pages/workspace/ChaptersView';
+import { KeyPointsView } from './pages/workspace/KeyPointsView';
+import { FormulasView } from './pages/workspace/FormulasView';
+import { GlossaryView } from './pages/workspace/GlossaryView';
+import { FlashcardsView } from './pages/workspace/FlashcardsView';
 
 export const App: React.FC = () => {
   return (
@@ -34,7 +45,7 @@ export const App: React.FC = () => {
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             </Route>
 
-            {/* Protected Workspace Routes */}
+            {/* Protected General Routes */}
             <Route
               element={
                 <ProtectedRoute>
@@ -45,7 +56,25 @@ export const App: React.FC = () => {
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/upload" element={<UploadPage />} />
               <Route path="/processing/:id" element={<ProcessingPage />} />
-              <Route path="/workspace/:id" element={<WorkspacePlaceholderPage />} />
+            </Route>
+
+            {/* Dedicated Workspace Study Shell (Phase 2) */}
+            <Route
+              element={
+                <ProtectedRoute>
+                  <WorkspaceLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="/workspace/:id" element={<WorkspaceOverviewPage />} />
+              <Route path="/workspace/:id/quick-glance" element={<QuickGlanceView />} />
+              <Route path="/workspace/:id/deep-summary" element={<DeepSummaryView />} />
+              <Route path="/workspace/:id/exam-cram" element={<ExamCramView />} />
+              <Route path="/workspace/:id/chapters" element={<ChaptersView />} />
+              <Route path="/workspace/:id/key-points" element={<KeyPointsView />} />
+              <Route path="/workspace/:id/formulas" element={<FormulasView />} />
+              <Route path="/workspace/:id/glossary" element={<GlossaryView />} />
+              <Route path="/workspace/:id/flashcards" element={<FlashcardsView />} />
             </Route>
 
             {/* Catch-all fallback */}
@@ -58,3 +87,4 @@ export const App: React.FC = () => {
 };
 
 export default App;
+

@@ -5,12 +5,30 @@ import {
   DifficultyLevel,
   User,
   ApiResponse,
+  QuickSummary,
+  DeepSummary,
+  ExamCram,
+  Chapter,
+  KeyPointsData,
+  Formula,
+  GlossaryTerm,
+  Flashcard,
+  FlashcardFeedback,
+  StudyWorkspace,
 } from '../types';
 import {
   mockMaterials,
   mockDashboardStats,
   mockUser,
   defaultProcessingSteps,
+  mockQuickSummary,
+  mockDeepSummary,
+  mockExamCram,
+  mockChapters,
+  mockKeyPoints,
+  mockFormulas,
+  mockGlossary,
+  mockFlashcards,
 } from '../data/mockData';
 
 // Local storage keys for state persistence across sessions
@@ -311,4 +329,100 @@ export const api = {
       };
     },
   },
+
+  // Phase 2 Study Workspace API Services
+  workspace: {
+    getStudyWorkspace: async (id: string): Promise<ApiResponse<StudyWorkspace>> => {
+      await delay(300);
+      const materials = getStoredMaterials();
+      const material = materials.find((m) => m.id === id) || mockMaterials[0];
+
+      return {
+        success: true,
+        data: {
+          material,
+          quickSummary: mockQuickSummary,
+          deepSummary: mockDeepSummary,
+          examCram: mockExamCram,
+          chapters: mockChapters,
+          keyPoints: mockKeyPoints,
+          formulas: mockFormulas,
+          glossary: mockGlossary,
+          flashcards: mockFlashcards,
+        },
+      };
+    },
+
+    getQuickSummary: async (_id: string): Promise<ApiResponse<QuickSummary>> => {
+      await delay(250);
+      return { success: true, data: mockQuickSummary };
+    },
+
+    getDeepSummary: async (_id: string): Promise<ApiResponse<DeepSummary>> => {
+      await delay(300);
+      return { success: true, data: mockDeepSummary };
+    },
+
+    getExamCram: async (_id: string): Promise<ApiResponse<ExamCram>> => {
+      await delay(250);
+      return { success: true, data: mockExamCram };
+    },
+
+    getChapters: async (_id: string): Promise<ApiResponse<Chapter[]>> => {
+      await delay(200);
+      return { success: true, data: mockChapters };
+    },
+
+    getKeyPoints: async (_id: string): Promise<ApiResponse<KeyPointsData>> => {
+      await delay(200);
+      return { success: true, data: mockKeyPoints };
+    },
+
+    getFormulas: async (_id: string): Promise<ApiResponse<Formula[]>> => {
+      await delay(200);
+      return { success: true, data: mockFormulas };
+    },
+
+    getGlossary: async (_id: string): Promise<ApiResponse<GlossaryTerm[]>> => {
+      await delay(200);
+      return { success: true, data: mockGlossary };
+    },
+
+    getFlashcards: async (
+      _id: string,
+      filters?: { topic?: string; difficulty?: DifficultyLevel }
+    ): Promise<ApiResponse<Flashcard[]>> => {
+      await delay(250);
+      let cards = [...mockFlashcards];
+
+      if (filters?.topic && filters.topic !== 'ALL') {
+        cards = cards.filter(
+          (c) => c.topic.toLowerCase() === filters.topic!.toLowerCase()
+        );
+      }
+
+      if (filters?.difficulty) {
+        cards = cards.filter((c) => c.difficulty === filters.difficulty);
+      }
+
+      return { success: true, data: cards };
+    },
+
+    submitFlashcardFeedback: async (
+      _id: string,
+      feedback: FlashcardFeedback
+    ): Promise<ApiResponse<{ recorded: boolean; nextReview: string }>> => {
+      await delay(150);
+      let nextReview = 'In 1 day';
+      if (feedback.rating === 'AGAIN') nextReview = 'Later today';
+      if (feedback.rating === 'EASY') nextReview = 'In 3 days';
+
+      return {
+        success: true,
+        data: { recorded: true, nextReview },
+        message: `Flashcard rating saved. Suggested review: ${nextReview}`,
+      };
+    },
+  },
 };
+

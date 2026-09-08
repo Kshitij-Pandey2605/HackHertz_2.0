@@ -4,6 +4,7 @@ export interface ProgressBarProps {
   progress: number; // 0 to 100
   showLabel?: boolean;
   size?: 'sm' | 'md' | 'lg';
+  height?: string;
   className?: string;
 }
 
@@ -11,6 +12,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   progress,
   showLabel = false,
   size = 'md',
+  height,
   className = '',
 }) => {
   const clamped = Math.min(100, Math.max(0, progress));
@@ -30,7 +32,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
         </div>
       )}
       <div
-        className={`w-full bg-gray-100 rounded-full overflow-hidden ${heights[size]}`}
+        className={`w-full bg-gray-100 rounded-full overflow-hidden ${height || heights[size]}`}
         role="progressbar"
         aria-valuenow={clamped}
         aria-valuemin={0}
