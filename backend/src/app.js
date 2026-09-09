@@ -111,6 +111,10 @@ app.get('/', (req, res) => {
   });
 });
 
+const pdfSummaryRoutes = require('./routes/pdf.summary.routes');
+const materialRoutes = require('./routes/material.routes');
+const studyRoutes = require('./routes/study.routes');
+
 // ==========================================
 // 4. Register API Routes
 // ==========================================
@@ -122,6 +126,26 @@ app.use('/api/flashcards', flashcardRoutes);
 app.use('/api/quiz', quizRoutes);
 app.use('/api/extract', extractRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/materials', materialRoutes);
+app.use('/api/pdf', pdfSummaryRoutes);
+app.use('/api/study', studyRoutes);
+
+app.use('/api/definitions', (req, res, next) => {
+  req.url = '/definitions' + req.url;
+  studyRoutes(req, res, next);
+});
+app.use('/api/formulas', (req, res, next) => {
+  req.url = '/formulas' + req.url;
+  studyRoutes(req, res, next);
+});
+app.use('/api/chapters', (req, res, next) => {
+  req.url = '/chapters' + req.url;
+  studyRoutes(req, res, next);
+});
+app.use('/api/keypoints', (req, res, next) => {
+  req.url = '/keypoints' + req.url;
+  studyRoutes(req, res, next);
+});
 
 // Mount any additional application API routes from routes/index.js if available
 try {
