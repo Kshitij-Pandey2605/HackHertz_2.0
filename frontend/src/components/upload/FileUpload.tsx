@@ -1,9 +1,11 @@
 import React, { useState, useRef } from 'react';
-import { UploadCloud, FileText, AlertCircle } from 'lucide-react';
+import { UploadCloud, FileText, AlertCircle, Files } from 'lucide-react';
 import { Button } from '../ui/Button';
 
 export interface FileUploadProps {
-  onFileSelect: (file: File) => void;
+  onFileSelect?: (file: File) => void;
+  onFilesSelect?: (files: File[]) => void;
+  multiple?: boolean;
   maxSizeBytes?: number; // default 50MB
   error?: string | null;
 }
@@ -19,6 +21,8 @@ const ACCEPT_STRING = '.pdf,.ppt,.pptx,.doc,.docx,.txt,.md';
 
 export const FileUpload: React.FC<FileUploadProps> = ({
   onFileSelect,
+  onFilesSelect,
+  multiple = true,
   maxSizeBytes = 50 * 1024 * 1024, // 50MB
   error,
 }) => {
@@ -26,27 +30,39 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   const [internalError, setInternalError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const validateAndProcessFile = (file: File) => {
+  const validateAndProcessFiles = (fileList: FileList | File[]) => {
     setInternalError(null);
-
-    // Size validation
-    if (file.size > maxSizeBytes) {
-      const maxMb = maxSizeBytes / (1024 * 1024);
-      setInternalError(`File is too large. Maximum allowed size is ${maxMb}MB.`);
-      return;
-    }
-
-    // Extension validation
-    const ext = '.' + file.name.split('.').pop()?.toLowerCase();
+    const validFiles: File[] = [];
     const validExtensions = ['.pdf', '.ppt', '.pptx', '.doc', '.docx', '.txt', '.md'];
-    if (!validExtensions.includes(ext)) {
-      setInternalError(
-        'Unsupported file format. Please upload a PDF, PPT, PPTX, DOC, DOCX, or text notes.'
-      );
-      return;
+
+    for (let i = 0; i < fileList.length; i++) {
+      const file = fileList[i];
+      // Size validation
+      if (file.size > maxSizeBytes) {
+        const maxMb = maxSizeBytes / (1024 * 1024);
+        setInternalError(`"${file.name}" is too large. Maximum allowed size is ${maxMb}MB.`);
+        return;
+      }
+
+      // Extension validation
+      const ext = '.' + file.name.split('.').pop()?.toLowerCase();
+      if (!validExtensions.includes(ext)) {
+        setInternalError(
+          `"${file.name}" has an unsupported format. Please upload PDF, PPT, DOC, or text notes.`
+        );
+        return;
+      }
+
+      validFiles.push(file);
     }
 
-    onFileSelect(file);
+    if (validFiles.length === 0) return;
+
+    if (onFilesSelect) {
+      onFilesSelect(validFiles);
+    } else if (onFileSelect) {
+      onFileSelect(validFiles[0]);
+    }
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -67,13 +83,17 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     setIsDragOver(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      validateAndProcessFile(e.dataTransfer.files[0]);
+      validateAndProcessFiles(e.dataTransfer.files);
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      validateAndProcessFile(e.target.files[0]);
+      validateAndProcessFiles(e.target.files);
+    }
+    // Reset file input value to allow selecting same files again if desired
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -98,6 +118,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
           ref={fileInputRef}
           type="file"
           accept={ACCEPT_STRING}
+          multiple={multiple}
           onChange={handleInputChange}
           className="hidden"
           id="file-upload-input"
@@ -111,15 +132,15 @@ export const FileUpload: React.FC<FileUploadProps> = ({
               : 'bg-brand-50 text-brand-600'
           }`}
         >
-          <UploadCloud className="w-8 h-8" />
+          {multiple ? <Files className="w-8 h-8" /> : <UploadCloud className="w-8 h-8" />}
         </div>
 
         {/* Main Prompts */}
         <h3 className="text-base sm:text-lg font-semibold text-ink text-center mb-1">
-          {isDragOver ? 'Drop your document right here' : 'Drag and drop your study material'}
+          {isDragOver ? 'Drop your PDF(s) right here' : 'Drag & drop multiple PDFs or study materials'}
         </h3>
         <p className="text-sm text-ink-muted text-center max-w-md mb-5">
-          Upload any lecture slides, textbook chapters, or handwritten note exports. Maximum size: 50MB.
+          Select one or multiple PDF textbooks, lecture slides (e.g. OS.pdf, DBMS.pdf, CN.pdf). Maximum: 50MB per file.
         </p>
 
         {/* Browse Button */}
@@ -130,7 +151,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
           leftIcon={<FileText className="w-4 h-4" />}
           className="pointer-events-none"
         >
-          Browse Files
+          {multiple ? 'Browse Multiple Files' : 'Browse Files'}
         </Button>
 
         {/* Supported Formats Badges */}

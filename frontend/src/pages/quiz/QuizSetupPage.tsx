@@ -93,7 +93,7 @@ export const QuizSetupPage: React.FC = () => {
       showToast('Preparing your practice questions...', 'info');
 
       setTimeout(() => {
-        navigate(`/workspace/${id}/quiz`);
+        navigate(`/workspace/${id}/quiz?level=${difficulty.toLowerCase()}`);
       }, 500);
     } catch (err: unknown) {
       setIsGenerating(false);

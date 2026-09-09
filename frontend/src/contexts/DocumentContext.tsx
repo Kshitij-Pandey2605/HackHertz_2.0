@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import {
   uploadDocument as apiUploadDocument,
+  uploadMultipleDocuments as apiUploadMultipleDocuments,
   getDocuments as apiGetDocuments,
   getSummary as apiGetSummary,
   getFlashcards as apiGetFlashcards,
@@ -25,6 +26,7 @@ interface DocumentContextType {
   loading: boolean;
   error: string | null;
   uploadPDF: (file: File) => Promise<UploadResponse>;
+  uploadMultiplePDFs: (files: File[]) => Promise<UploadResponse>;
   fetchDocuments: () => Promise<BackendDocument[]>;
   fetchSummary: (docId?: string) => Promise<BackendSummary | null>;
   fetchFlashcards: (docId?: string) => Promise<BackendFlashcard[]>;
@@ -73,7 +75,7 @@ export const DocumentProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, []);
 
-  // Upload PDF document
+  // Upload single PDF document
   const uploadPDF = async (file: File): Promise<UploadResponse> => {
     setLoading(true);
     setError(null);
@@ -96,6 +98,48 @@ export const DocumentProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       throw new Error((response as unknown as { error?: string }).error || 'Upload failed');
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to upload PDF document';
+      setError(message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Upload multiple PDF documents
+  const uploadMultiplePDFs = async (files: File[]): Promise<UploadResponse> => {
+    if (!files || files.length === 0) {
+      throw new Error('No files provided for upload');
+    }
+
+    setLoading(true);
+    setError(null);
+    try {
+      // If single file, use standard endpoint
+      if (files.length === 1) {
+        return await uploadPDF(files[0]);
+      }
+
+      // Process all files through multi-upload endpoint
+      const response = await apiUploadMultipleDocuments(files);
+
+      if (response.success) {
+        const newDocs: BackendDocument[] = (response.documents || []).map((doc) => ({
+          id: doc.documentId,
+          file_name: doc.fileName,
+          file_url: doc.fileUrl,
+          uploaded_at: doc.uploadedAt || new Date().toISOString(),
+        }));
+
+        if (newDocs.length > 0) {
+          setCurrentDocumentId(newDocs[0].id);
+          setCurrentDocument(newDocs[0]);
+          setUploadedDocuments((prev) => [...newDocs, ...prev]);
+        }
+        return response;
+      }
+      throw new Error((response as unknown as { error?: string }).error || 'Multi-upload failed');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to upload multiple PDF documents';
       setError(message);
       throw err;
     } finally {
@@ -188,6 +232,7 @@ export const DocumentProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     loading,
     error,
     uploadPDF,
+    uploadMultiplePDFs,
     fetchDocuments,
     fetchSummary,
     fetchFlashcards,

@@ -88,6 +88,19 @@ export const uploadDocument = async (file: File): Promise<UploadResponse> => {
   return response.data;
 };
 
+export const uploadMultipleDocuments = async (files: File[]): Promise<UploadResponse> => {
+  const formData = new FormData();
+  files.forEach((file) => {
+    formData.append('files', file);
+  });
+  const response = await apiClient.post<UploadResponse>('/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+
 export const getDocuments = async (): Promise<{
   success: boolean;
   count: number;

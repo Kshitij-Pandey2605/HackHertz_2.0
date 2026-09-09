@@ -13,11 +13,14 @@ import {
   Target,
   Zap,
   Brain,
+  Layers,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useDocument } from '../../contexts/DocumentContext';
 
 export const Sidebar: React.FC = () => {
   const { user, logout } = useAuth();
+  const { currentDocumentId, uploadedDocuments } = useDocument();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -25,7 +28,9 @@ export const Sidebar: React.FC = () => {
     navigate('/login');
   };
 
-  const navLinks = [
+  const activeDocId = currentDocumentId || (uploadedDocuments.length > 0 ? uploadedDocuments[0].id : 'mat_dbms_01');
+
+  const mainNavLinks = [
     {
       to: '/dashboard',
       label: 'Dashboard',
@@ -35,51 +40,52 @@ export const Sidebar: React.FC = () => {
       to: '/documents',
       label: 'My Documents',
       icon: <FileText className="w-4 h-4" />,
-      badge: 'Live API',
     },
     {
       to: '/upload',
       label: 'Upload Material',
       icon: <UploadCloud className="w-4 h-4" />,
-      badge: 'New',
     },
     {
-      to: '/workspace/mat_dbms_01/flashcards',
-      label: 'Study Flashcards',
+      to: '/summary',
+      label: 'Study Summary',
       icon: <BookOpen className="w-4 h-4" />,
-      badge: 'Ready',
     },
     {
-      to: '/workspace/mat_dbms_01/quiz/setup',
+      to: `/workspace/${activeDocId}/flashcards`,
+      label: 'Study Flashcards',
+      icon: <Layers className="w-4 h-4" />,
+    },
+    {
+      to: `/workspace/${activeDocId}/quiz/setup`,
       label: 'Quiz Assessment',
       icon: <Sparkles className="w-4 h-4" />,
-      badge: 'Ready',
     },
   ];
 
-  const phase2Links = [
+  const smartToolsLinks = [
     {
-      to: '/workspace/mat_dbms_01/weak-topics',
+      to: `/workspace/${activeDocId}/weak-topics`,
       label: 'Weak Topics',
       icon: <AlertTriangle className="w-4 h-4 text-rose-600" />,
     },
     {
-      to: '/workspace/mat_dbms_01/mastery',
+      to: `/workspace/${activeDocId}/mastery`,
       label: 'Mastery Dashboard',
       icon: <Award className="w-4 h-4 text-brand-600" />,
     },
     {
-      to: '/workspace/mat_dbms_01/revision-planner',
+      to: `/workspace/${activeDocId}/revision-planner`,
       label: 'Revision Planner',
       icon: <Target className="w-4 h-4 text-violet-600" />,
     },
     {
-      to: '/workspace/mat_dbms_01/adaptive-quiz',
+      to: `/workspace/${activeDocId}/adaptive-quiz`,
       label: 'Adaptive Quiz',
       icon: <Zap className="w-4 h-4 text-amber-600" />,
     },
     {
-      to: '/workspace/mat_dbms_01/ai-coach',
+      to: `/workspace/${activeDocId}/ai-coach`,
       label: 'AI Study Coach',
       icon: <Brain className="w-4 h-4 text-emerald-600" />,
     },
@@ -109,7 +115,7 @@ export const Sidebar: React.FC = () => {
               Workspace
             </p>
             <nav className="space-y-1">
-              {navLinks.map((link) => (
+              {mainNavLinks.map((link) => (
                 <NavLink
                   key={link.to}
                   to={link.to}
@@ -125,24 +131,18 @@ export const Sidebar: React.FC = () => {
                     {link.icon}
                     <span>{link.label}</span>
                   </div>
-                  {link.badge && (
-                    <span className="text-[10px] bg-brand-100 text-brand-700 font-semibold px-1.5 py-0.5 rounded-full">
-                      {link.badge}
-                    </span>
-                  )}
                 </NavLink>
               ))}
             </nav>
           </div>
 
-          {/* Phase 2 Smart Tools */}
+          {/* Smart Tools without extra status badges */}
           <div>
-            <p className="px-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-2 flex items-center gap-2">
+            <p className="px-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-2">
               Smart Tools
-              <span className="text-[9px] font-bold text-brand-700 bg-brand-50 border border-brand-200 px-1.5 py-0.5 rounded-full">NEW</span>
             </p>
             <nav className="space-y-1">
-              {phase2Links.map((link) => (
+              {smartToolsLinks.map((link) => (
                 <NavLink
                   key={link.to}
                   to={link.to}

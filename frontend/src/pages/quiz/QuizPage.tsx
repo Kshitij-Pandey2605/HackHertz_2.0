@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useMemo } from 'react';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   ChevronLeft,
   ChevronRight,
@@ -11,6 +11,7 @@ import {
   XCircle,
   RotateCcw,
   BookOpen,
+  Filter,
 } from 'lucide-react';
 import { getQuiz } from '../../services/api';
 import { BackendQuiz, BackendQuizQuestion } from '../../types';
@@ -19,15 +20,24 @@ import { ProgressBar } from '../../components/ui/ProgressBar';
 import { LoadingState } from '../../components/ui/LoadingState';
 import { ErrorState } from '../../components/ui/ErrorState';
 
-type DifficultyTab = 'easy' | 'medium' | 'hard';
+export type SelectedLevel = 'easy' | 'medium' | 'hard' | 'mixed';
 
 export const QuizPage: React.FC = () => {
   const { id, documentId } = useParams<{ id?: string; documentId?: string }>();
   const activeDocId = documentId || id || '123';
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const initialLevelParam = searchParams.get('level')?.toLowerCase();
+  const validInitialLevel: SelectedLevel =
+    initialLevelParam === 'medium' ||
+    initialLevelParam === 'hard' ||
+    initialLevelParam === 'mixed'
+      ? (initialLevelParam as SelectedLevel)
+      : 'easy';
 
   const [quizData, setQuizData] = useState<BackendQuiz | null>(null);
-  const [selectedDifficulty, setSelectedDifficulty] = useState<DifficultyTab>('easy');
+  const [selectedLevel, setSelectedLevel] = useState<SelectedLevel>(validInitialLevel);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
@@ -44,7 +54,6 @@ export const QuizPage: React.FC = () => {
     setIsLoading(true);
     setError(null);
     try {
-      // Step 6: Fetch from GET /api/quiz/:documentId
       const res = await getQuiz(activeDocId);
       if (res.success && res.quiz) {
         setQuizData(res.quiz);
@@ -66,15 +75,33 @@ export const QuizPage: React.FC = () => {
     fetchQuizData();
   }, [activeDocId]);
 
-  // Current active questions based on selected difficulty tab
-  const currentQuestions: BackendQuizQuestion[] =
-    quizData && quizData[selectedDifficulty] ? quizData[selectedDifficulty] : [];
+  // Strict Level Filtering:
+  // Easy -> Show ONLY Easy questions
+  // Medium -> Show ONLY Medium questions
+  // Hard -> Show ONLY Hard questions
+  // Mixed -> Show ALL questions
+  // Unselected levels are NOT rendered in the questions pool!
+  const currentQuestions: BackendQuizQuestion[] = useMemo(() => {
+    if (!quizData) return [];
+
+    if (selectedLevel === 'easy') {
+      return quizData.easy || [];
+    }
+    if (selectedLevel === 'medium') {
+      return quizData.medium || [];
+    }
+    if (selectedLevel === 'hard') {
+      return quizData.hard || [];
+    }
+    // Mixed: combine all levels
+    return [...(quizData.easy || []), ...(quizData.medium || []), ...(quizData.hard || [])];
+  }, [quizData, selectedLevel]);
 
   const currentQuestion: BackendQuizQuestion | undefined = currentQuestions[currentIndex];
 
   const handleSelectOption = (option: string) => {
     if (isSubmitted || !currentQuestion) return;
-    const qKey = `${selectedDifficulty}_${currentQuestion.id}`;
+    const qKey = `${selectedLevel}_${currentQuestion.id}`;
     setSelectedAnswers((prev) => ({
       ...prev,
       [qKey]: option,
@@ -93,10 +120,12 @@ export const QuizPage: React.FC = () => {
     }
   };
 
-  const handleDifficultyChange = (diff: DifficultyTab) => {
-    setSelectedDifficulty(diff);
+  const handleLevelChange = (level: SelectedLevel) => {
+    setSelectedLevel(level);
+    setSearchParams({ level });
     setCurrentIndex(0);
     setIsSubmitted(false);
+    setSelectedAnswers({});
   };
 
   const handleSubmitQuiz = () => {
@@ -109,11 +138,11 @@ export const QuizPage: React.FC = () => {
     setCurrentIndex(0);
   };
 
-  // Calculate score for the active difficulty level
+  // Calculate score for the active questions pool
   const calculateScore = () => {
     let score = 0;
     currentQuestions.forEach((q) => {
-      const qKey = `${selectedDifficulty}_${q.id}`;
+      const qKey = `${selectedLevel}_${q.id}`;
       if (selectedAnswers[qKey] === q.answer) {
         score += 1;
       }
@@ -126,7 +155,7 @@ export const QuizPage: React.FC = () => {
       <LoadingState
         fullPage
         title="Loading your practice quiz..."
-        description="Fetching difficulty-based questions from backend."
+        description="Fetching difficulty-filtered questions from backend."
       />
     );
   }
@@ -145,12 +174,12 @@ export const QuizPage: React.FC = () => {
 
   const totalQuestions = currentQuestions.length;
   const answeredCount = currentQuestions.filter(
-    (q) => selectedAnswers[`${selectedDifficulty}_${q.id}`] !== undefined
+    (q) => selectedAnswers[`${selectedLevel}_${q.id}`] !== undefined
   ).length;
   const progressPercent =
     totalQuestions > 0 ? Math.round(((currentIndex + 1) / totalQuestions) * 100) : 0;
   const currentSelectedAnswer = currentQuestion
-    ? selectedAnswers[`${selectedDifficulty}_${currentQuestion.id}`]
+    ? selectedAnswers[`${selectedLevel}_${currentQuestion.id}`]
     : undefined;
 
   const score = calculateScore();
@@ -170,7 +199,7 @@ export const QuizPage: React.FC = () => {
                 Self-Assessment Quiz
               </h1>
               <p className="text-xs text-ink-muted">
-                Test your knowledge across difficulty levels.
+                Displaying only questions for your selected target level.
               </p>
             </div>
           </div>
@@ -185,37 +214,51 @@ export const QuizPage: React.FC = () => {
           </Button>
         </div>
 
-        {/* Difficulty Selector Tabs (Easy, Medium, Hard) */}
-        <div className="flex items-center gap-2 pt-2 border-t border-edge">
-          {(['easy', 'medium', 'hard'] as DifficultyTab[]).map((level) => {
-            const count = quizData[level]?.length || 0;
-            const isActive = selectedDifficulty === level;
-            return (
-              <button
-                key={level}
-                type="button"
-                onClick={() => handleDifficultyChange(level)}
-                className={`px-4 py-2 rounded-xl text-xs font-bold capitalize transition-all flex items-center gap-2 ${
-                  isActive
-                    ? level === 'easy'
-                      ? 'bg-emerald-600 text-white shadow-sm'
-                      : level === 'medium'
-                      ? 'bg-brand-600 text-white shadow-sm'
-                      : 'bg-purple-600 text-white shadow-sm'
-                    : 'bg-gray-100 text-ink-secondary hover:bg-gray-200'
-                }`}
-              >
-                <span>{level}</span>
-                <span
-                  className={`text-[10px] px-2 py-0.5 rounded-full ${
-                    isActive ? 'bg-white/20 text-white' : 'bg-white text-ink-muted'
+        {/* Level Selector: Easy, Medium, Hard, Mixed */}
+        <div className="pt-2 border-t border-edge flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4 text-ink-muted" />
+            <span className="text-xs font-semibold text-ink-secondary">Select Level:</span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {(
+              [
+                { key: 'easy', label: 'Easy', count: quizData.easy?.length || 0, color: 'bg-emerald-600' },
+                { key: 'medium', label: 'Medium', count: quizData.medium?.length || 0, color: 'bg-brand-600' },
+                { key: 'hard', label: 'Hard', count: quizData.hard?.length || 0, color: 'bg-purple-600' },
+                {
+                  key: 'mixed',
+                  label: 'Mixed (All Levels)',
+                  count: (quizData.easy?.length || 0) + (quizData.medium?.length || 0) + (quizData.hard?.length || 0),
+                  color: 'bg-indigo-600',
+                },
+              ] as { key: SelectedLevel; label: string; count: number; color: string }[]
+            ).map(({ key, label, count, color }) => {
+              const isActive = selectedLevel === key;
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => handleLevelChange(key)}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+                    isActive
+                      ? `${color} text-white shadow-sm ring-2 ring-offset-1 ring-brand-400`
+                      : 'bg-gray-100 text-ink-secondary hover:bg-gray-200'
                   }`}
                 >
-                  {count} Qs
-                </span>
-              </button>
-            );
-          })}
+                  <span>{label}</span>
+                  <span
+                    className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                      isActive ? 'bg-white/20 text-white' : 'bg-white text-ink-muted'
+                    }`}
+                  >
+                    {count} Qs
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Progress Bar */}
@@ -223,7 +266,7 @@ export const QuizPage: React.FC = () => {
           <div className="space-y-1.5 pt-1">
             <div className="flex justify-between text-xs font-semibold text-ink-muted">
               <span>
-                Question {currentIndex + 1} of {totalQuestions} ({selectedDifficulty.toUpperCase()})
+                Question {currentIndex + 1} of {totalQuestions} &bull; Level: <strong className="text-ink uppercase">{selectedLevel}</strong>
               </span>
               <span className="text-brand-600 font-bold">{progressPercent}%</span>
             </div>
@@ -231,6 +274,18 @@ export const QuizPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* No questions in this level */}
+      {totalQuestions === 0 && (
+        <div className="bg-white border border-edge rounded-2xl p-8 text-center space-y-3">
+          <p className="text-sm text-ink-muted font-medium">
+            No questions available for level &ldquo;{selectedLevel.toUpperCase()}&rdquo;.
+          </p>
+          <Button variant="secondary" size="sm" onClick={() => handleLevelChange('mixed')}>
+            Switch to Mixed (All Levels)
+          </Button>
+        </div>
+      )}
 
       {/* Quiz Submission Results Card (when submitted) */}
       {isSubmitted && (
@@ -241,7 +296,7 @@ export const QuizPage: React.FC = () => {
 
           <div>
             <h2 className="text-2xl font-bold text-ink">
-              Quiz Completed ({selectedDifficulty.toUpperCase()})!
+              Quiz Completed ({selectedLevel.toUpperCase()})!
             </h2>
             <p className="text-sm text-ink-muted mt-1">
               You scored <span className="font-bold text-brand-600">{score}</span> out of{' '}
@@ -256,7 +311,7 @@ export const QuizPage: React.FC = () => {
               onClick={handleResetQuiz}
               leftIcon={<RotateCcw className="w-4 h-4" />}
             >
-              Retry Quiz
+              Retry Level
             </Button>
             <Button
               variant="primary"
@@ -275,7 +330,7 @@ export const QuizPage: React.FC = () => {
         <div className="bg-white border border-edge rounded-2xl p-6 sm:p-8 shadow-card space-y-6">
           <div className="flex items-center justify-between border-b border-edge pb-4">
             <span className="text-xs font-bold text-brand-600 bg-brand-50 px-3 py-1 rounded-full uppercase tracking-wider">
-              Question {currentIndex + 1}
+              Question {currentIndex + 1} of {totalQuestions}
             </span>
             <span className="text-xs font-semibold text-ink-muted">
               {answeredCount}/{totalQuestions} Answered

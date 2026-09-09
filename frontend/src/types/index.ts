@@ -311,6 +311,8 @@ export interface BackendFlashcard {
   id: number | string;
   question: string;
   answer: string;
+  topic?: string;
+  difficulty?: DifficultyLevel | string;
 }
 
 export interface BackendQuizQuestion {
@@ -327,11 +329,29 @@ export interface BackendQuiz {
   hard: BackendQuizQuestion[];
 }
 
+export interface UploadedDocItem {
+  documentId: string;
+  fileName: string;
+  fileUrl: string;
+  uploadedAt?: string;
+}
+
 export interface UploadResponse {
   success: boolean;
   documentId: string;
   fileName: string;
   fileUrl: string;
+  count?: number;
+  documents?: UploadedDocItem[];
+}
+
+export interface MultiUploadResponse {
+  success: boolean;
+  count: number;
+  documents: UploadedDocItem[];
+  documentId?: string;
+  fileName?: string;
+  fileUrl?: string;
 }
 
 export interface ExtractedSection {

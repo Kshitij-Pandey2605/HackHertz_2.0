@@ -165,28 +165,60 @@ export const DocumentsPage: React.FC = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-5 mt-4 border-t border-edge flex items-center gap-2">
-                <Button
-                  variant="primary"
-                  size="md"
-                  onClick={() => handleViewDocument(doc.id)}
-                  rightIcon={<ExternalLink className="w-3.5 h-3.5" />}
-                  className="flex-1 font-semibold"
-                >
-                  View Workspace
-                </Button>
-
-                {doc.file_url && (
-                  <a
-                    href={doc.file_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2.5 rounded-xl border border-edge text-ink-muted hover:text-brand-600 hover:bg-brand-50 transition-colors"
-                    title="Open Original PDF"
+              <div className="pt-4 mt-3 border-t border-edge space-y-2">
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={() => handleViewDocument(doc.id)}
+                    rightIcon={<ExternalLink className="w-3.5 h-3.5" />}
+                    className="flex-1 font-semibold text-xs"
                   >
-                    <FileText className="w-4 h-4" />
-                  </a>
-                )}
+                    Open Workspace
+                  </Button>
+
+                  {doc.file_url && (
+                    <a
+                      href={doc.file_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 rounded-xl border border-edge text-ink-muted hover:text-brand-600 hover:bg-brand-50 transition-colors"
+                      title="Open Original PDF"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                    </a>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-3 gap-1.5 pt-1">
+                  <button
+                    onClick={() => {
+                      setCurrentDocumentId(doc.id);
+                      navigate(`/summary/${doc.id}`);
+                    }}
+                    className="px-2 py-1.5 rounded-lg border border-edge text-[11px] font-semibold text-ink-secondary hover:text-brand-600 hover:bg-brand-50 transition-colors text-center"
+                  >
+                    Summary
+                  </button>
+                  <button
+                    onClick={() => {
+                      setCurrentDocumentId(doc.id);
+                      navigate(`/workspace/${doc.id}/flashcards`);
+                    }}
+                    className="px-2 py-1.5 rounded-lg border border-edge text-[11px] font-semibold text-ink-secondary hover:text-emerald-600 hover:bg-emerald-50 transition-colors text-center"
+                  >
+                    Cards
+                  </button>
+                  <button
+                    onClick={() => {
+                      setCurrentDocumentId(doc.id);
+                      navigate(`/workspace/${doc.id}/quiz`);
+                    }}
+                    className="px-2 py-1.5 rounded-lg border border-edge text-[11px] font-semibold text-ink-secondary hover:text-purple-600 hover:bg-purple-50 transition-colors text-center"
+                  >
+                    Quiz
+                  </button>
+                </div>
               </div>
             </div>
           ))}

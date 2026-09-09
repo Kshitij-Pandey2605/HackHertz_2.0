@@ -84,6 +84,7 @@ export const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               >
+                <Route path="/summary" element={<SummaryPage />} />
                 <Route path="/summary/:documentId" element={<SummaryPage />} />
                 <Route path="/document/:id" element={<WorkspaceOverviewPage />} />
               </Route>
