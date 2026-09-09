@@ -8,19 +8,17 @@ import {
   Sparkles,
   LogOut,
   HelpCircle,
+  BarChart3,
   AlertTriangle,
   Award,
   Target,
   Zap,
   Brain,
-  Layers,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useDocument } from '../../contexts/DocumentContext';
 
 export const Sidebar: React.FC = () => {
   const { user, logout } = useAuth();
-  const { currentDocumentId, uploadedDocuments } = useDocument();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -28,64 +26,67 @@ export const Sidebar: React.FC = () => {
     navigate('/login');
   };
 
-  const activeDocId = currentDocumentId || (uploadedDocuments.length > 0 ? uploadedDocuments[0].id : 'mat_dbms_01');
-
-  const mainNavLinks = [
+  const navLinks = [
     {
       to: '/dashboard',
       label: 'Dashboard',
       icon: <LayoutDashboard className="w-4 h-4" />,
     },
     {
+      to: '/analytics',
+      label: 'Learning Analytics',
+      icon: <BarChart3 className="w-4 h-4" />,
+      badge: 'Insights',
+    },
+    {
       to: '/documents',
       label: 'My Documents',
       icon: <FileText className="w-4 h-4" />,
+      badge: 'Live API',
     },
     {
       to: '/upload',
       label: 'Upload Material',
       icon: <UploadCloud className="w-4 h-4" />,
+      badge: 'New',
     },
     {
-      to: '/summary',
-      label: 'Study Summary',
-      icon: <BookOpen className="w-4 h-4" />,
-    },
-    {
-      to: `/workspace/${activeDocId}/flashcards`,
+      to: '/workspace/mat_dbms_01/flashcards',
       label: 'Study Flashcards',
-      icon: <Layers className="w-4 h-4" />,
+      icon: <BookOpen className="w-4 h-4" />,
+      badge: 'Ready',
     },
     {
-      to: `/workspace/${activeDocId}/quiz/setup`,
+      to: '/workspace/mat_dbms_01/quiz/setup',
       label: 'Quiz Assessment',
       icon: <Sparkles className="w-4 h-4" />,
+      badge: 'Ready',
     },
   ];
 
-  const smartToolsLinks = [
+  const phase2Links = [
     {
-      to: `/workspace/${activeDocId}/weak-topics`,
+      to: '/workspace/mat_dbms_01/weak-topics',
       label: 'Weak Topics',
       icon: <AlertTriangle className="w-4 h-4 text-rose-600" />,
     },
     {
-      to: `/workspace/${activeDocId}/mastery`,
+      to: '/workspace/mat_dbms_01/mastery',
       label: 'Mastery Dashboard',
       icon: <Award className="w-4 h-4 text-brand-600" />,
     },
     {
-      to: `/workspace/${activeDocId}/revision-planner`,
+      to: '/workspace/mat_dbms_01/revision-planner',
       label: 'Revision Planner',
       icon: <Target className="w-4 h-4 text-violet-600" />,
     },
     {
-      to: `/workspace/${activeDocId}/adaptive-quiz`,
+      to: '/workspace/mat_dbms_01/adaptive-quiz',
       label: 'Adaptive Quiz',
       icon: <Zap className="w-4 h-4 text-amber-600" />,
     },
     {
-      to: `/workspace/${activeDocId}/ai-coach`,
+      to: '/workspace/mat_dbms_01/ai-coach',
       label: 'AI Study Coach',
       icon: <Brain className="w-4 h-4 text-emerald-600" />,
     },
@@ -97,11 +98,18 @@ export const Sidebar: React.FC = () => {
       <div className="h-16 flex items-center px-6 border-b border-edge">
         <NavLink to="/dashboard" className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl overflow-hidden bg-white shadow-sm border border-slate-100 flex items-center justify-center flex-shrink-0">
-            <img src="/logo.png" alt="PreMind AI Logo" className="w-full h-full object-contain p-0.5" />
+            <img
+              src="/logo.png"
+              alt="PreMind AI Logo"
+              className="w-full h-full object-contain p-0.5"
+            />
           </div>
           <div className="flex flex-col">
             <span className="text-base font-bold tracking-tight text-ink flex items-center gap-1.5">
-              PreMind <span className="text-[10px] font-semibold text-brand-600 bg-brand-50 px-1 py-0.5 rounded border border-brand-100">AI</span>
+              PreMind{' '}
+              <span className="text-[10px] font-semibold text-brand-600 bg-brand-50 px-1 py-0.5 rounded border border-brand-100">
+                AI
+              </span>
             </span>
           </div>
         </NavLink>
@@ -115,7 +123,7 @@ export const Sidebar: React.FC = () => {
               Workspace
             </p>
             <nav className="space-y-1">
-              {mainNavLinks.map((link) => (
+              {navLinks.map((link) => (
                 <NavLink
                   key={link.to}
                   to={link.to}
@@ -131,18 +139,26 @@ export const Sidebar: React.FC = () => {
                     {link.icon}
                     <span>{link.label}</span>
                   </div>
+                  {link.badge && (
+                    <span className="text-[10px] bg-brand-100 text-brand-700 font-semibold px-1.5 py-0.5 rounded-full">
+                      {link.badge}
+                    </span>
+                  )}
                 </NavLink>
               ))}
             </nav>
           </div>
 
-          {/* Smart Tools without extra status badges */}
+          {/* Phase 2 Smart Tools */}
           <div>
-            <p className="px-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-2">
+            <p className="px-3 text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-2 flex items-center gap-2">
               Smart Tools
+              <span className="text-[9px] font-bold text-brand-700 bg-brand-50 border border-brand-200 px-1.5 py-0.5 rounded-full">
+                NEW
+              </span>
             </p>
             <nav className="space-y-1">
-              {smartToolsLinks.map((link) => (
+              {phase2Links.map((link) => (
                 <NavLink
                   key={link.to}
                   to={link.to}
@@ -172,7 +188,8 @@ export const Sidebar: React.FC = () => {
               <span>Smart Summarizer</span>
             </div>
             <p className="text-[11px] text-ink-muted leading-relaxed">
-              Upload notes or textbooks to automatically generate structured cram sheets & quizzes.
+              Upload notes or textbooks to automatically generate structured
+              cram sheets & quizzes.
             </p>
           </div>
 
@@ -183,10 +200,15 @@ export const Sidebar: React.FC = () => {
                 {user?.name ? user.name[0].toUpperCase() : 'U'}
               </div>
               <div className="overflow-hidden">
-                <p className="text-xs font-semibold text-ink truncate">{user?.name || 'Student'}</p>
-                <p className="text-[11px] text-ink-muted truncate">{user?.email || 'user@premind.ai'}</p>
+                <p className="text-xs font-semibold text-ink truncate">
+                  {user?.name || 'Student'}
+                </p>
+                <p className="text-[11px] text-ink-muted truncate">
+                  {user?.email || 'user@premind.ai'}
+                </p>
               </div>
             </div>
+
             <button
               onClick={handleLogout}
               className="text-ink-muted hover:text-rose-600 p-1.5 rounded-lg hover:bg-white transition-colors"

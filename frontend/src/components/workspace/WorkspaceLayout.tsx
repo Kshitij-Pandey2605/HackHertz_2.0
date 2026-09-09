@@ -7,6 +7,7 @@ import { WorkspaceSidebar } from './WorkspaceSidebar';
 import { StudyProgressBanner } from './StudyProgressBanner';
 import { LoadingState } from '../ui/LoadingState';
 import { ErrorState } from '../ui/ErrorState';
+import { StudyCopilot } from '../copilot/StudyCopilot';
 import { Sparkles, Eye, BookOpen, Zap, Layers, ListTree, Key, Sigma, BookMarked } from 'lucide-react';
 
 export const WorkspaceLayout: React.FC = () => {
@@ -141,6 +142,9 @@ export const WorkspaceLayout: React.FC = () => {
           <Outlet context={{ material }} />
         </div>
       </div>
+
+      {/* Contextual AI Study Copilot */}
+      <StudyCopilot />
 
       {/* Mobile Workspace Quick Bottom Bar */}
       <nav

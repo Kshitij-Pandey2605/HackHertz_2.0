@@ -9,6 +9,7 @@ import {
   ArrowRight,
   Clock,
   Sparkles,
+  BarChart3,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { api } from '../services/api';
@@ -251,7 +252,36 @@ export const DashboardPage: React.FC = () => {
         )}
       </div>
 
-      {/* 5. STUDY OVERVIEW METRICS (Supporting Information) */}
+      {/* 5. STUDY ACTIVITY & ANALYTICS PREVIEW */}
+      <div className="bg-gradient-to-r from-brand-50/70 via-indigo-50/50 to-purple-50/70 border border-brand-200/80 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-subtle">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-white border border-brand-200 text-brand-600 shadow-xs flex-shrink-0">
+            <BarChart3 className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="text-xs sm:text-sm font-bold text-ink">Your Learning Activity</h3>
+              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100/80 px-2 py-0.2 rounded-full">
+                Active Streak: 4 Days
+              </span>
+            </div>
+            <p className="text-xs text-ink-muted mt-0.5">
+              4h 35m studied &bull; 86 flashcards reviewed &bull; 7 quizzes completed
+            </p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => navigate('/analytics')}
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-brand-700 bg-white hover:bg-brand-50 border border-brand-200 transition-colors shadow-subtle self-start sm:self-auto"
+        >
+          <span>View Detailed Activity</span>
+          <ArrowRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
+
+      {/* 6. STUDY OVERVIEW METRICS (Supporting Information) */}
       <div className="pt-2 border-t border-edge">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-xs font-semibold text-ink-muted uppercase tracking-wider">
