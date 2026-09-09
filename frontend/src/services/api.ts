@@ -29,6 +29,11 @@ import {
   BackendQuiz,
   UploadResponse,
   ExtractedDocumentResponse,
+  AnalyticsSummary,
+  AnalyticsPeriodType,
+  CopilotMessage,
+  CopilotContext,
+  CopilotChatRequest,
 } from '../types';
 import {
   mockMaterials,
@@ -45,6 +50,11 @@ import {
   mockFlashcards,
   mockQuizQuestions,
   mockExportData,
+  mockAnalyticsData7d,
+  mockAnalyticsData30d,
+  mockAnalyticsDataAll,
+  getCopilotResponse,
+  getContextualPrompts,
 } from '../data/mockData';
 
 import { supabase } from './supabase';
@@ -1576,6 +1586,52 @@ export const api = {
         success: true,
         data: { filename },
         message: 'Printer dialog opened. Choose "Save as PDF" for print-ready layout.',
+      };
+    },
+  },
+
+  // ==========================================
+  // Phase 4: Copilot & Analytics Endpoints
+  // ==========================================
+  copilot: {
+    sendMessage: async (request: CopilotChatRequest): Promise<ApiResponse<CopilotMessage>> => {
+      await delay(750);
+      const generated = getCopilotResponse(request.message, request.context);
+      const message: CopilotMessage = {
+        id: `cmsg_${Date.now()}`,
+        sender: 'copilot',
+        content: generated.content,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        contextModule: request.context.moduleName,
+        actions: generated.actions,
+      };
+      return {
+        success: true,
+        data: message,
+        message: 'Explanation generated',
+      };
+    },
+
+    getSuggestedPrompts: async (context: CopilotContext): Promise<ApiResponse<string[]>> => {
+      await delay(150);
+      const prompts = getContextualPrompts(context);
+      return {
+        success: true,
+        data: prompts,
+      };
+    },
+  },
+
+  analytics: {
+    getAnalytics: async (period: AnalyticsPeriodType = '7d'): Promise<ApiResponse<AnalyticsSummary>> => {
+      await delay(400);
+      let data = mockAnalyticsData7d;
+      if (period === '30d') data = mockAnalyticsData30d;
+      if (period === 'all') data = mockAnalyticsDataAll;
+
+      return {
+        success: true,
+        data,
       };
     },
   },

@@ -15,6 +15,7 @@ import {
   Download,
   LogOut,
   ArrowLeft,
+  BarChart3,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 export const WorkspaceSidebar: React.FC = () => {
@@ -240,8 +241,16 @@ export const WorkspaceSidebar: React.FC = () => {
             </div>
           </div>
 
-          {/* User profile & Logout */}
-          <div className="pt-4 border-t border-edge space-y-3">
+          {/* User profile & Analytics */}
+          <div className="pt-4 border-t border-edge space-y-2">
+            <NavLink
+              to="/analytics"
+              className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-ink-secondary hover:text-brand-600 hover:bg-brand-50/60 border border-transparent hover:border-brand-200 transition-colors"
+            >
+              <BarChart3 className="w-4 h-4 text-brand-600" />
+              <span>Learning Analytics</span>
+            </NavLink>
+
             <div className="flex items-center justify-between p-2 rounded-xl bg-gray-50 border border-edge">
               <div className="flex items-center gap-2.5 overflow-hidden">
                 <div className="w-8 h-8 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
