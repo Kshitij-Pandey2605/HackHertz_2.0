@@ -5,22 +5,30 @@ import {
   Zap,
   FileText,
   ListChecks,
-  AlertCircle,
-  ArrowRight,
+  RefreshCw,
   Layers,
   HelpCircle,
-  RefreshCw,
+  ArrowRight,
+  FolderOpen,
 } from 'lucide-react';
 import { getSummary } from '../services/api';
 import { BackendSummary } from '../types';
+import { useDocument } from '../contexts/DocumentContext';
 import { Button } from '../components/ui/Button';
 import { ErrorState } from '../components/ui/ErrorState';
 import { EmptyState } from '../components/ui/EmptyState';
 
 export const SummaryPage: React.FC = () => {
   const { id, documentId } = useParams<{ id?: string; documentId?: string }>();
-  const activeDocId = documentId || id || '123';
   const navigate = useNavigate();
+  const { currentDocumentId, uploadedDocuments, setCurrentDocumentId } = useDocument();
+
+  // Determine active document ID
+  const activeDocId =
+    documentId ||
+    id ||
+    currentDocumentId ||
+    (uploadedDocuments.length > 0 ? uploadedDocuments[0].id : 'mat_dbms_01');
 
   const [summaryData, setSummaryData] = useState<BackendSummary | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -28,7 +36,7 @@ export const SummaryPage: React.FC = () => {
 
   const fetchSummaryData = async () => {
     if (!activeDocId) {
-      setError('Invalid Document ID');
+      setError('Please select or upload a document to view its study summary.');
       setIsLoading(false);
       return;
     }
@@ -54,17 +62,20 @@ export const SummaryPage: React.FC = () => {
     fetchSummaryData();
   }, [activeDocId]);
 
+  const currentDocObj = uploadedDocuments.find((d) => d.id === activeDocId);
+  const docTitle = currentDocObj?.file_name || (activeDocId === 'mat_dbms_01' ? 'Database Management Systems (DBMS)' : `Study Document #${activeDocId}`);
+
   // Loading Skeleton
   if (isLoading) {
     return (
-      <div className="max-w-4xl mx-auto space-y-6 animate-fadeIn">
+      <div className="max-w-5xl mx-auto space-y-6 animate-fadeIn pb-12">
         <div className="h-28 bg-white border border-edge rounded-2xl p-6 space-y-3 animate-pulse">
           <div className="h-6 bg-gray-200 rounded w-1/3" />
           <div className="h-4 bg-gray-100 rounded w-2/3" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-2 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6">
             <div className="bg-white border border-edge rounded-2xl p-6 space-y-4 animate-pulse">
               <div className="h-5 bg-gray-200 rounded w-1/4" />
               <div className="h-4 bg-gray-100 rounded w-full" />
@@ -90,12 +101,12 @@ export const SummaryPage: React.FC = () => {
     );
   }
 
-  // Error UI
-  if (error) {
+  // Error State
+  if (error && !summaryData) {
     return (
       <div className="max-w-xl mx-auto my-12">
         <ErrorState
-          title="Could not load summary"
+          title="Could not load Study Summary"
           message={error}
           onRetry={fetchSummaryData}
         />
@@ -109,8 +120,8 @@ export const SummaryPage: React.FC = () => {
       <div className="max-w-xl mx-auto my-12">
         <EmptyState
           title="No Summary Found"
-          description="We could not locate summary notes for this document ID."
-          actionLabel="Go to Upload"
+          description="Upload your study materials (textbooks, lecture slides, or notes) to generate an AI study summary."
+          actionLabel="Upload Material"
           onAction={() => navigate('/upload')}
         />
       </div>
@@ -122,20 +133,47 @@ export const SummaryPage: React.FC = () => {
       {/* Header Banner */}
       <div className="bg-white border border-edge rounded-2xl p-6 shadow-card flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-brand-50 text-brand-600 border border-brand-100">
+          <div className="p-3 rounded-xl bg-brand-50 text-brand-600 border border-brand-100">
             <BookOpen className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-ink">
-              Document Summary
-            </h1>
-            <p className="text-xs text-ink-muted mt-0.5 font-mono">
-              Document ID: {activeDocId}
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold tracking-tight text-ink">
+                Study Summary
+              </h1>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 border border-brand-200">
+                Layered Architecture
+              </span>
+            </div>
+            <p className="text-xs text-ink-muted mt-0.5 font-medium truncate max-w-md">
+              {docTitle}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* Document Selector & Actions */}
+        <div className="flex flex-wrap items-center gap-2">
+          {uploadedDocuments.length > 1 && (
+            <div className="flex items-center gap-1.5 bg-gray-50 border border-edge px-3 py-1.5 rounded-xl">
+              <FolderOpen className="w-3.5 h-3.5 text-ink-muted" />
+              <select
+                value={activeDocId}
+                onChange={(e) => {
+                  const newId = e.target.value;
+                  setCurrentDocumentId(newId);
+                  navigate(`/summary/${newId}`);
+                }}
+                className="bg-transparent text-xs font-semibold text-ink focus:outline-none cursor-pointer"
+              >
+                {uploadedDocuments.map((doc) => (
+                  <option key={doc.id} value={doc.id}>
+                    {doc.file_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           <Button
             variant="secondary"
             size="sm"
@@ -144,6 +182,7 @@ export const SummaryPage: React.FC = () => {
           >
             Refresh
           </Button>
+
           <Button
             variant="primary"
             size="sm"
@@ -176,18 +215,18 @@ export const SummaryPage: React.FC = () => {
               <FileText className="w-5 h-5 text-brand-600" />
               <span>Detailed Breakdown</span>
             </div>
-            <p className="text-sm text-ink-secondary leading-relaxed sm:leading-loose">
+            <div className="text-sm text-ink-secondary leading-relaxed sm:leading-loose whitespace-pre-line">
               {summaryData.detailedSummary}
-            </p>
+            </div>
           </div>
         </div>
 
-        {/* Right Column: Exam Cram Notes */}
+        {/* Right Column: High-Yield Exam Cram Notes */}
         <div className="space-y-6">
           <div className="bg-white border border-edge rounded-2xl p-6 shadow-card space-y-4 sticky top-24">
             <div className="flex items-center gap-2 text-ink font-bold text-sm border-b border-edge pb-3">
               <ListChecks className="w-4 h-4 text-purple-600" />
-              <span>High-Yield Exam Notes</span>
+              <span>Exam Cram Notes</span>
             </div>
 
             {summaryData.examNotes && summaryData.examNotes.length > 0 ? (
@@ -205,10 +244,10 @@ export const SummaryPage: React.FC = () => {
                 ))}
               </ul>
             ) : (
-              <p className="text-xs text-ink-muted">No exam notes available.</p>
+              <p className="text-xs text-ink-muted">No exam cram notes recorded yet.</p>
             )}
 
-            {/* Quick Practice CTA */}
+            {/* Quick Navigation to Flashcards & Quiz */}
             <div className="pt-4 border-t border-edge space-y-2">
               <Button
                 variant="secondary"

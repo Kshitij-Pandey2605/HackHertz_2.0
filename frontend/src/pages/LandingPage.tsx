@@ -36,7 +36,7 @@ export const LandingPage: React.FC = () => {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Hackathon PS Problem Badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-200 text-brand-700 text-xs font-semibold mb-6 animate-fadeIn">
-            <Sparkles className="w-3.5 h-3.5 text-brand-600" />
+            <img src="/logo.png" alt="PreMind AI" className="w-4 h-4 rounded-full object-cover shadow-xs" />
             <span>Smart Study Material Summarizer &bull; EdTech & Smart Learning</span>
           </div>
 
@@ -505,11 +505,11 @@ export const LandingPage: React.FC = () => {
       {/* 8. FOOTER */}
       <footer className="py-12 bg-white border-t border-edge text-xs text-ink-muted">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-brand-600 text-white flex items-center justify-center">
-              <Sparkles className="w-3.5 h-3.5" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg overflow-hidden bg-white shadow-sm border border-slate-100 flex items-center justify-center flex-shrink-0">
+              <img src="/logo.png" alt="PreMind AI Logo" className="w-full h-full object-cover" />
             </div>
-            <span className="font-bold text-ink">PreMind AI</span>
+            <span className="font-bold text-ink text-sm">PreMind AI</span>
             <span>&bull; Hackathon E-03 EdTech & Smart Learning</span>
           </div>
           <p>&copy; {new Date().getFullYear()} PreMind AI. Turn any textbook into exam-ready knowledge.</p>

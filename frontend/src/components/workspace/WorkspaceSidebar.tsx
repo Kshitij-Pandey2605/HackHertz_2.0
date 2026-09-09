@@ -36,10 +36,14 @@ export const WorkspaceSidebar: React.FC = () => {
       end: true,
     },
     {
+      to: `/workspace/${id}/summary`,
+      label: 'Study Summary',
+      icon: <BookOpen className="w-4 h-4" />,
+    },
+    {
       to: `/workspace/${id}/quick-glance`,
       label: 'Quick Glance',
       icon: <Eye className="w-4 h-4" />,
-      badge: '1 min',
     },
     {
       to: `/workspace/${id}/deep-summary`,
@@ -73,7 +77,6 @@ export const WorkspaceSidebar: React.FC = () => {
       to: `/workspace/${id}/flashcards`,
       label: 'Flashcards',
       icon: <Layers className="w-4 h-4" />,
-      badge: 'Active',
     },
   ];
 
@@ -82,7 +85,6 @@ export const WorkspaceSidebar: React.FC = () => {
       to: `/workspace/${id}/quiz/setup`,
       label: 'Quiz Assessment',
       icon: <HelpCircle className="w-4 h-4" />,
-      badge: 'Test',
     },
   ];
 
@@ -91,13 +93,11 @@ export const WorkspaceSidebar: React.FC = () => {
       to: `/workspace/${id}/exam-cram`,
       label: 'Exam Cram',
       icon: <Zap className="w-4 h-4" />,
-      badge: 'Fast',
     },
     {
       to: `/workspace/${id}/export`,
       label: 'Export Cheat Sheet',
       icon: <Download className="w-4 h-4" />,
-      badge: 'PDF',
     },
   ];
 
@@ -106,8 +106,8 @@ export const WorkspaceSidebar: React.FC = () => {
         {/* Workspace Brand Header */}
         <div className="h-16 flex items-center justify-between px-5 border-b border-edge">
           <NavLink to="/dashboard" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-600 to-violet-700 flex items-center justify-center text-white shadow-sm">
-              <Sparkles className="w-4 h-4" />
+            <div className="w-8 h-8 rounded-xl overflow-hidden bg-white shadow-sm border border-slate-100 flex items-center justify-center flex-shrink-0">
+              <img src="/logo.png" alt="PreMind AI Logo" className="w-full h-full object-contain p-0.5" />
             </div>
             <span className="text-base font-bold tracking-tight text-ink">
               PreMind <span className="text-[10px] text-brand-600 font-semibold bg-brand-50 px-1 py-0.5 rounded border border-brand-100">AI</span>
@@ -151,11 +151,6 @@ export const WorkspaceSidebar: React.FC = () => {
                       {link.icon}
                       <span>{link.label}</span>
                     </div>
-                    {link.badge && (
-                      <span className="text-[10px] bg-brand-100 text-brand-700 font-semibold px-1.5 py-0.5 rounded-full">
-                        {link.badge}
-                      </span>
-                    )}
                   </NavLink>
                 ))}
               </nav>
@@ -184,11 +179,6 @@ export const WorkspaceSidebar: React.FC = () => {
                       {link.icon}
                       <span>{link.label}</span>
                     </div>
-                    {link.badge && (
-                      <span className="text-[10px] bg-purple-100 text-purple-700 font-semibold px-1.5 py-0.5 rounded-full">
-                        {link.badge}
-                      </span>
-                    )}
                   </NavLink>
                 ))}
               </nav>
@@ -217,11 +207,6 @@ export const WorkspaceSidebar: React.FC = () => {
                       {link.icon}
                       <span>{link.label}</span>
                     </div>
-                    {link.badge && (
-                      <span className="text-[10px] bg-emerald-100 text-emerald-800 font-semibold px-1.5 py-0.5 rounded-full">
-                        {link.badge}
-                      </span>
-                    )}
                   </NavLink>
                 ))}
               </nav>
@@ -250,11 +235,6 @@ export const WorkspaceSidebar: React.FC = () => {
                       {link.icon}
                       <span>{link.label}</span>
                     </div>
-                    {link.badge && (
-                      <span className="text-[10px] bg-amber-100 text-amber-800 font-semibold px-1.5 py-0.5 rounded-full">
-                        {link.badge}
-                      </span>
-                    )}
                   </NavLink>
                 ))}
               </nav>

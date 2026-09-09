@@ -13,6 +13,7 @@ const flashcardRoutes = require('./routes/flashcard.routes');
 const quizRoutes = require('./routes/quiz.routes');
 const authRoutes = require('./routes/auth.routes');
 const extractRoutes = require('./routes/extract.routes');
+const analyticsRoutes = require('./routes/analytics.routes');
 
 // Initialize Express application
 const app = express();
@@ -120,6 +121,7 @@ app.use('/api/summary', summaryRoutes);
 app.use('/api/flashcards', flashcardRoutes);
 app.use('/api/quiz', quizRoutes);
 app.use('/api/extract', extractRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // Mount any additional application API routes from routes/index.js if available
 try {

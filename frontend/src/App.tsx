@@ -39,6 +39,13 @@ import { QuizPage } from './pages/quiz/QuizPage';
 import { QuizResultsPage } from './pages/quiz/QuizResultsPage';
 import { ExportPage } from './pages/export/ExportPage';
 
+// Phase 2 — Differentiator Features
+import { WeakTopicsView } from './pages/workspace/WeakTopicsView';
+import { MasteryDashboardView } from './pages/workspace/MasteryDashboardView';
+import { RevisionPlannerView } from './pages/workspace/RevisionPlannerView';
+import { AdaptiveQuizView } from './pages/workspace/AdaptiveQuizView';
+import { AICoachView } from './pages/workspace/AICoachView';
+
 export const App: React.FC = () => {
   return (
     <BrowserRouter>
@@ -79,6 +86,7 @@ export const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               >
+                <Route path="/summary" element={<SummaryPage />} />
                 <Route path="/summary/:documentId" element={<SummaryPage />} />
                 <Route path="/document/:id" element={<WorkspaceOverviewPage />} />
               </Route>
@@ -106,6 +114,13 @@ export const App: React.FC = () => {
                 <Route path="/workspace/:id/quiz" element={<QuizPage />} />
                 <Route path="/workspace/:id/quiz/results" element={<QuizResultsPage />} />
                 <Route path="/workspace/:id/export" element={<ExportPage />} />
+
+                {/* Phase 2 — Differentiator Feature Routes */}
+                <Route path="/workspace/:id/weak-topics" element={<WeakTopicsView />} />
+                <Route path="/workspace/:id/mastery" element={<MasteryDashboardView />} />
+                <Route path="/workspace/:id/revision-planner" element={<RevisionPlannerView />} />
+                <Route path="/workspace/:id/adaptive-quiz" element={<AdaptiveQuizView />} />
+                <Route path="/workspace/:id/ai-coach" element={<AICoachView />} />
 
                 {/* Support /flashcards/:documentId and /quiz/:documentId directly */}
                 <Route path="/flashcards/:documentId" element={<FlashcardsView />} />

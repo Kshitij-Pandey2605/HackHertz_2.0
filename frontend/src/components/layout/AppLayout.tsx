@@ -17,8 +17,8 @@ export const AppLayout: React.FC = () => {
       {/* Mobile Top Header */}
       <header className="lg:hidden sticky top-0 z-30 bg-white border-b border-edge px-4 h-14 flex items-center justify-between">
         <Link to="/dashboard" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-600 to-violet-700 flex items-center justify-center text-white">
-            <Sparkles className="w-4 h-4" />
+          <div className="w-7 h-7 rounded-lg overflow-hidden bg-white shadow-sm border border-slate-100 flex items-center justify-center flex-shrink-0">
+            <img src="/logo.png" alt="PreMind AI Logo" className="w-full h-full object-contain p-0.5" />
           </div>
           <span className="text-sm font-bold tracking-tight text-ink">
             PreMind <span className="text-[10px] text-brand-600 font-semibold bg-brand-50 px-1 rounded">AI</span>

@@ -2,18 +2,18 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const upload = require('../middleware/upload.middleware');
-const { uploadPdf } = require('../controllers/upload.controller');
+const { uploadPdf, uploadMultiplePdfs } = require('../controllers/upload.controller');
 
-// Middleware to catch Multer-specific errors cleanly
+// Middleware to catch Multer-specific errors cleanly for any uploaded field
 const handleMulterUpload = (req, res, next) => {
-  const uploadSingle = upload.single('file');
+  const uploadHandler = upload.any();
 
-  uploadSingle(req, res, (err) => {
+  uploadHandler(req, res, (err) => {
     if (err instanceof multer.MulterError) {
       if (err.code === 'LIMIT_FILE_SIZE') {
         return res.status(400).json({
           success: false,
-          error: 'File size limit exceeded. Maximum allowed size is 50MB.',
+          error: 'File size limit exceeded. Maximum allowed size is 50MB per file.',
         });
       }
       return res.status(400).json({
@@ -32,9 +32,16 @@ const handleMulterUpload = (req, res, next) => {
 
 /**
  * @route   POST /api/upload
- * @desc    Upload PDF study material to Supabase Storage & save document record
+ * @desc    Upload single or multiple PDF study materials
  * @access  Public
  */
 router.post('/', handleMulterUpload, uploadPdf);
+
+/**
+ * @route   POST /api/upload/multiple
+ * @desc    Upload multiple PDF study materials in bulk
+ * @access  Public
+ */
+router.post('/multiple', handleMulterUpload, uploadMultiplePdfs);
 
 module.exports = router;

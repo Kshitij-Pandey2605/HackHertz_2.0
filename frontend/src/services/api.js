@@ -3,6 +3,7 @@ import {
   api as baseApi,
   apiClient,
   uploadDocument,
+  uploadMultipleDocuments,
   getDocuments,
   getSummary,
   getFlashcards,
@@ -13,6 +14,7 @@ import {
 // Combine axios instance with sub-services
 const api = Object.assign(apiClient, baseApi, {
   uploadDocument,
+  uploadMultipleDocuments,
   getDocuments,
   getSummary,
   getFlashcards,
@@ -24,6 +26,7 @@ export {
   api,
   apiClient,
   uploadDocument,
+  uploadMultipleDocuments,
   getDocuments,
   getSummary,
   getFlashcards,
