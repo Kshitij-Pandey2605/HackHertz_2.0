@@ -63,7 +63,10 @@ export const SummaryPage: React.FC = () => {
   }, [activeDocId]);
 
   const currentDocObj = uploadedDocuments.find((d) => d.id === activeDocId);
-  const docTitle = currentDocObj?.file_name || (activeDocId === 'mat_dbms_01' ? 'Database Management Systems (DBMS)' : `Study Document #${activeDocId}`);
+  const rawTitle = currentDocObj?.file_name || (activeDocId === 'mat_dbms_01' ? 'DBMS Notes — Normalization Basics' : `Study Document #${activeDocId}`);
+  const docTitle = rawTitle
+    .replace(/Database Management Systems/gi, 'DBMS Notes')
+    .replace(/Functional Dependencies/gi, 'Normalization Basics');
 
   // Loading Skeleton
   if (isLoading) {
@@ -106,7 +109,7 @@ export const SummaryPage: React.FC = () => {
     return (
       <div className="max-w-xl mx-auto my-12">
         <ErrorState
-          title="Could not load Study Summary"
+          title="Could not load Summary Notes"
           message={error}
           onRetry={fetchSummaryData}
         />
@@ -120,8 +123,8 @@ export const SummaryPage: React.FC = () => {
       <div className="max-w-xl mx-auto my-12">
         <EmptyState
           title="No Summary Found"
-          description="Upload your study materials (textbooks, lecture slides, or notes) to generate an AI study summary."
-          actionLabel="Upload Material"
+          description="Upload your study notes or slides to generate an instant study summary."
+          actionLabel="Upload Notes"
           onAction={() => navigate('/upload')}
         />
       </div>
@@ -139,10 +142,10 @@ export const SummaryPage: React.FC = () => {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-bold tracking-tight text-ink">
-                Study Summary
+                Summary Notes
               </h1>
               <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 border border-brand-200">
-                Layered Architecture
+                3-Level Notes
               </span>
             </div>
             <p className="text-xs text-ink-muted mt-0.5 font-medium truncate max-w-md">
@@ -189,7 +192,7 @@ export const SummaryPage: React.FC = () => {
             onClick={() => navigate(`/workspace/${activeDocId}/flashcards`)}
             rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
           >
-            Study Flashcards
+            Practice Flashcards
           </Button>
         </div>
       </div>

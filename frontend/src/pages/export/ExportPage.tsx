@@ -116,20 +116,20 @@ export const ExportPage: React.FC = () => {
           onClick={() => navigate(`/workspace/${id}`)}
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-muted hover:text-ink mb-3 transition-colors"
         >
-          <ArrowLeft className="w-3.5 h-3.5" /> Back to Study Workspace
+          <ArrowLeft className="w-3.5 h-3.5" /> Back to Study Notes
         </button>
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold mb-2">
               <Sparkles className="w-3 h-3 text-emerald-600" />
-              <span>Export & Print Workspace</span>
+              <span>Download Study Kit</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-ink">
-              Export Your Study Material
+              Download Your Study Kit
             </h1>
             <p className="text-sm text-ink-muted mt-1">
-              Take your revision notes anywhere: printable PDF, Markdown, or print directly.
+              Take your study notes and summaries anywhere: print as PDF, save to Markdown, or copy notes.
             </p>
           </div>
 

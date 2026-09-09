@@ -85,10 +85,10 @@ export const DocumentsPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-ink flex items-center gap-2">
-            My Study Documents
+            My Study Files
           </h1>
           <p className="text-sm text-ink-muted mt-1">
-            Browse all uploaded PDF materials and open study workspaces.
+            Browse all your uploaded study notes, lecture slides, and open interactive study tools.
           </p>
         </div>
 
@@ -110,7 +110,7 @@ export const DocumentsPage: React.FC = () => {
             leftIcon={<UploadCloud className="w-4 h-4" />}
             className="shadow-subtle"
           >
-            Upload PDF
+            Upload Notes
           </Button>
         </div>
       </div>
@@ -118,9 +118,9 @@ export const DocumentsPage: React.FC = () => {
       {/* Documents Grid / Empty State */}
       {uploadedDocuments.length === 0 ? (
         <EmptyState
-          title="No uploaded documents found"
-          description="Upload your first textbook, lecture note, or PDF slide deck to generate instant summaries, flashcards, and quizzes."
-          actionLabel="Upload PDF Document"
+          title="No study files yet"
+          description="Upload your first lecture notes or textbook chapters to get instant summaries, flashcards, and practice quizzes."
+          actionLabel="Upload Notes"
           onAction={() => navigate('/upload')}
         />
       ) : (
@@ -174,7 +174,7 @@ export const DocumentsPage: React.FC = () => {
                     rightIcon={<ExternalLink className="w-3.5 h-3.5" />}
                     className="flex-1 font-semibold text-xs"
                   >
-                    Open Workspace
+                    Start Studying
                   </Button>
 
                   {doc.file_url && (
@@ -183,7 +183,7 @@ export const DocumentsPage: React.FC = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-2 rounded-xl border border-edge text-ink-muted hover:text-brand-600 hover:bg-brand-50 transition-colors"
-                      title="Open Original PDF"
+                      title="View Original PDF"
                     >
                       <FileText className="w-3.5 h-3.5" />
                     </a>
@@ -207,7 +207,7 @@ export const DocumentsPage: React.FC = () => {
                     }}
                     className="px-2 py-1.5 rounded-lg border border-edge text-[11px] font-semibold text-ink-secondary hover:text-emerald-600 hover:bg-emerald-50 transition-colors text-center"
                   >
-                    Cards
+                    Flashcards
                   </button>
                   <button
                     onClick={() => {

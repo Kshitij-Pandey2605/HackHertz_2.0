@@ -95,10 +95,10 @@ export const GlossaryView: React.FC = () => {
           </div>
           <div>
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-ink">
-              Subject Glossary
+              Key Terms & Definitions
             </h1>
             <p className="text-xs sm:text-sm text-ink-muted">
-              Every important term from your material, explained clearly.
+              Every important term from your study notes, explained in plain language.
             </p>
           </div>
         </div>

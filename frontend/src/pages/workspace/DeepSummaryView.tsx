@@ -73,10 +73,10 @@ export const DeepSummaryView: React.FC = () => {
           </div>
           <div>
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-ink">
-              Deep Summary
+              Detailed Notes
             </h1>
             <p className="text-xs sm:text-sm text-ink-muted">
-              Understand the concepts, not just the keywords.
+              In-depth chapter breakdowns, explanations, and step-by-step examples.
             </p>
           </div>
         </div>

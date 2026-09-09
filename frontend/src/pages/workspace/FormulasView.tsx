@@ -66,10 +66,10 @@ export const FormulasView: React.FC = () => {
           </div>
           <div>
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-ink">
-              Formulas & Normalization Rules
+              Formulas & Rules
             </h1>
             <p className="text-xs sm:text-sm text-ink-muted">
-              Technical relationships and formal relational rules extracted from your study material.
+              Formulas, equations, and rules extracted from your study notes.
             </p>
           </div>
         </div>

@@ -11,7 +11,7 @@ import {
   RefreshCw,
   Target,
 } from 'lucide-react';
-import { RevisionDay, RevisionTopic } from '../../types';
+import { RevisionPlan, RevisionDay, RevisionTopic } from '../../types';
 import { mockRevisionPlan } from '../../data/phase2MockData';
 import { Button } from '../../components/ui/Button';
 
@@ -130,7 +130,7 @@ const DayCard: React.FC<{ day: RevisionDay; onToggle: (dayNum: number) => void }
 export const RevisionPlannerView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [plan, setPlan] = useState(mockRevisionPlan);
+  const [plan, setPlan] = useState<RevisionPlan>(mockRevisionPlan);
 
   const toggleDay = (dayNum: number) => {
     setPlan((prev) => ({

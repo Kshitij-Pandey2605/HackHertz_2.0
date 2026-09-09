@@ -119,15 +119,15 @@ export const UploadPage: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-ink">
-              Upload Study Material
+              Upload Notes
             </h1>
             <p className="text-sm text-ink-muted mt-1">
-              Upload single or multiple PDF textbooks, lecture slides, or notes to generate separate summaries, flashcards, and quizzes.
+              Drop your PDF lecture slides, textbook chapters, or study guides here. PreMind AI will automatically create summaries, flashcards, and quizzes.
             </p>
           </div>
           <div className="flex items-center gap-2 self-start sm:self-auto text-xs font-medium text-brand-700 bg-brand-50 px-3 py-1.5 rounded-xl border border-brand-200">
             <Zap className="w-3.5 h-3.5 text-brand-600" />
-            <span>Multi-PDF AI Processing</span>
+            <span>AI Study Kit Generator</span>
           </div>
         </div>
       </div>
@@ -229,9 +229,9 @@ export const UploadPage: React.FC = () => {
         )}
       </div>
 
-      {/* 2. Choose Your Learning Level */}
+      {/* 2. Choose Your Study Level */}
       <div className="pt-2">
-        <h3 className="text-base font-semibold text-ink mb-1">2. Target Difficulty Level</h3>
+        <h3 className="text-base font-semibold text-ink mb-1">2. Choose Your Study Level</h3>
         <DifficultySelector
           selectedLevel={difficulty}
           onSelectLevel={(level) => setDifficulty(level)}
@@ -246,13 +246,13 @@ export const UploadPage: React.FC = () => {
               <Loader2 className="w-4 h-4 animate-spin text-brand-600" />
               <span>Processing and uploading {files.length} document(s)...</span>
             </div>
-            <span>Generating separate workspaces</span>
+            <span>Generating study tools</span>
           </div>
           <div className="h-2 bg-brand-200/60 rounded-full overflow-hidden">
             <div className="h-full bg-brand-600 rounded-full w-3/4 animate-pulse transition-all duration-500" />
           </div>
           <p className="text-[11px] text-brand-700">
-            Each document is being stored in Supabase and analyzed for Quick Summaries, Flashcards, and Self-Assessment Quizzes.
+            Analyzing notes to create Quick Summaries, Flashcards, and Practice Quizzes.
           </p>
         </div>
       )}
@@ -261,7 +261,7 @@ export const UploadPage: React.FC = () => {
       <div className="p-4 rounded-xl bg-gray-50 border border-edge/80 flex items-start gap-3 text-xs text-ink-muted">
         <ShieldCheck className="w-4 h-4 text-brand-600 flex-shrink-0 mt-0.5" />
         <p>
-          Your documents are saved securely in Supabase Storage. Each PDF generates a dedicated study workspace with separate summaries, active recall cards, and syllabus-targeted quizzes.
+          Your notes are safely saved in your account. Each document automatically creates a dedicated study space with summaries, flashcards, and practice quizzes.
         </p>
       </div>
 
@@ -271,10 +271,10 @@ export const UploadPage: React.FC = () => {
           {files.length > 0 ? (
             <span className="text-ink font-medium flex items-center gap-1.5">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-              {files.length} PDF file{files.length > 1 ? 's' : ''} ready for processing ({totalMb} MB)
+              {files.length} file{files.length > 1 ? 's' : ''} ready to upload ({totalMb} MB)
             </span>
           ) : (
-            <span>Please attach one or more PDF files to begin</span>
+            <span>Attach one or more PDF files to begin</span>
           )}
         </div>
 
@@ -289,10 +289,10 @@ export const UploadPage: React.FC = () => {
           className="w-full sm:w-auto shadow-elevated"
         >
           {isUploading
-            ? `Uploading ${files.length} Document${files.length > 1 ? 's' : ''}...`
+            ? `Uploading ${files.length} File${files.length > 1 ? 's' : ''}...`
             : files.length > 1
             ? `Upload All (${files.length} Files)`
-            : 'Upload & Generate Workspace'}
+            : 'Upload & Generate Study Notes'}
         </Button>
       </div>
     </div>

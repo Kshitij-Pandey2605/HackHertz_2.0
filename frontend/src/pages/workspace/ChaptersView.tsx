@@ -75,10 +75,10 @@ export const ChaptersView: React.FC = () => {
           </div>
           <div>
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-ink">
-              Chapters & Topics Breakdown
+              Chapters & Topics
             </h1>
             <p className="text-xs sm:text-sm text-ink-muted">
-              Hierarchical exploration of functional dependencies and normal forms.
+              Explore chapters, subtopics, and key ideas in step-by-step order.
             </p>
           </div>
         </div>

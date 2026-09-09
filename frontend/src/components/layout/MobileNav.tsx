@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, UploadCloud, LogOut } from 'lucide-react';
+import { LayoutDashboard, FileText, UploadCloud, LogOut } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 export const MobileNav: React.FC = () => {
@@ -9,13 +9,13 @@ export const MobileNav: React.FC = () => {
   return (
     <nav
       aria-label="Mobile Navigation"
-      className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-edge py-2 px-6 flex items-center justify-around shadow-elevated"
+      className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-edge py-2 px-4 flex items-center justify-around shadow-elevated"
     >
       <NavLink
         to="/dashboard"
         className={({ isActive }) =>
-          `flex flex-col items-center gap-1 py-1 px-3 rounded-lg text-xs font-medium transition-colors ${
-            isActive ? 'text-brand-600' : 'text-ink-muted hover:text-ink'
+          `flex flex-col items-center gap-1 py-1 px-2.5 rounded-lg text-xs font-medium transition-colors ${
+            isActive ? 'text-brand-600 font-bold' : 'text-ink-muted hover:text-ink'
           }`
         }
       >
@@ -24,10 +24,22 @@ export const MobileNav: React.FC = () => {
       </NavLink>
 
       <NavLink
+        to="/documents"
+        className={({ isActive }) =>
+          `flex flex-col items-center gap-1 py-1 px-2.5 rounded-lg text-xs font-medium transition-colors ${
+            isActive ? 'text-brand-600 font-bold' : 'text-ink-muted hover:text-ink'
+          }`
+        }
+      >
+        <FileText className="w-5 h-5" />
+        <span>Study Files</span>
+      </NavLink>
+
+      <NavLink
         to="/upload"
         className={({ isActive }) =>
-          `flex flex-col items-center gap-1 py-1 px-3 rounded-lg text-xs font-medium transition-colors ${
-            isActive ? 'text-brand-600' : 'text-ink-muted hover:text-ink'
+          `flex flex-col items-center gap-1 py-1 px-2.5 rounded-lg text-xs font-medium transition-colors ${
+            isActive ? 'text-brand-600 font-bold' : 'text-ink-muted hover:text-ink'
           }`
         }
       >
@@ -41,11 +53,13 @@ export const MobileNav: React.FC = () => {
       <button
         type="button"
         onClick={() => logout()}
-        className="flex flex-col items-center gap-1 py-1 px-3 rounded-lg text-xs font-medium text-ink-muted hover:text-rose-600 transition-colors"
+        className="flex flex-col items-center gap-1 py-1 px-2.5 rounded-lg text-xs font-medium text-ink-muted hover:text-rose-600 transition-colors"
       >
         <LogOut className="w-5 h-5" />
-        <span>Logout</span>
+        <span>Log Out</span>
       </button>
     </nav>
   );
 };
+
+export default MobileNav;

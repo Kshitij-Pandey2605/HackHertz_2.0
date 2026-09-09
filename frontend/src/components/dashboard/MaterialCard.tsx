@@ -23,11 +23,23 @@ export const MaterialCard: React.FC<MaterialCardProps> = ({ material }) => {
     }
   };
 
-  const difficultyBadges = {
-    EASY: <Badge variant="success" size="sm">Foundational</Badge>,
-    MEDIUM: <Badge variant="brand" size="sm">Exam-Oriented</Badge>,
-    HARD: <Badge variant="violet" size="sm">Deep Mastery</Badge>,
+  const formatStudentTitle = (rawTitle: string): string => {
+    if (!rawTitle) return 'Study Notes';
+    return rawTitle
+      .replace(/Database Management Systems/gi, 'DBMS Notes')
+      .replace(/Functional Dependencies/gi, 'Normalization Basics')
+      .replace(/Operating Systems/gi, 'OS Notes')
+      .replace(/Process Synchronization & Deadlocks/gi, 'Process & Deadlocks')
+      .replace(/Computer Networks/gi, 'CN Notes');
   };
+
+  const difficultyBadges = {
+    EASY: <Badge variant="success" size="sm">Beginner</Badge>,
+    MEDIUM: <Badge variant="brand" size="sm">Medium</Badge>,
+    HARD: <Badge variant="violet" size="sm">Advanced</Badge>,
+  };
+
+  const displayTitle = formatStudentTitle(material.title);
 
   return (
     <Card hoverable className="p-4 sm:p-5 flex flex-col justify-between transition-all group">
@@ -44,8 +56,11 @@ export const MaterialCard: React.FC<MaterialCardProps> = ({ material }) => {
         </div>
 
         {/* Title */}
-        <h4 className="text-sm sm:text-base font-semibold text-ink group-hover:text-brand-600 transition-colors line-clamp-2 mb-2 leading-snug">
-          {material.title}
+        <h4
+          className="text-sm sm:text-base font-semibold text-ink group-hover:text-brand-600 transition-colors line-clamp-2 mb-2 leading-snug"
+          title={material.title}
+        >
+          {displayTitle}
         </h4>
 
         {/* Metadata info */}
@@ -78,7 +93,7 @@ export const MaterialCard: React.FC<MaterialCardProps> = ({ material }) => {
             }`}
           />
           <span className="text-xs font-medium text-ink-secondary">
-            {isReady ? 'Ready to study' : 'Processing...'}
+            {isReady ? 'Ready to study' : 'Preparing notes...'}
           </span>
         </div>
         <Button
@@ -87,7 +102,7 @@ export const MaterialCard: React.FC<MaterialCardProps> = ({ material }) => {
           onClick={handleContinue}
           rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
         >
-          Continue
+          Study Now
         </Button>
       </div>
     </Card>

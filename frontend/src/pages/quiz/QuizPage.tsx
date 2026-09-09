@@ -196,10 +196,10 @@ export const QuizPage: React.FC = () => {
             </div>
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-ink">
-                Self-Assessment Quiz
+                Practice Quiz
               </h1>
               <p className="text-xs text-ink-muted">
-                Displaying only questions for your selected target level.
+                Test your understanding with instant feedback and explanations.
               </p>
             </div>
           </div>
@@ -210,7 +210,7 @@ export const QuizPage: React.FC = () => {
             onClick={fetchQuizData}
             leftIcon={<RefreshCw className="w-3.5 h-3.5" />}
           >
-            Reload Questions
+            Refresh Questions
           </Button>
         </div>
 

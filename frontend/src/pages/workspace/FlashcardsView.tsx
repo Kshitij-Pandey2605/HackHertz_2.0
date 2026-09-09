@@ -167,8 +167,8 @@ export const FlashcardsView: React.FC = () => {
       <div className="max-w-xl mx-auto my-12">
         <EmptyState
           title="No Flashcards Available"
-          description="There are currently no flashcards generated for this document ID."
-          actionLabel="Upload Material"
+          description="There are currently no flashcards generated for this study file."
+          actionLabel="Upload Notes"
           onAction={() => navigate('/upload')}
         />
       </div>
@@ -192,14 +192,14 @@ export const FlashcardsView: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-purple-700 bg-purple-50 border border-purple-200 px-2 py-0.5 rounded-md">
-                  Stage 2 &bull; Remember
+                  Stage 2 &bull; Review
                 </span>
               </div>
               <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-ink mt-1">
-                Active Recall Flashcards
+                Study Flashcards
               </h1>
               <p className="text-xs text-ink-muted">
-                Flip through definitions, formulas, and concepts filtered by difficulty level.
+                Flip through key terms, formulas, and concepts to test your recall.
               </p>
             </div>
           </div>

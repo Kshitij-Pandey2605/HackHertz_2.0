@@ -221,10 +221,10 @@ export const QuizResultsPage: React.FC = () => {
               <ArrowRight className="w-3.5 h-3.5 text-ink-subtle group-hover:text-purple-600" />
             </div>
             <h4 className="text-xs font-bold text-ink group-hover:text-brand-600 transition-colors">
-              Review Flashcards
+              Study Flashcards
             </h4>
             <p className="text-[11px] text-ink-muted mt-0.5">
-              Active recall drills for long-term retention.
+              Practice with flashcards to remember key facts.
             </p>
           </button>
 
@@ -238,10 +238,10 @@ export const QuizResultsPage: React.FC = () => {
               <ArrowRight className="w-3.5 h-3.5 text-ink-subtle group-hover:text-amber-600" />
             </div>
             <h4 className="text-xs font-bold text-ink group-hover:text-brand-600 transition-colors">
-              View Exam Cram
+              Exam Cram Sheet
             </h4>
             <p className="text-[11px] text-ink-muted mt-0.5">
-              Rapid memory triggers and common traps.
+              Quick review points and common exam traps.
             </p>
           </button>
 
@@ -255,10 +255,10 @@ export const QuizResultsPage: React.FC = () => {
               <ArrowRight className="w-3.5 h-3.5 text-ink-subtle group-hover:text-emerald-600" />
             </div>
             <h4 className="text-xs font-bold text-ink group-hover:text-brand-600 transition-colors">
-              Export Study Notes
+              Download Study Kit
             </h4>
             <p className="text-[11px] text-ink-muted mt-0.5">
-              Printable PDF and Markdown sheets.
+              Download PDF or Markdown study sheets.
             </p>
           </button>
         </div>

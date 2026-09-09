@@ -31,28 +31,28 @@ export const WorkspaceSidebar: React.FC = () => {
   const understandNav = [
     {
       to: `/workspace/${id}`,
-      label: 'Study Overview',
+      label: 'Overview',
       icon: <LayoutDashboard className="w-4 h-4" />,
       end: true,
     },
     {
       to: `/workspace/${id}/summary`,
-      label: 'Study Summary',
+      label: 'Summary Notes',
       icon: <BookOpen className="w-4 h-4" />,
     },
     {
       to: `/workspace/${id}/quick-glance`,
-      label: 'Quick Glance',
+      label: 'Quick Summary',
       icon: <Eye className="w-4 h-4" />,
     },
     {
       to: `/workspace/${id}/deep-summary`,
-      label: 'Deep Summary',
+      label: 'Detailed Notes',
       icon: <BookOpen className="w-4 h-4" />,
     },
     {
       to: `/workspace/${id}/chapters`,
-      label: 'Chapters',
+      label: 'Chapters & Topics',
       icon: <ListTree className="w-4 h-4" />,
     },
   ];
@@ -60,7 +60,7 @@ export const WorkspaceSidebar: React.FC = () => {
   const rememberNav = [
     {
       to: `/workspace/${id}/key-points`,
-      label: 'Key Points',
+      label: 'Key Takeaways',
       icon: <Key className="w-4 h-4" />,
     },
     {
@@ -70,7 +70,7 @@ export const WorkspaceSidebar: React.FC = () => {
     },
     {
       to: `/workspace/${id}/glossary`,
-      label: 'Glossary',
+      label: 'Key Terms',
       icon: <BookMarked className="w-4 h-4" />,
     },
     {
@@ -83,7 +83,7 @@ export const WorkspaceSidebar: React.FC = () => {
   const practiceNav = [
     {
       to: `/workspace/${id}/quiz/setup`,
-      label: 'Quiz Assessment',
+      label: 'Practice Quiz',
       icon: <HelpCircle className="w-4 h-4" />,
     },
   ];
@@ -91,12 +91,12 @@ export const WorkspaceSidebar: React.FC = () => {
   const reviseNav = [
     {
       to: `/workspace/${id}/exam-cram`,
-      label: 'Exam Cram',
+      label: 'Exam Cram Sheet',
       icon: <Zap className="w-4 h-4" />,
     },
     {
       to: `/workspace/${id}/export`,
-      label: 'Export Cheat Sheet',
+      label: 'Download Study Kit',
       icon: <Download className="w-4 h-4" />,
     },
   ];
@@ -127,11 +127,11 @@ export const WorkspaceSidebar: React.FC = () => {
         {/* Workspace Side Navigation */}
         <div className="flex-1 py-4 px-3 flex flex-col justify-between overflow-y-auto space-y-6">
           <div className="space-y-5">
-            {/* 1. UNDERSTAND */}
+            {/* 1. LEARN */}
             <div>
               <p className="px-3 text-[10px] font-bold text-ink-muted uppercase tracking-wider mb-2 flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
-                1. Understand
+                1. Learn
               </p>
               <nav className="space-y-0.5">
                 {understandNav.map((link) => (
@@ -156,11 +156,11 @@ export const WorkspaceSidebar: React.FC = () => {
               </nav>
             </div>
 
-            {/* 2. REMEMBER */}
+            {/* 2. REVIEW */}
             <div>
               <p className="px-3 text-[10px] font-bold text-ink-muted uppercase tracking-wider mb-2 flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
-                2. Remember
+                2. Review
               </p>
               <nav className="space-y-0.5">
                 {rememberNav.map((link) => (
@@ -212,11 +212,11 @@ export const WorkspaceSidebar: React.FC = () => {
               </nav>
             </div>
 
-            {/* 4. REVISE */}
+            {/* 4. QUICK PREP */}
             <div>
               <p className="px-3 text-[10px] font-bold text-ink-muted uppercase tracking-wider mb-2 flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                4. Revise
+                4. Quick Prep
               </p>
               <nav className="space-y-0.5">
                 {reviseNav.map((link) => (
@@ -248,7 +248,7 @@ export const WorkspaceSidebar: React.FC = () => {
               className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-ink-secondary hover:text-brand-600 hover:bg-brand-50/60 border border-transparent hover:border-brand-200 transition-colors"
             >
               <BarChart3 className="w-4 h-4 text-brand-600" />
-              <span>Learning Analytics</span>
+              <span>Study Progress</span>
             </NavLink>
 
             <div className="flex items-center justify-between p-2 rounded-xl bg-gray-50 border border-edge">

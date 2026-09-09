@@ -66,10 +66,10 @@ export const KeyPointsView: React.FC = () => {
           </div>
           <div>
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-ink">
-              Key Points & Takeaways
+              Key Takeaways
             </h1>
             <p className="text-xs sm:text-sm text-ink-muted">
-              High-priority concepts designed for active retention.
+              Core concepts, exam traps, and memorable takeaways.
             </p>
           </div>
         </div>

@@ -79,13 +79,13 @@ export const ExamCramView: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-bold uppercase tracking-wider bg-white/25 text-white px-2 py-0.5 rounded">
-                  Stage 4 &bull; Revise
+                  Stage 4 &bull; Quick Prep
                 </span>
                 <span className="text-[10px] font-semibold text-amber-100">&bull; 5-Min Last-Minute Cram</span>
               </div>
               <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white mt-0.5">Exam Cram Sheet</h1>
               <p className="text-xs sm:text-sm text-amber-100">
-                Everything worth remembering right before entering the exam room.
+                Everything worth remembering right before your exam or quiz.
               </p>
             </div>
           </div>
@@ -249,7 +249,7 @@ export const ExamCramView: React.FC = () => {
             rightIcon={<ArrowRight className="w-4 h-4" />}
             className="flex-1 sm:flex-none whitespace-nowrap shadow-elevated"
           >
-            Export Cheat Sheet
+            Download Study Kit
           </Button>
         </div>
       </div>

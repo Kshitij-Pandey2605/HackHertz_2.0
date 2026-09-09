@@ -63,7 +63,7 @@ export const QuickGlanceView: React.FC = () => {
             </div>
             <div>
               <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-ink">
-                Quick Glance
+                Quick Summary
               </h1>
               <p className="text-xs sm:text-sm text-ink-muted">
                 Understand the core ideas in about a minute.
@@ -71,72 +71,81 @@ export const QuickGlanceView: React.FC = () => {
             </div>
           </div>
 
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-50 border border-brand-200 text-brand-700 text-xs font-semibold">
-            <Clock className="w-3.5 h-3.5" />
-            <span>~{data.readingTimeMinutes} min read</span>
-          </div>
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-700 bg-brand-50 px-3 py-1.5 rounded-xl border border-brand-200">
+            <Clock className="w-3.5 h-3.5 text-brand-600" />
+            <span>~{data.readingTimeMinutes || 1} min read</span>
+          </span>
         </div>
       </div>
 
-      {/* Core Idea */}
-      <div className="bg-gradient-to-r from-brand-600 to-violet-700 text-white rounded-2xl p-6 sm:p-8 shadow-elevated relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
-          <Sparkles className="w-40 h-40" />
+      {/* Core Idea Box */}
+      <div className="bg-gradient-to-br from-brand-500 via-brand-600 to-indigo-700 rounded-2xl p-6 sm:p-7 text-white shadow-elevated">
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-200 mb-2">
+          <Lightbulb className="w-4 h-4" />
+          <span>Core Concept</span>
         </div>
-        <div className="relative z-10 space-y-2">
-          <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider bg-white/15 text-white px-2.5 py-1 rounded-full backdrop-blur-sm">
-            <Lightbulb className="w-3.5 h-3.5" /> Core Idea
-          </div>
-          <p className="text-base sm:text-lg font-medium leading-relaxed pt-1">
-            "{data.coreIdea}"
-          </p>
+        <p className="text-base sm:text-lg font-medium leading-relaxed">
+          {data.coreIdea}
+        </p>
+      </div>
+
+      {/* What Matters Most */}
+      <div className="bg-white border border-edge rounded-2xl p-6 shadow-card space-y-4">
+        <h2 className="text-sm sm:text-base font-bold text-ink flex items-center gap-2">
+          <CheckCircle className="w-4 h-4 text-emerald-600" />
+          <span>What Matters Most</span>
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {data.whatMattersMost.map((item, idx) => (
+            <div
+              key={idx}
+              className="p-3.5 rounded-xl bg-canvas border border-edge/80 text-xs sm:text-sm text-ink-secondary leading-relaxed flex items-start gap-2.5"
+            >
+              <span className="w-5 h-5 rounded-full bg-brand-50 text-brand-700 font-bold text-[11px] flex items-center justify-center flex-shrink-0 mt-0.5">
+                {idx + 1}
+              </span>
+              <span>{item}</span>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Grid: What Matters Most & Must-Know Definitions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* What Matters Most */}
-        <div className="bg-white border border-edge rounded-2xl p-6 shadow-card space-y-4">
-          <h2 className="text-base font-bold text-ink flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-emerald-600" /> What Matters Most
-          </h2>
-          <ul className="space-y-2.5 text-xs text-ink-secondary">
-            {data.whatMattersMost.map((item, idx) => (
-              <li key={idx} className="flex items-start gap-2.5 p-2 rounded-xl bg-gray-50 border border-edge/60">
-                <span className="w-5 h-5 rounded-full bg-brand-100 text-brand-700 font-bold text-[10px] flex items-center justify-center flex-shrink-0 mt-0.5">
-                  {idx + 1}
-                </span>
-                <span className="font-medium text-ink leading-relaxed">{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Must-Know Definitions */}
-        <div className="bg-white border border-edge rounded-2xl p-6 shadow-card space-y-4">
-          <h2 className="text-base font-bold text-ink flex items-center gap-2">
-            <BookOpen className="w-4 h-4 text-brand-600" /> Must-Know Definitions
-          </h2>
-          <div className="space-y-3">
-            {data.mustKnowDefinitions.map((def, idx) => (
-              <div key={idx} className="p-3.5 rounded-xl bg-gray-50 border border-edge">
-                <h3 className="text-xs font-bold text-brand-700">{def.term}</h3>
-                <p className="text-xs text-ink-muted mt-1 leading-relaxed">{def.definition}</p>
-              </div>
-            ))}
-          </div>
+      {/* Must Know Definitions */}
+      <div className="bg-white border border-edge rounded-2xl p-6 shadow-card space-y-4">
+        <h2 className="text-sm sm:text-base font-bold text-ink flex items-center gap-2">
+          <BookOpen className="w-4 h-4 text-indigo-600" />
+          <span>Must-Know Key Terms</span>
+        </h2>
+        <div className="space-y-3">
+          {data.mustKnowDefinitions.map((def, idx) => (
+            <div
+              key={idx}
+              className="p-4 rounded-xl border border-edge hover:border-brand-300 transition-colors bg-white space-y-1"
+            >
+              <h3 className="text-xs sm:text-sm font-bold text-brand-600">
+                {def.term}
+              </h3>
+              <p className="text-xs sm:text-sm text-ink-secondary leading-relaxed">
+                {def.definition}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* Essential Rules */}
       <div className="bg-white border border-edge rounded-2xl p-6 shadow-card space-y-4">
-        <h2 className="text-base font-bold text-ink flex items-center gap-2">
-          <ShieldAlert className="w-4 h-4 text-amber-600" /> Essential Rules / Formulas
+        <h2 className="text-sm sm:text-base font-bold text-ink flex items-center gap-2">
+          <ShieldAlert className="w-4 h-4 text-amber-600" />
+          <span>Essential Rules to Remember</span>
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="space-y-2.5">
           {data.essentialRules.map((rule, idx) => (
-            <div key={idx} className="p-3.5 rounded-xl bg-amber-50/50 border border-amber-200 text-xs font-medium text-amber-950 flex items-start gap-2">
-              <span className="w-2 h-2 rounded-full bg-amber-500 flex-shrink-0 mt-1.5" />
+            <div
+              key={idx}
+              className="p-3 rounded-xl bg-amber-50/50 border border-amber-200/80 text-xs sm:text-sm text-amber-950 flex items-start gap-2.5 font-medium"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2 flex-shrink-0" />
               <span>{rule}</span>
             </div>
           ))}
@@ -163,7 +172,7 @@ export const QuickGlanceView: React.FC = () => {
         <div>
           <h3 className="text-sm font-bold text-ink">Ready to go deeper?</h3>
           <p className="text-xs text-ink-muted mt-0.5">
-            Explore structured chapter explanations, schema proofs, and technical examples.
+            Explore structured chapter explanations, step-by-step examples, and formulas.
           </p>
         </div>
         <Button
@@ -172,7 +181,7 @@ export const QuickGlanceView: React.FC = () => {
           onClick={() => navigate(`/workspace/${id}/deep-summary`)}
           className="gap-2 shadow-sm whitespace-nowrap"
         >
-          <span>Read Deep Summary</span>
+          <span>Read Detailed Notes</span>
           <ArrowRight className="w-4 h-4" />
         </Button>
       </div>

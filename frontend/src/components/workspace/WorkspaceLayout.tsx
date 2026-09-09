@@ -61,41 +61,45 @@ export const WorkspaceLayout: React.FC = () => {
   // Derive next CTA label & URL based on current sub-path
   const path = location.pathname;
   let activeTitle = 'Overview';
-  let nextUrl: string | undefined = `/workspace/${id}/quick-glance`;
-  let nextLabel: string | undefined = 'Quick Glance →';
+  let nextUrl: string | undefined = `/workspace/${id}/summary`;
+  let nextLabel: string | undefined = 'View Summary Notes →';
 
-  if (path.includes('quick-glance')) {
-    activeTitle = 'Quick Glance';
+  if (path.includes('summary')) {
+    activeTitle = 'Summary Notes';
+    nextUrl = `/workspace/${id}/quick-glance`;
+    nextLabel = 'Quick Summary →';
+  } else if (path.includes('quick-glance')) {
+    activeTitle = 'Quick Summary';
     nextUrl = `/workspace/${id}/deep-summary`;
-    nextLabel = 'Read Deep Summary →';
+    nextLabel = 'Read Detailed Notes →';
   } else if (path.includes('deep-summary')) {
-    activeTitle = 'Deep Summary';
+    activeTitle = 'Detailed Notes';
     nextUrl = `/workspace/${id}/exam-cram`;
-    nextLabel = 'Review Exam Cram →';
+    nextLabel = 'Review Exam Cram Sheet →';
   } else if (path.includes('exam-cram')) {
-    activeTitle = 'Exam Cram';
+    activeTitle = 'Exam Cram Sheet';
     nextUrl = `/workspace/${id}/flashcards`;
-    nextLabel = 'Review Flashcards →';
+    nextLabel = 'Practice Flashcards →';
   } else if (path.includes('chapters')) {
-    activeTitle = 'Chapters';
+    activeTitle = 'Chapters & Topics';
     nextUrl = `/workspace/${id}/key-points`;
-    nextLabel = 'Explore Key Points →';
+    nextLabel = 'View Key Takeaways →';
   } else if (path.includes('key-points')) {
-    activeTitle = 'Key Points';
+    activeTitle = 'Key Takeaways';
     nextUrl = `/workspace/${id}/formulas`;
     nextLabel = 'View Formulas →';
   } else if (path.includes('formulas')) {
     activeTitle = 'Formulas & Rules';
     nextUrl = `/workspace/${id}/glossary`;
-    nextLabel = 'Open Glossary →';
+    nextLabel = 'Open Key Terms →';
   } else if (path.includes('glossary')) {
-    activeTitle = 'Glossary';
+    activeTitle = 'Key Terms';
     nextUrl = `/workspace/${id}/flashcards`;
     nextLabel = 'Practice Flashcards →';
   } else if (path.includes('flashcards')) {
     activeTitle = 'Flashcards';
     nextUrl = `/workspace/${id}/quiz/setup`;
-    nextLabel = 'Take Quiz →';
+    nextLabel = 'Start Practice Quiz →';
   } else if (path.includes('quiz/setup')) {
     activeTitle = 'Quiz Setup';
     nextUrl = undefined;
@@ -103,20 +107,40 @@ export const WorkspaceLayout: React.FC = () => {
   } else if (path.includes('quiz/results')) {
     activeTitle = 'Quiz Results';
     nextUrl = `/workspace/${id}/export`;
-    nextLabel = 'Export Study Kit →';
+    nextLabel = 'Download Study Kit →';
   } else if (path.includes('quiz')) {
-    activeTitle = 'Quiz Assessment';
+    activeTitle = 'Practice Quiz';
     nextUrl = undefined;
     nextLabel = undefined;
   } else if (path.includes('export')) {
-    activeTitle = 'Export Materials';
-    nextUrl = `/workspace/${id}/quick-glance`;
-    nextLabel = 'Back to Overview →';
+    activeTitle = 'Download Study Kit';
+    nextUrl = `/workspace/${id}/summary`;
+    nextLabel = 'Back to Summary Notes →';
+  } else if (path.includes('weak-topics')) {
+    activeTitle = 'Topics to Review';
+    nextUrl = `/workspace/${id}/mastery`;
+    nextLabel = 'Topic Mastery →';
+  } else if (path.includes('mastery')) {
+    activeTitle = 'Topic Mastery';
+    nextUrl = `/workspace/${id}/revision-planner`;
+    nextLabel = 'Study Schedule →';
+  } else if (path.includes('revision-planner')) {
+    activeTitle = 'Study Schedule';
+    nextUrl = `/workspace/${id}/adaptive-quiz`;
+    nextLabel = 'Start Smart Quiz →';
+  } else if (path.includes('adaptive-quiz')) {
+    activeTitle = 'Smart Quiz';
+    nextUrl = `/workspace/${id}/ai-coach`;
+    nextLabel = 'Open Study Coach →';
+  } else if (path.includes('ai-coach')) {
+    activeTitle = 'Study Coach';
+    nextUrl = `/workspace/${id}/summary`;
+    nextLabel = 'Back to Summary Notes →';
   }
 
   const mobileNavItems = [
-    { to: `/workspace/${id}/quick-glance`, label: 'Glance', icon: <Eye className="w-4 h-4" /> },
-    { to: `/workspace/${id}/deep-summary`, label: 'Deep', icon: <BookOpen className="w-4 h-4" /> },
+    { to: `/workspace/${id}/summary`, label: 'Summary', icon: <BookOpen className="w-4 h-4" /> },
+    { to: `/workspace/${id}/quick-glance`, label: 'Quick', icon: <Eye className="w-4 h-4" /> },
     { to: `/workspace/${id}/exam-cram`, label: 'Cram', icon: <Zap className="w-4 h-4" /> },
     { to: `/workspace/${id}/flashcards`, label: 'Cards', icon: <Layers className="w-4 h-4" /> },
     { to: `/workspace/${id}/formulas`, label: 'Rules', icon: <Sigma className="w-4 h-4" /> },

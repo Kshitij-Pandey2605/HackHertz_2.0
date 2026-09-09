@@ -25,7 +25,7 @@ export const mockUser: User = {
 export const mockMaterials: Material[] = [
   {
     id: 'mat_dbms_01',
-    title: 'Database Management Systems — Normalization & Functional Dependencies',
+    title: 'DBMS Notes — Normalization Basics',
     subject: 'Computer Science',
     pages: 48,
     uploadDate: '2026-03-01T10:30:00Z',
@@ -48,7 +48,7 @@ export const mockMaterials: Material[] = [
   },
   {
     id: 'mat_os_02',
-    title: 'Operating Systems — Process Synchronization & Deadlocks',
+    title: 'OS Notes — Process & Deadlocks',
     subject: 'Computer Science',
     pages: 62,
     uploadDate: '2026-02-28T16:15:00Z',
@@ -1064,7 +1064,7 @@ export const mockQuizQuestions: QuizQuestion[] = [
 ];
 
 export const mockExportData: ExportContent = {
-  materialTitle: "Database Management Systems — Normalization & Functional Dependencies",
+  materialTitle: "DBMS Notes — Normalization Basics",
   subject: "Computer Science",
   date: "2026-03-01",
   quickGlance: "Database normalization is the systematic technique of organizing relational database schemas to eliminate redundant data and avoid modification anomalies (insertion, update, and deletion anomalies). The progression moves from 1NF (atomic values) to 2NF (no partial dependencies), 3NF (no transitive dependencies), and BCNF (every determinant is a superkey).",

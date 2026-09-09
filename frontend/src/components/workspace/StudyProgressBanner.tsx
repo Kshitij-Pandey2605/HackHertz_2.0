@@ -9,14 +9,14 @@ export const StudyProgressBanner: React.FC = () => {
   const stages = [
     {
       number: '1',
-      stage: 'Understand',
-      label: 'Quick Glance',
-      to: `/workspace/${id}/quick-glance`,
-      matches: ['quick-glance', 'deep-summary', 'chapters'],
+      stage: 'Learn',
+      label: 'Summary',
+      to: `/workspace/${id}/summary`,
+      matches: ['summary', 'quick-glance', 'deep-summary', 'chapters'],
     },
     {
       number: '2',
-      stage: 'Remember',
+      stage: 'Review',
       label: 'Flashcards',
       to: `/workspace/${id}/flashcards`,
       matches: ['flashcards', 'key-points', 'formulas', 'glossary'],
@@ -30,7 +30,7 @@ export const StudyProgressBanner: React.FC = () => {
     },
     {
       number: '4',
-      stage: 'Revise',
+      stage: 'Quick Prep',
       label: 'Exam Cram',
       to: `/workspace/${id}/exam-cram`,
       matches: ['exam-cram', 'export'],

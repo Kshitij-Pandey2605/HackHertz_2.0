@@ -61,7 +61,16 @@ export const DashboardPage: React.FC = () => {
     return <ErrorState fullPage message={error} onRetry={fetchDashboardData} />;
   }
 
-  // Continue studying hero item (first ready material)
+  const formatStudentTitle = (rawTitle: string): string => {
+    if (!rawTitle) return 'Study Notes';
+    return rawTitle
+      .replace(/Database Management Systems/gi, 'DBMS Notes')
+      .replace(/Functional Dependencies/gi, 'Normalization Basics')
+      .replace(/Operating Systems/gi, 'OS Notes')
+      .replace(/Process Synchronization & Deadlocks/gi, 'Process & Deadlocks')
+      .replace(/Computer Networks/gi, 'CN Notes');
+  };
+
   const continueMaterial = materials.find((m) => m.status === 'ready') || materials[0];
 
   return (
@@ -83,7 +92,7 @@ export const DashboardPage: React.FC = () => {
           leftIcon={<UploadCloud className="w-4 h-4" />}
           className="shadow-subtle self-start sm:self-auto"
         >
-          Upload New Material
+          Upload Notes
         </Button>
       </div>
 
@@ -103,8 +112,11 @@ export const DashboardPage: React.FC = () => {
               </div>
 
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug">
-                  {continueMaterial.title}
+                <h2
+                  className="text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug"
+                  title={continueMaterial.title}
+                >
+                  {formatStudentTitle(continueMaterial.title)}
                 </h2>
                 <p className="text-xs sm:text-sm text-brand-100 mt-1">
                   {continueMaterial.subject} &bull; {continueMaterial.pages} pages &bull; {continueMaterial.difficulty} Level
@@ -114,7 +126,7 @@ export const DashboardPage: React.FC = () => {
               {/* Progress bar */}
               <div className="space-y-1.5 pt-1 max-w-md">
                 <div className="flex justify-between text-xs text-brand-100 font-medium">
-                  <span>Study Progress: Understand &rarr; Remember</span>
+                  <span>Study Progress: Learn &rarr; Review</span>
                   <span>60%</span>
                 </div>
                 <div className="w-full h-2 bg-white/20 rounded-full overflow-hidden">
@@ -222,25 +234,25 @@ export const DashboardPage: React.FC = () => {
         </div>
       )}
 
-      {/* 4. RECENT STUDY MATERIALS */}
+      {/* 4. RECENT STUDY FILES */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-base font-bold text-ink">Recent Study Materials</h2>
+            <h2 className="text-base font-bold text-ink">Recent Study Files</h2>
             <p className="text-xs text-ink-muted mt-0.5">
-              Access your parsed syllabi, summaries, formulas, and quizzes
+              Access your summaries, key takeaways, flashcards, and quizzes
             </p>
           </div>
           <span className="text-xs text-ink-muted">
-            {materials.length} total document{materials.length === 1 ? '' : 's'}
+            {materials.length} total file{materials.length === 1 ? '' : 's'}
           </span>
         </div>
 
         {materials.length === 0 ? (
           <EmptyState
-            title="No study materials yet"
-            description="Upload your first textbook chapter, lecture slides, or lecture notes to generate instant summaries, formulas, and quizzes."
-            actionLabel="Upload Material"
+            title="No study files yet"
+            description="Upload your lecture notes, slides, or study guides to get instant summaries, flashcards, and quizzes."
+            actionLabel="Upload Notes"
             onAction={() => navigate('/upload')}
           />
         ) : (
@@ -252,7 +264,7 @@ export const DashboardPage: React.FC = () => {
         )}
       </div>
 
-      {/* 5. STUDY ACTIVITY & ANALYTICS PREVIEW */}
+      {/* 5. STUDY ACTIVITY & PROGRESS PREVIEW */}
       <div className="bg-gradient-to-r from-brand-50/70 via-indigo-50/50 to-purple-50/70 border border-brand-200/80 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-subtle">
         <div className="flex items-center gap-3">
           <div className="p-2.5 rounded-xl bg-white border border-brand-200 text-brand-600 shadow-xs flex-shrink-0">
@@ -260,13 +272,13 @@ export const DashboardPage: React.FC = () => {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-xs sm:text-sm font-bold text-ink">Your Learning Activity</h3>
+              <h3 className="text-xs sm:text-sm font-bold text-ink">Your Study Progress</h3>
               <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100/80 px-2 py-0.2 rounded-full">
                 Active Streak: 4 Days
               </span>
             </div>
             <p className="text-xs text-ink-muted mt-0.5">
-              4h 35m studied &bull; 86 flashcards reviewed &bull; 7 quizzes completed
+              4h 35m studied &bull; 86 flashcards reviewed &bull; 7 practice quizzes taken
             </p>
           </div>
         </div>
@@ -276,42 +288,42 @@ export const DashboardPage: React.FC = () => {
           onClick={() => navigate('/analytics')}
           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-brand-700 bg-white hover:bg-brand-50 border border-brand-200 transition-colors shadow-subtle self-start sm:self-auto"
         >
-          <span>View Detailed Activity</span>
+          <span>View Study Progress</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
 
-      {/* 6. STUDY OVERVIEW METRICS (Supporting Information) */}
+      {/* 6. STUDY STATS METRICS */}
       <div className="pt-2 border-t border-edge">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-xs font-semibold text-ink-muted uppercase tracking-wider">
-            Your Study Arsenal
+            Your Study Stats
           </h3>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <StatCard
-            label="Study Materials"
+            label="Study Files"
             value={stats?.materialsCount ?? 0}
             icon={<FileText className="w-4 h-4" />}
-            hint="Active textbooks & slide decks"
+            hint="Uploaded notes & study files"
           />
           <StatCard
-            label="Structured Summaries"
+            label="Study Summaries"
             value={stats?.summariesCount ?? 0}
             icon={<BookOpen className="w-4 h-4" />}
-            hint="Glance, Deep & Cram sheets"
+            hint="Quick & detailed notes"
           />
           <StatCard
-            label="Flashcards Extracted"
+            label="Flashcards"
             value={stats?.flashcardsCount ?? 0}
             icon={<Layers className="w-4 h-4" />}
-            hint="Active recall Q&A items"
+            hint="Interactive study cards"
           />
           <StatCard
-            label="Quiz Questions"
+            label="Practice Quizzes"
             value={stats?.quizzesCount ?? 0}
             icon={<HelpCircle className="w-4 h-4" />}
-            hint="Diagnostic self-test questions"
+            hint="Self-test questions"
           />
         </div>
       </div>

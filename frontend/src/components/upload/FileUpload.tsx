@@ -137,10 +137,10 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
         {/* Main Prompts */}
         <h3 className="text-base sm:text-lg font-semibold text-ink text-center mb-1">
-          {isDragOver ? 'Drop your PDF(s) right here' : 'Drag & drop multiple PDFs or study materials'}
+          {isDragOver ? 'Drop your files right here' : 'Drag & drop your study notes or PDFs here'}
         </h3>
         <p className="text-sm text-ink-muted text-center max-w-md mb-5">
-          Select one or multiple PDF textbooks, lecture slides (e.g. OS.pdf, DBMS.pdf, CN.pdf). Maximum: 50MB per file.
+          Upload lecture slides, notes, or textbook chapters. You can choose one or multiple files (up to 50MB each).
         </p>
 
         {/* Browse Button */}
@@ -151,7 +151,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
           leftIcon={<FileText className="w-4 h-4" />}
           className="pointer-events-none"
         >
-          {multiple ? 'Browse Multiple Files' : 'Browse Files'}
+          {multiple ? 'Choose Files' : 'Choose File'}
         </Button>
 
         {/* Supported Formats Badges */}

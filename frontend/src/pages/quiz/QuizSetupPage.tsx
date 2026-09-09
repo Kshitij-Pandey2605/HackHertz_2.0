@@ -196,7 +196,7 @@ export const QuizSetupPage: React.FC = () => {
           <div>
             <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-brand-50 border border-brand-200 text-brand-700 text-xs font-semibold mb-2">
               <Sparkles className="w-3 h-3 text-brand-600" />
-              <span>Practice &bull; Self-Assessment Assessment</span>
+              <span>Stage 3 &bull; Practice Quiz</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-ink">
               Ready to test yourself?
@@ -208,7 +208,9 @@ export const QuizSetupPage: React.FC = () => {
 
           <div className="flex items-center gap-2 self-start sm:self-auto text-xs text-ink-secondary bg-gray-50 border border-edge px-3 py-1.5 rounded-xl">
             <FileText className="w-4 h-4 text-brand-600" />
-            <span className="font-semibold truncate max-w-[200px]">{material.title}</span>
+            <span className="font-semibold truncate max-w-[200px]" title={material.title}>
+              {material.title.replace(/Database Management Systems/gi, 'DBMS Notes').replace(/Functional Dependencies/gi, 'Normalization Basics')}
+            </span>
           </div>
         </div>
       </div>
@@ -217,10 +219,10 @@ export const QuizSetupPage: React.FC = () => {
       <div className="space-y-3">
         <div>
           <h3 className="text-base font-bold text-ink flex items-center gap-2">
-            1. Target Difficulty
+            1. Choose Your Quiz Level
           </h3>
           <p className="text-xs text-ink-muted">
-            The questions adapt according to whether you need foundational brush-up or advanced exam challenge.
+            The questions adapt according to whether you need a beginner review or advanced exam challenge.
           </p>
         </div>
 
@@ -338,7 +340,7 @@ export const QuizSetupPage: React.FC = () => {
         <div className="flex items-center justify-between border-b border-edge pb-3">
           <div className="flex items-center gap-2 text-xs font-bold text-ink">
             <SlidersHorizontal className="w-4 h-4 text-brand-600" />
-            <span>Quiz Configuration Preview</span>
+            <span>Quiz Summary</span>
           </div>
           <span className="text-[11px] font-semibold text-brand-700 bg-brand-50 border border-brand-200 px-2 py-0.5 rounded">
             {questionCount} questions &bull; {difficulty} &bull; {typeSummaryText}
@@ -351,7 +353,7 @@ export const QuizSetupPage: React.FC = () => {
             <span className="font-bold text-ink text-sm">{questionCount}</span>
           </div>
           <div>
-            <span className="text-ink-muted block text-[11px]">Difficulty:</span>
+            <span className="text-ink-muted block text-[11px]">Level:</span>
             <span className="font-bold text-ink text-sm">{difficulty}</span>
           </div>
           <div>
@@ -361,8 +363,8 @@ export const QuizSetupPage: React.FC = () => {
             </span>
           </div>
           <div>
-            <span className="text-ink-muted block text-[11px]">Topic Scope:</span>
-            <span className="font-bold text-ink text-sm">Normalization & FDs</span>
+            <span className="text-ink-muted block text-[11px]">Topic:</span>
+            <span className="font-bold text-ink text-sm">Normalization Basics</span>
           </div>
         </div>
       </div>
@@ -370,7 +372,7 @@ export const QuizSetupPage: React.FC = () => {
       {/* START QUIZ PRIMARY CTA */}
       <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="text-xs text-ink-muted text-center sm:text-left">
-          Questions are timed only if you choose. You can freely navigate back and forth.
+          Take your time — you can freely navigate between questions and review explanations.
         </div>
 
         <Button
@@ -382,7 +384,7 @@ export const QuizSetupPage: React.FC = () => {
           leftIcon={<Sparkles className="w-4 h-4" />}
           className="w-full sm:w-auto shadow-elevated px-8"
         >
-          Start Quiz
+          Start Practice Quiz
         </Button>
       </div>
     </div>

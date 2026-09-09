@@ -30,73 +30,73 @@ export const WorkspaceOverviewPage: React.FC = () => {
 
   const modules = [
     {
-      title: 'Quick Glance',
+      title: 'Quick Summary',
       subtitle: '1-min core idea overview & key concepts',
       icon: <Eye className="w-5 h-5 text-brand-600" />,
       badge: '1 Min Read',
       to: `/workspace/${id}/quick-glance`,
     },
     {
-      title: 'Deep Summary',
-      subtitle: 'Structured chapter explanations & proofs',
+      title: 'Detailed Notes',
+      subtitle: 'Structured chapter explanations & step-by-step examples',
       icon: <BookOpen className="w-5 h-5 text-indigo-600" />,
-      badge: 'Textbook Grade',
+      badge: 'Comprehensive',
       to: `/workspace/${id}/deep-summary`,
     },
     {
       title: 'Exam Cram Sheet',
-      subtitle: 'High-speed revision, traps, and checklist',
+      subtitle: 'High-speed revision, memory tips, and checklist',
       icon: <Zap className="w-5 h-5 text-amber-600" />,
-      badge: 'Fast Revision',
+      badge: 'Fast Prep',
       to: `/workspace/${id}/exam-cram`,
     },
     {
-      title: 'Chapters Breakdown',
-      subtitle: 'Hierarchical accordion topics',
+      title: 'Chapters & Topics',
+      subtitle: 'Structured topic breakdown with key takeaways',
       icon: <ListTree className="w-5 h-5 text-purple-600" />,
       badge: `${material.chapterCount || 4} Chapters`,
       to: `/workspace/${id}/chapters`,
     },
     {
-      title: 'Key Points',
-      subtitle: 'Core concepts & memorable takeaways',
+      title: 'Key Takeaways',
+      subtitle: 'Core concepts & memorable exam tips',
       icon: <Key className="w-5 h-5 text-rose-600" />,
-      badge: 'Core Principles',
+      badge: 'Key Points',
       to: `/workspace/${id}/key-points`,
     },
     {
       title: 'Formulas & Rules',
-      subtitle: 'Normalization equations & math rules',
+      subtitle: 'Formulas, equations, and math rules',
       icon: <Sigma className="w-5 h-5 text-emerald-600" />,
       badge: `${material.formulaCount || 12} Rules`,
       to: `/workspace/${id}/formulas`,
     },
     {
-      title: 'Subject Glossary',
-      subtitle: 'Instant search term definitions',
+      title: 'Key Terms',
+      subtitle: 'Searchable glossary of definitions',
       icon: <BookMarked className="w-5 h-5 text-cyan-600" />,
-      badge: `${material.glossaryCount || 20} Definitions`,
+      badge: `${material.glossaryCount || 20} Terms`,
       to: `/workspace/${id}/glossary`,
     },
     {
       title: 'Flashcards',
-      subtitle: 'Active recall & spaced repetition',
+      subtitle: 'Active recall cards with self-ratings',
       icon: <Layers className="w-5 h-5 text-blue-600" />,
       badge: `${material.flashcardCount || 25} Cards`,
       to: `/workspace/${id}/flashcards`,
     },
     {
-      title: 'Quiz Assessment',
-      subtitle: 'Adaptive self-assessment with instant scoring',
+      title: 'Practice Quiz',
+      subtitle: 'Interactive self-test with instant feedback',
       icon: <Sparkles className="w-5 h-5 text-purple-600" />,
-      badge: 'Test Knowledge',
+      badge: 'Test Yourself',
       to: `/workspace/${id}/quiz/setup`,
     },
     {
-      title: 'Export Study Kit',
-      subtitle: 'Print-ready PDF, markdown download & clipboard',
+      title: 'Download Study Kit',
+      subtitle: 'Print-ready study cheat sheet & summary PDF',
       icon: <ArrowRight className="w-5 h-5 text-emerald-600" />,
-      badge: 'PDF / Markdown',
+      badge: 'Save Offline',
       to: `/workspace/${id}/export`,
     },
   ];
@@ -123,7 +123,7 @@ export const WorkspaceOverviewPage: React.FC = () => {
               Let&apos;s get you exam-ready
             </h1>
             <p className="text-xs sm:text-sm text-brand-100 mt-1 max-w-2xl leading-relaxed">
-              We parsed <strong>{material.title}</strong> into a 4-stage study journey: Understand the concept, lock it in memory, practice questions, and revise before the exam.
+              We organized <strong>{material.title.replace(/Database Management Systems/gi, 'DBMS Notes').replace(/Functional Dependencies/gi, 'Normalization Basics')}</strong> into a 4-step study path: Learn the concepts, review key points, test yourself with practice quizzes, and prepare before the exam.
             </p>
           </div>
 
@@ -135,7 +135,7 @@ export const WorkspaceOverviewPage: React.FC = () => {
               </div>
               <div>
                 <p className="text-[11px] font-bold text-brand-200 uppercase tracking-wider">Recommended First Step</p>
-                <h3 className="text-sm sm:text-base font-bold text-white">Start with the big picture: Quick Glance</h3>
+                <h3 className="text-sm sm:text-base font-bold text-white">Start with the big picture: Quick Summary</h3>
                 <p className="text-xs text-brand-100 mt-0.5">
                   Understand the core concepts in about 1 minute before diving into detailed chapters.
                 </p>
@@ -148,7 +148,7 @@ export const WorkspaceOverviewPage: React.FC = () => {
               onClick={() => navigate(`/workspace/${id}/quick-glance`)}
               className="gap-2 shadow-sm bg-white text-brand-700 hover:bg-gray-100 whitespace-nowrap font-bold text-xs self-start sm:self-auto"
             >
-              <span>Start Quick Glance</span>
+              <span>Start Quick Summary</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Button>
           </div>
@@ -164,14 +164,14 @@ export const WorkspaceOverviewPage: React.FC = () => {
           </p>
         </div>
 
-        {/* STAGE 1: UNDERSTAND */}
+        {/* STAGE 1: LEARN */}
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <span className="w-6 h-6 rounded-full bg-brand-100 text-brand-700 text-xs font-bold flex items-center justify-center">
               1
             </span>
             <h3 className="text-sm font-bold text-ink uppercase tracking-wider">
-              Understand &bull; Grasp the Concepts
+              Learn &bull; Grasp the Concepts
             </h3>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -189,14 +189,14 @@ export const WorkspaceOverviewPage: React.FC = () => {
                   </span>
                 </div>
                 <h4 className="text-sm font-bold text-ink group-hover:text-brand-600 transition-colors">
-                  Quick Glance
+                  Quick Summary
                 </h4>
                 <p className="text-xs text-ink-muted leading-relaxed">
                   High-level bullet points, core definitions, and overarching context in 60 seconds.
                 </p>
               </div>
               <div className="flex items-center text-xs font-bold text-brand-600 gap-1 pt-1">
-                <span>Read Overview</span>
+                <span>Read Summary</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>
             </div>
@@ -215,14 +215,14 @@ export const WorkspaceOverviewPage: React.FC = () => {
                   </span>
                 </div>
                 <h4 className="text-sm font-bold text-ink group-hover:text-brand-600 transition-colors">
-                  Deep Summary
+                  Detailed Notes
                 </h4>
                 <p className="text-xs text-ink-muted leading-relaxed">
                   Chapter-by-chapter breakdowns, simple examples, and core concept proofs.
                 </p>
               </div>
               <div className="flex items-center text-xs font-semibold text-brand-600 gap-1 pt-1">
-                <span>Explore Chapters</span>
+                <span>Explore Notes</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>
             </div>
@@ -241,7 +241,7 @@ export const WorkspaceOverviewPage: React.FC = () => {
                   </span>
                 </div>
                 <h4 className="text-sm font-bold text-ink group-hover:text-brand-600 transition-colors">
-                  Chapters Breakdown
+                  Chapters & Topics
                 </h4>
                 <p className="text-xs text-ink-muted leading-relaxed">
                   Navigate syllabus topics sequentially with expandable sub-sections.
@@ -255,14 +255,14 @@ export const WorkspaceOverviewPage: React.FC = () => {
           </div>
         </div>
 
-        {/* STAGE 2: REMEMBER */}
+        {/* STAGE 2: REVIEW */}
         <div className="space-y-3 pt-2">
           <div className="flex items-center gap-2">
             <span className="w-6 h-6 rounded-full bg-purple-100 text-purple-700 text-xs font-bold flex items-center justify-center">
               2
             </span>
             <h3 className="text-sm font-bold text-ink uppercase tracking-wider">
-              Remember &bull; Lock into Memory
+              Review &bull; Lock into Memory
             </h3>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -332,14 +332,14 @@ export const WorkspaceOverviewPage: React.FC = () => {
                   </span>
                 </div>
                 <h4 className="text-sm font-bold text-ink group-hover:text-brand-600 transition-colors">
-                  Key Points
+                  Key Takeaways
                 </h4>
                 <p className="text-xs text-ink-muted leading-relaxed">
                   Essential principles, exam traps to avoid, and memorable takeaways.
                 </p>
               </div>
               <div className="flex items-center text-xs font-semibold text-brand-600 gap-1 pt-1">
-                <span>View Key Points</span>
+                <span>View Takeaways</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>
             </div>
@@ -358,21 +358,21 @@ export const WorkspaceOverviewPage: React.FC = () => {
                   </span>
                 </div>
                 <h4 className="text-sm font-bold text-ink group-hover:text-brand-600 transition-colors">
-                  Subject Glossary
+                  Key Terms
                 </h4>
                 <p className="text-xs text-ink-muted leading-relaxed">
                   Searchable definitions dictionary with immediate context references.
                 </p>
               </div>
               <div className="flex items-center text-xs font-semibold text-brand-600 gap-1 pt-1">
-                <span>Open Glossary</span>
+                <span>Open Key Terms</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>
             </div>
           </div>
         </div>
 
-        {/* STAGE 3 & 4: PRACTICE & REVISE */}
+        {/* STAGE 3 & 4: PRACTICE & QUICK PREP */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
           {/* STAGE 3: PRACTICE */}
           <div className="space-y-3">
@@ -381,7 +381,7 @@ export const WorkspaceOverviewPage: React.FC = () => {
                 3
               </span>
               <h3 className="text-sm font-bold text-ink uppercase tracking-wider">
-                Practice &bull; Test Knowledge
+                Practice &bull; Test Yourself
               </h3>
             </div>
             <div
@@ -394,31 +394,31 @@ export const WorkspaceOverviewPage: React.FC = () => {
                     <Sparkles className="w-4 h-4" />
                   </span>
                   <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
-                    Diagnostic Quiz
+                    Self-Test
                   </span>
                 </div>
                 <h4 className="text-sm font-bold text-ink group-hover:text-brand-600 transition-colors">
-                  Quiz Assessment
+                  Practice Quiz
                 </h4>
                 <p className="text-xs text-ink-muted leading-relaxed">
-                  Self-assessment with MCQs, True/False, and short answer questions, instant grading, and concept feedback.
+                  Self-assessment with instant grading, question reviews, and detailed explanations.
                 </p>
               </div>
               <div className="flex items-center text-xs font-bold text-emerald-700 gap-1 pt-1">
-                <span>Take Practice Quiz</span>
+                <span>Start Practice Quiz</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>
             </div>
           </div>
 
-          {/* STAGE 4: REVISE */}
+          {/* STAGE 4: QUICK PREP */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 text-xs font-bold flex items-center justify-center">
                 4
               </span>
               <h3 className="text-sm font-bold text-ink uppercase tracking-wider">
-                Revise &bull; Exam Preparation
+                Quick Prep &bull; Exam Ready
               </h3>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -436,7 +436,7 @@ export const WorkspaceOverviewPage: React.FC = () => {
                     </span>
                   </div>
                   <h4 className="text-xs font-bold text-ink group-hover:text-brand-600 transition-colors">
-                    Exam Cram
+                    Exam Cram Sheet
                   </h4>
                   <p className="text-[11px] text-ink-muted leading-relaxed mt-0.5">
                     10-minute high-yield cram sheet.
@@ -461,14 +461,14 @@ export const WorkspaceOverviewPage: React.FC = () => {
                     </span>
                   </div>
                   <h4 className="text-xs font-bold text-ink group-hover:text-brand-600 transition-colors">
-                    Export Kit
+                    Download Study Kit
                   </h4>
                   <p className="text-[11px] text-ink-muted leading-relaxed mt-0.5">
                     Print or save formatted study notes.
                   </p>
                 </div>
                 <span className="text-[11px] font-bold text-emerald-700 pt-1 flex items-center gap-1">
-                  Export &rarr;
+                  Download &rarr;
                 </span>
               </div>
             </div>
@@ -476,56 +476,56 @@ export const WorkspaceOverviewPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Phase 2 — Smart Tools */}
+      {/* Smart Study Tools */}
       <div className="space-y-4">
         <div className="flex items-center gap-3">
-          <h2 className="text-base font-bold text-ink">Phase 2 Smart Tools</h2>
+          <h2 className="text-base font-bold text-ink">Smart Study Tools</h2>
           <span className="text-[10px] font-bold text-brand-700 bg-brand-50 border border-brand-200 px-2 py-0.5 rounded-full">NEW</span>
         </div>
         <div className="relative overflow-hidden rounded-2xl border border-brand-200 bg-gradient-to-br from-brand-50 to-violet-50 p-5 mb-2">
           <p className="text-xs text-brand-700 font-medium leading-relaxed">
-            🚀 <strong>AI-powered differentiator features</strong> — Adaptive quizzes, mastery tracking, weak topic detection, and personalized coaching all powered by your study data.
+            🚀 <strong>Smart study helpers</strong> — Adaptive quizzes, topic mastery, review schedules, and personalized coaching built around your learning progress.
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           {[
             {
-              title: 'Weak Topics',
-              subtitle: 'AI-detected problem areas from quiz history',
+              title: 'Topics to Review',
+              subtitle: 'Problem areas detected from quiz history',
               icon: <AlertTriangle className="w-5 h-5 text-rose-600" />,
               badge: 'Post-Quiz',
               bg: 'hover:border-rose-300 hover:bg-rose-50/30',
               to: `/workspace/${id}/weak-topics`,
             },
             {
-              title: 'Mastery Dashboard',
-              subtitle: 'Per-subject progress with trend tracking',
+              title: 'Topic Mastery',
+              subtitle: 'Subject progress and accuracy scores',
               icon: <Award className="w-5 h-5 text-brand-600" />,
               badge: 'Progress',
               bg: 'hover:border-brand-300 hover:bg-brand-50/30',
               to: `/workspace/${id}/mastery`,
             },
             {
-              title: 'Revision Planner',
-              subtitle: 'Day-by-day study plan before your exam',
+              title: 'Study Schedule',
+              subtitle: 'Day-by-day revision plan before your exam',
               icon: <Target className="w-5 h-5 text-violet-600" />,
-              badge: 'Personalized',
+              badge: 'Planner',
               bg: 'hover:border-violet-300 hover:bg-violet-50/30',
               to: `/workspace/${id}/revision-planner`,
             },
             {
-              title: 'Adaptive Quiz',
-              subtitle: 'Auto-adjusts Easy→Hard based on answers',
+              title: 'Smart Quiz',
+              subtitle: 'Auto-adjusts easy to hard based on your answers',
               icon: <Zap className="w-5 h-5 text-amber-600" />,
-              badge: 'AI Engine',
+              badge: 'Adaptive',
               bg: 'hover:border-amber-300 hover:bg-amber-50/30',
               to: `/workspace/${id}/adaptive-quiz`,
             },
             {
-              title: 'AI Coach',
-              subtitle: 'Personalized suggestions and learning insights',
+              title: 'Study Coach',
+              subtitle: 'Personal suggestions to boost your score',
               icon: <Brain className="w-5 h-5 text-emerald-600" />,
-              badge: 'AI-Powered',
+              badge: 'AI Coach',
               bg: 'hover:border-emerald-300 hover:bg-emerald-50/30',
               to: `/workspace/${id}/ai-coach`,
             },

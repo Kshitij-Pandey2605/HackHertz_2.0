@@ -1413,7 +1413,7 @@ export const api = {
         id: `res_default`,
         quizId: `quiz_default`,
         materialId,
-        materialTitle: 'Database Management Systems — Normalization & Functional Dependencies',
+        materialTitle: 'DBMS Notes — Normalization Basics',
         difficulty: 'MEDIUM',
         totalQuestions: 15,
         correctCount: 12,

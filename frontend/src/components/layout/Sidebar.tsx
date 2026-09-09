@@ -34,31 +34,31 @@ export const Sidebar: React.FC = () => {
     },
     {
       to: '/analytics',
-      label: 'Learning Analytics',
+      label: 'Study Progress',
       icon: <BarChart3 className="w-4 h-4" />,
       badge: 'Insights',
     },
     {
       to: '/documents',
-      label: 'My Documents',
+      label: 'My Study Files',
       icon: <FileText className="w-4 h-4" />,
       badge: 'Live API',
     },
     {
       to: '/upload',
-      label: 'Upload Material',
+      label: 'Upload Notes',
       icon: <UploadCloud className="w-4 h-4" />,
       badge: 'New',
     },
     {
       to: '/workspace/mat_dbms_01/flashcards',
-      label: 'Study Flashcards',
+      label: 'Flashcards',
       icon: <BookOpen className="w-4 h-4" />,
       badge: 'Ready',
     },
     {
       to: '/workspace/mat_dbms_01/quiz/setup',
-      label: 'Quiz Assessment',
+      label: 'Practice Quiz',
       icon: <Sparkles className="w-4 h-4" />,
       badge: 'Ready',
     },
@@ -67,27 +67,27 @@ export const Sidebar: React.FC = () => {
   const phase2Links = [
     {
       to: '/workspace/mat_dbms_01/weak-topics',
-      label: 'Weak Topics',
+      label: 'Topics to Review',
       icon: <AlertTriangle className="w-4 h-4 text-rose-600" />,
     },
     {
       to: '/workspace/mat_dbms_01/mastery',
-      label: 'Mastery Dashboard',
+      label: 'Topic Mastery',
       icon: <Award className="w-4 h-4 text-brand-600" />,
     },
     {
       to: '/workspace/mat_dbms_01/revision-planner',
-      label: 'Revision Planner',
+      label: 'Study Schedule',
       icon: <Target className="w-4 h-4 text-violet-600" />,
     },
     {
       to: '/workspace/mat_dbms_01/adaptive-quiz',
-      label: 'Adaptive Quiz',
+      label: 'Smart Quiz',
       icon: <Zap className="w-4 h-4 text-amber-600" />,
     },
     {
       to: '/workspace/mat_dbms_01/ai-coach',
-      label: 'AI Study Coach',
+      label: 'Study Coach',
       icon: <Brain className="w-4 h-4 text-emerald-600" />,
     },
   ];
@@ -185,11 +185,10 @@ export const Sidebar: React.FC = () => {
           <div className="p-3 bg-canvas rounded-xl border border-edge/60 mb-4">
             <div className="flex items-center gap-2 text-xs font-semibold text-ink mb-1">
               <HelpCircle className="w-3.5 h-3.5 text-brand-600" />
-              <span>Smart Summarizer</span>
+              <span>Study Assistant</span>
             </div>
             <p className="text-[11px] text-ink-muted leading-relaxed">
-              Upload notes or textbooks to automatically generate structured
-              cram sheets & quizzes.
+              Upload your study notes to get instant summaries, flashcards, and practice quizzes.
             </p>
           </div>
 
