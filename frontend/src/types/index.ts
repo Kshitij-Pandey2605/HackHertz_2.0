@@ -354,6 +354,22 @@ export interface MultiUploadResponse {
   fileUrl?: string;
 }
 
+export interface PdfStructuredSummary {
+  chapterOverview: string;
+  keyConcepts: string[];
+  definitions: string[];
+  importantPoints: string[];
+  revisionNotes: string[];
+  examTopics: string[];
+  difficulty: 'Easy' | 'Medium' | 'Hard' | string;
+  estimatedReadingTime: string;
+}
+
+export interface PdfSummarizeResponse {
+  success: boolean;
+  summary: PdfStructuredSummary;
+}
+
 export interface ExtractedSection {
   title: string;
   content: string;

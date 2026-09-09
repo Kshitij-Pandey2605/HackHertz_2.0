@@ -167,6 +167,19 @@ export const getExtractedDocument = async (
   return response.data;
 };
 
+export const summarizePdf = async (
+  file: File
+): Promise<{ success: boolean; summary: any }> => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const response = await apiClient.post<{ success: boolean; summary: any }>('/pdf/summarize', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+
 export const getHealth = async (): Promise<{ success: boolean; message: string }> => {
   const response = await apiClient.get<{ success: boolean; message: string }>('/health');
   return response.data;
